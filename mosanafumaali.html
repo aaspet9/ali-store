@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>افوما بیسٹ ڈیلز - مکمل ایڈمن و لکی ڈرا پینل</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    body { background-color: #0f172a; color: #f8fafc; padding: 14px; font-family: sans-serif; direction: rtl; }
+    .admin-card { background: #1e293b; border: 2px solid #2563eb; border-radius: 12px; padding: 16px; max-width: 500px; margin: 0 auto 20px auto; }
+    .admin-card h2 { font-size: 16px; color: #38bdf8; margin-bottom: 12px; text-align: center; }
+    .form-group { margin-bottom: 12px; text-align: right; }
+    .form-group label { font-size: 12px; font-weight: bold; color: #94a3b8; display: block; margin-bottom: 4px; }
+    
+    input[type="text"], input[type="number"], input[type="tel"], textarea, select {
+      width: 100%; padding: 12px; border: 1px solid #334155; border-radius: 8px; font-size: 14px; box-sizing: border-box; background-color: #0f172a; color: #ffffff;
+    }
+    
+    .file-input-box { border: 2px dashed #2563eb; background: #1e293b; padding: 14px; text-align: center; border-radius: 8px; cursor: pointer; color: #38bdf8; }
+    .file-input-box input[type="file"] { display: none; }
+    
+    .preview-container { display: flex; gap: 6px; overflow-x: auto; margin-top: 8px; padding-bottom: 4px; justify-content: center; flex-wrap: wrap; }
+    .preview-img { width: 65px; height: 65px; object-fit: cover; border-radius: 6px; border: 1px solid #2563eb; }
+
+    .add-btn { width: 100%; background: #2563eb; color: #fff; border: none; padding: 14px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 15px; margin-top: 10px; }
+
+    .stats-card { background: #0f172a; border: 1px solid #334155; color: #ffffff; text-align: center; padding: 14px; border-radius: 12px; max-width: 500px; margin: 0 auto 15px auto; }
+    .stats-card h3 { font-size: 22px; color: #38bdf8; margin-top: 4px; }
+
+    /* Accordion & Lucky Draw UI */
+    .accordion-btn {
+        background: #334155; color: #facc15; width: 100%; padding: 14px;
+        border: 1px solid #f59e0b; border-radius: 8px; margin-top: 10px;
+        font-size: 15px; font-weight: bold; cursor: pointer;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .accordion-content { display: none; padding: 12px; background: #1e293b; border: 1px solid #f59e0b; border-radius: 0 0 8px 8px; text-align: right; }
+
+    .live-draw-box { background: #0f172a; border: 2px solid #10b981; border-radius: 10px; padding: 12px; color: white; text-align: center; }
+    .w-input { width: 100% !important; padding: 10px; margin: 5px 0; border: 2px solid #10b981; border-radius: 5px; text-align: center; font-weight: bold; font-size: 16px; color: #facc15; background: #1e293b; }
+    .btn-random-pick { background: linear-gradient(45deg, #f59e0b, #d97706); color: white; width: 100%; padding: 12px; font-size: 16px; font-weight: bold; border: none; border-radius: 30px; cursor: pointer; }
+
+    .prize-row, .user-row { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155; padding: 10px; color: white; background: #0f172a; margin-bottom: 5px; border-radius: 8px; }
+    .user-row { background: #1e293b; border-right: 4px solid #10b981; }
+    .prize-img { width: 45px; height: 45px; object-fit: contain; background: white; border-radius: 5px; }
+
+    .items-list-box { max-width: 500px; margin: 0 auto; }
+    .item-row { background: #1e293b; border: 1px solid #334155; padding: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; }
+    .item-info { display: flex; align-items: center; gap: 10px; }
+    .item-thumb { width: 45px; height: 45px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; }
+    .item-title { font-size: 12px; font-weight: bold; color: #f8fafc; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    
+    .approve-btn { background: #22c55e; color: white; border: none; padding: 6px 10px; font-size: 11px; border-radius: 6px; cursor: pointer; }
+    .pin-btn { background: #eab308; color: black; border: none; padding: 6px 10px; font-size: 11px; font-weight: bold; border-radius: 6px; cursor: pointer; }
+    .del-btn { background: #ef4444; color: white; border: none; padding: 6px 10px; font-size: 11px; border-radius: 6px; cursor: pointer; }
+    .bulk-del-btn { background: #dc2626; color: white; border: none; padding: 10px; font-size: 13px; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; margin-bottom: 10px; }
+    
+    .select-all-bar { display: flex; justify-content: space-between; align-items: center; background: #334155; padding: 8px 12px; border-radius: 8px; margin-bottom: 10px; font-size: 12px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <!-- Total Live Products Counter -->
+  <div class="stats-card">
+    <span style="font-size:12px; color:#94a3b8;">📊 ایپ پر کل اپلوڈ شدہ پروڈکٹس:</span>
+    <h3 id="totalProductsCount">0</h3>
+  </div>
+
+  <!-- Lucky Draw Control Panel -->
+  <div class="admin-card" style="border-color: #f59e0b;">
+    <h2 style="color: #f59e0b;">🎁 لکی ڈرا انعامات اور کنٹرولز</h2>
+
+    <button class="accordion-btn" onclick="toggle('secLuckyDraw')">
+        <span>🔥 لائیو انعام نکالیں 🔥</span> <span>▼</span>
+    </button>
+    <div id="secLuckyDraw" class="accordion-content">
+        <div class="live-draw-box">
+            <button class="btn-random-pick" onclick="pickRandomUser()">🎲 کوئی بھی یوزر سلیکٹ کریں</button>
+            <input type="text" id="winName" class="w-input" placeholder="خوش نصیب کا نام" readonly>
+            <input type="tel" id="winPhone" class="w-input" placeholder="موبائل نمبر" readonly>
+        </div>
+    </div>
+
+    <button class="accordion-btn" onclick="toggle('secAddPrize')"><span>➕ نیا انعام شامل کریں</span> <span>▼</span></button>
+    <div id="secAddPrize" class="accordion-content">
+        <input type="text" id="pName" placeholder="انعام کا نام">
+        <input type="number" id="pLimit" placeholder="کل تعداد" style="margin-top:6px;">
+        <input type="file" id="pImg" accept="image/*" style="color:white; margin:10px 0;">
+        <button onclick="uploadPrize()" style="width:100%; padding:10px; background:#f59e0b; color:black; font-weight:bold; border:none; border-radius:5px; cursor:pointer;">محفوظ کریں</button>
+    </div>
+
+    <button class="accordion-btn" onclick="toggle('secPrizes')"><span>🎁 انعامات کی لسٹ</span> <span>▼</span></button>
+    <div id="secPrizes" class="accordion-content"><div id="prizesList">لوڈ ہو رہا ہے...</div></div>
+
+    <button class="accordion-btn" onclick="toggle('secCustomers')" style="background: #2563eb; color: white;">
+        <span>👥 تمام رجسٹرڈ یوزرز (لکی ڈرا)</span> <span>▼</span>
+    </button>
+    <div id="secCustomers" class="accordion-content">
+        <input type="text" id="searchUser" placeholder="🔍 نام یا نمبر سے تلاش کریں..." oninput="filterUsers()">
+        <div id="customersList" style="margin-top:10px;">لوڈ ہو رہا ہے...</div>
+    </div>
+  </div>
+
+  <!-- Tracking Tag Box -->
+  <div class="admin-card" style="border-color: #16a34a;">
+    <h2 style="color: #16a34a;">⚙️ اپنا AliExpress Tracking Tag سیٹ کریں</h2>
+    <div class="form-group">
+      <label>آپ کا Tracking ID / Tag:</label>
+      <input type="text" id="adminTagInput" placeholder="مثال: Afumawater9" dir="ltr">
+    </div>
+    <button class="add-btn" style="background: #16a34a;" onclick="saveAdminTag()">ٹیگ محفوظ کریں 💾</button>
+  </div>
+
+  <!-- AliExpress Bulk CSV/Excel Importer -->
+  <div class="admin-card" style="border-color: #8b5cf6;">
+    <h2 style="color: #8b5cf6;">📁 علی ایکسپریس بلک فائل امپورٹر</h2>
+    <div class="form-group">
+      <label>فائل منتخب کریں (CSV / Excel):</label>
+      <div class="file-input-box" onclick="document.getElementById('csvFileInput').click()">
+        <span id="csvStatusText">📥 فائل منتخب کرنے کے لیے یہاں کلک کریں</span>
+        <input type="file" id="csvFileInput" accept=".csv, .xlsx, .xls" onchange="fileSelected(event)">
+      </div>
+    </div>
+    <button class="add-btn" id="startImportBtn" style="background: #8b5cf6; display: none;" onclick="processSelectedFile()">تمام پروڈکٹس امپورٹ کریں 🚀</button>
+  </div>
+
+  <!-- Single Product Form -->
+  <div class="admin-card">
+    <h2>➕ اکیلی پروڈکٹ اپلوڈ کریں</h2>
+    <div class="form-group">
+      <label>پروڈکٹ کا عنوان:</label>
+      <input type="text" id="pTitle" placeholder="عنوان...">
+    </div>
+    <div class="form-group">
+      <label>کیٹیگری منتخب کریں:</label>
+      <select id="pCategory">
+        <option value="kids">بچوں کے کپڑے</option>
+        <option value="watch">گھڑی</option>
+        <option value="mobile">موبائل فون</option>
+        <option value="laptop">لیپ ٹاپ</option>
+        <option value="electronics">الیکٹرانکس</option>
+        <option value="keyboard">کی بورڈ</option>
+        <option value="shoes">شوز</option>
+        <option value="kitchen">کچن / برتن</option>
+        <option value="medical">میڈیکل سامان</option>
+        <option value="beauty">بیوٹی کریم</option>
+        <option value="jewelry">جیولری سامان</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>قیمت:</label>
+      <input type="text" id="pPrice" placeholder="SAR 0.00">
+    </div>
+    <div class="form-group">
+      <label>افیلی ایٹ لنک:</label>
+      <input type="text" id="pLink" placeholder="https://..." dir="ltr">
+    </div>
+    <div class="form-group">
+      <label>تصویر منتخب کریں:</label>
+      <div class="file-input-box" onclick="document.getElementById('imgFileInput').click()">
+        <span id="fileStatusText">📁 گیلری سے تصویر منتخب کریں</span>
+        <input type="file" id="imgFileInput" accept="image/*" multiple onchange="previewSelectedImages(event)">
+        <div id="previewContainer" class="preview-container"></div>
+      </div>
+    </div>
+    <button class="add-btn" onclick="addNewSingleProduct()">پروڈکٹ شائع کریں 🚀</button>
+  </div>
+
+  <!-- Pending Approvals List -->
+  <div class="items-list-box" id="pendingItemsList"></div>
+
+  <!-- Live Products & Bulk Delete Management -->
+  <div class="items-list-box" style="margin-top:20px;">
+    <div class="select-all-bar" id="bulkControls" style="display:none;">
+      <label><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)"> سب سلیکٹ کریں</label>
+      <span id="selectedCountText">0 منتخب شدہ</span>
+    </div>
+    <button class="bulk-del-btn" id="deleteSelectedBtn" style="display:none;" onclick="deleteSelectedProducts()">🗑️ منتخب کردہ تمام پروڈکٹس ڈلیٹ کریں</button>
+    <div id="adminItemsList"></div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDp--gVk61VaLCK-4yygwN8Oj9CpDIp05E",
+      authDomain: "kist-65357.firebaseapp.com",
+      projectId: "kist-65357",
+      storageBucket: "kist-65357.firebasestorage.app",
+      messagingSenderId: "200844711272",
+      appId: "1:200844711272:web:d980a03c9fae8b8d7972dd",
+      measurementId: "G-LCZ8N3GKTE",
+      databaseURL: "https://kist-65357-default-rtdb.firebaseio.com"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database().ref("products");
+    const pendingDb = firebase.database().ref("pending_products");
+    const settingsDb = firebase.database().ref("settings");
+    const giveawayDb = firebase.database().ref("giveaway_entries");
+    const prizesDb = firebase.database().ref("prizes");
+    const winnersDb = firebase.database().ref("winners");
+
+    const IMGBB_API_KEY = "66dcdf21e30733bfd85545d9fb5e76c4";
+    let selectedFiles = [];
+    let currentSelectedFile = null;
+    let registeredUsers = [];
+
+    window.onload = function() {
+      settingsDb.child("admin_tag").once('value', snap => {
+        if(snap.exists()) document.getElementById('adminTagInput').value = snap.val();
+      });
+      renderPendingList();
+      renderAdminList();
+      listenToUsers();
+      listenToPrizes();
+    };
+
+    function toggle(id) { let el = document.getElementById(id); el.style.display = (el.style.display === "block") ? "none" : "block"; }
+
+    function saveAdminTag() {
+      const tag = document.getElementById('adminTagInput').value.trim();
+      if(!tag) { alert("براہ کرم اپنا Tracking Tag درج کریں!"); return; }
+      settingsDb.child("admin_tag").set(tag).then(() => { alert("آپ کا Tracking Tag محفوظ ہو گیا ہے! 🚀"); });
+    }
+
+    /* Lucky Draw & Registered Users Functions */
+    function listenToUsers() {
+      giveawayDb.on('value', (snap) => {
+        registeredUsers = [];
+        const data = snap.val();
+        if(data) {
+          Object.keys(data).forEach(key => { registeredUsers.push(data[key]); });
+        }
+        renderCustomers(registeredUsers);
+      });
+    }
+
+    function renderCustomers(data) {
+      let h = "";
+      if(data.length === 0) {
+        document.getElementById('customersList').innerHTML = "کوئی یوزر رجسٹرڈ نہیں ہے";
+        return;
+      }
+      data.forEach(d => {
+        h += `<div class="user-row">
+            <div style="text-align:right;">
+                <b>${d.name}</b> (${d.phone})<br>
+                <small style="color:#94a3b8;">📅 ${d.timestamp ? new Date(d.timestamp).toLocaleDateString() : ''}</small>
+            </div>
+        </div>`;
+      });
+      document.getElementById('customersList').innerHTML = h;
+    }
+
+    function filterUsers() {
+      let val = document.getElementById('searchUser').value.toLowerCase();
+      renderCustomers(registeredUsers.filter(o => o.name.toLowerCase().includes(val) || o.phone.includes(val)));
+    }
+
+    function pickRandomUser() {
+      if(registeredUsers.length === 0) return alert("کوئی بھی یوزر رجسٹرڈ نہیں ہے!");
+      let rand = registeredUsers[Math.floor(Math.random() * registeredUsers.length)];
+      document.getElementById('winName').value = rand.name;
+      document.getElementById('winPhone').value = rand.phone;
+    }
+
+    function uploadPrize() {
+      let name = document.getElementById('pName').value, limit = document.getElementById('pLimit').value, file = document.getElementById('pImg').files[0];
+      if(!name || !file) return alert("ڈیٹا مکمل کریں");
+      let reader = new FileReader();
+      reader.onload = function(e) {
+          prizesDb.push({
+            name: name, limit: parseInt(limit), won_count: 0, image: e.target.result, timestamp: Date.now()
+          }).then(() => { alert("انعام محفوظ ہو گیا!"); });
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function listenToPrizes() {
+      prizesDb.on('value', (snap) => {
+        let html = "";
+        const data = snap.val();
+        if(!data) { document.getElementById('prizesList').innerHTML = "کوئی انعام موجود نہیں"; return; }
+        Object.keys(data).forEach(key => {
+          let d = data[key]; let left = (d.limit || 0) - (d.won_count || 0);
+          html += `<div class="prize-row">
+              <div style="display:flex; align-items:center;">
+                  <img src="${d.image}" class="prize-img">
+                  <div style="margin-right:10px; text-align:right;">
+                      <b>${d.name}</b><br><small>باقی: ${left}</small>
+                  </div>
+              </div>
+              <div>
+                  <button class="del-btn" onclick="deletePrize('${key}')">حذف</button>
+                  ${left > 0 ? `<button class="approve-btn" onclick="releasePrize('${key}', '${d.name}', '${d.image}')">نکالیں</button>` : '<span style="color:red; font-weight:bold;">ختم</span>'}
+              </div>
+          </div>`;
+        });
+        document.getElementById('prizesList').innerHTML = html;
+      });
+    }
+
+    function deletePrize(key) {
+      if(confirm("انعام ڈیلیٹ کریں؟")) prizesDb.child(key).remove();
+    }
+
+    function releasePrize(key, pName, pImg) {
+      let n = document.getElementById('winName').value;
+      let p = document.getElementById('winPhone').value;
+      if(!n) return alert("پہلے یوزر سلیکٹ کریں!");
+      winnersDb.push({
+        winner_name: n, winner_phone: p, prize_name: pName, prize_image: pImg, timestamp: Date.now()
+      });
+      prizesDb.child(key).transaction(current => {
+        if (current) { current.won_count = (current.won_count || 0) + 1; }
+        return current;
+      });
+      alert("✅ انعام جاری ہو گیا!");
+    }
+
+    /* Affiliate & Product Management */
+    function renderPendingList() {
+      const container = document.getElementById('pendingItemsList');
+      pendingDb.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if(!data) { container.innerHTML = ''; return; }
+        container.innerHTML = '<h3 style="font-size:13px; color:#e11d48; margin-bottom:8px;">⏳ صارفین کی پینڈنگ پروڈکٹس:</h3>';
+        Object.keys(data).reverse().forEach((key) => {
+          const item = data[key];
+          const imgUrl = (item.images && item.images.length > 0) ? item.images[0] : (item.img || 'https://via.placeholder.com/150');
+          container.innerHTML += `
+            <div class="item-row" style="border: 2px solid #f43f5e;">
+              <div class="item-info">
+                <img src="${imgUrl}" class="item-thumb">
+                <div>
+                  <div class="item-title">${item.title}</div>
+                  <div style="font-size:10px; color:#e11d48;">${item.price || ''}</div>
+                </div>
+              </div>
+              <div>
+                <button class="approve-btn" onclick="approveProduct('${key}')">✅ منظور کریں</button>
+                <button class="del-btn" onclick="rejectProduct('${key}')">🗑️</button>
+              </div>
+            </div>`;
+        });
+      });
+    }
+
+    function approveProduct(key) {
+      pendingDb.child(key).once('value', (snapshot) => {
+        const item = snapshot.val();
+        if(item) {
+          db.push(item).then(() => { pendingDb.child(key).remove(); alert("منظور ہو گئی!"); });
+        }
+      });
+    }
+
+    function rejectProduct(key) { pendingDb.child(key).remove(); }
+
+    function fileSelected(event) {
+      const file = event.target.files[0];
+      if (file) {
+        currentSelectedFile = file;
+        document.getElementById('csvStatusText').innerText = `منتخب فائل: ${file.name} ✅`;
+        document.getElementById('startImportBtn').style.display = "block";
+      }
+    }
+
+    function processSelectedFile() {
+      if (!currentSelectedFile) return;
+      const fileName = currentSelectedFile.name.toLowerCase();
+      if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+          saveRowsToFirebase(XLSX.utils.sheet_to_json(worksheet, { defval: "" }));
+        };
+        reader.readAsArrayBuffer(currentSelectedFile);
+      } else {
+        Papa.parse(currentSelectedFile, {
+          header: true, skipEmptyLines: true,
+          complete: function(results) { saveRowsToFirebase(results.data); }
+        });
+      }
+    }
+
+    function saveRowsToFirebase(rows) {
+      let count = 0;
+      rows.forEach(row => {
+        const keys = Object.keys(row);
+        let title = "", link = "", price = "", img = "", category = "";
+        keys.forEach(k => {
+          const keyLower = k.toLowerCase().trim();
+          const val = row[k] ? row[k].toString().trim() : "";
+          if (!val) return;
+          if ((keyLower.includes('title') || keyLower.includes('name')) && isNaN(val) && val.length > 5) { if(!title) title = val; }
+          if (val.includes('http://') || val.includes('https://')) {
+            if (val.includes('.jpg') || val.includes('.png') || val.includes('.jpeg') || keyLower.includes('image')) { if(!img) img = val; } else { if(!link) link = val; }
+          }
+          if (keyLower.includes('price')) { if(!price) price = val; }
+          if (keyLower.includes('category')) { if(!category) category = val; }
+        });
+        if (title && link) {
+          db.push({
+            title: title.substring(0, 90),
+            category: category.toLowerCase().includes('kids') ? 'kids' : category.toLowerCase().includes('watch') ? 'watch' : 'electronics',
+            price: price ? (price.includes('SAR') ? price : `SAR ${price}`) : "Best Price",
+            link: link, images: img ? [img] : ["https://via.placeholder.com/150"], img: img || "https://via.placeholder.com/150", pinned: false, timestamp: Date.now()
+          });
+          count++;
+        }
+      });
+      alert(`کامیابی! تمام ${count} پروڈکٹس امپورٹ ہو گئیں! 🚀`);
+      location.reload();
+    }
+
+    function previewSelectedImages(event) {
+      selectedFiles = Array.from(event.target.files);
+      const container = document.getElementById('previewContainer');
+      container.innerHTML = '';
+      if (selectedFiles.length > 0) {
+        document.getElementById('fileStatusText').innerText = `${selectedFiles.length} تصاویر منتخب کی گئیں ✅`;
+        selectedFiles.forEach(file => {
+          const reader = new FileReader();
+          reader.onload = e => {
+            const img = document.createElement('img');
+            img.src = e.target.result; img.className = 'preview-img';
+            container.appendChild(img);
+          }
+          reader.readAsDataURL(file);
+        });
+      }
+    }
+
+    async function addNewSingleProduct() {
+      const title = document.getElementById('pTitle').value.trim();
+      const category = document.getElementById('pCategory').value;
+      const price = document.getElementById('pPrice').value.trim();
+      const link = document.getElementById('pLink').value.trim();
+      if (!title || !link || selectedFiles.length === 0) { alert("ڈیٹا مکمل کریں!"); return; }
+
+      let uploadedUrls = [];
+      for (let file of selectedFiles) {
+        const formData = new FormData();
+        formData.append("image", file);
+        try {
+          const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
+          const imgData = await res.json();
+          if (imgData.success) uploadedUrls.push(imgData.data.url);
+        } catch (e){}
+      }
+      if (uploadedUrls.length === 0) return;
+
+      db.push({
+        title: title, category: category, price: price || "Best Price", link: link,
+        images: uploadedUrls, img: uploadedUrls[0], pinned: false, timestamp: Date.now()
+      }).then(() => { alert("پروڈکٹ شائع ہو گئی!"); location.reload(); });
+    }
+
+    function renderAdminList() {
+      const container = document.getElementById('adminItemsList');
+      db.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if(!data) {
+          document.getElementById('totalProductsCount').innerText = "0";
+          document.getElementById('bulkControls').style.display = "none";
+          container.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:12px;">کوئی پروڈکٹ موجود نہیں ہے۔</p>';
+          return;
+        }
+
+        const keys = Object.keys(data);
+        document.getElementById('totalProductsCount').innerText = keys.length;
+        document.getElementById('bulkControls').style.display = "flex";
+
+        container.innerHTML = '<h3 style="font-size:13px; margin-bottom:8px;">موجودہ لائیو پروڈکٹس:</h3>';
+        keys.reverse().forEach((key) => {
+          const item = data[key];
+          const imgUrl = (item.images && item.images.length > 0) ? item.images[0] : (item.img || 'https://via.placeholder.com/150');
+          const isPinned = item.pinned || false;
+
+          container.innerHTML += `
+            <div class="item-row">
+              <div class="item-info">
+                <input type="checkbox" class="product-checkbox" value="${key}" onchange="updateSelectedCount()">
+                <img src="${imgUrl}" class="item-thumb">
+                <span class="item-title">${item.title}</span>
+              </div>
+              <div>
+                <button class="pin-btn" onclick="togglePin('${key}', ${isPinned})">${isPinned ? '📌 Unpin' : '📌 Pin'}</button>
+                <button class="del-btn" onclick="deleteProduct('${key}')">🗑️</button>
+              </div>
+            </div>`;
+        });
+      });
+    }
+
+    function togglePin(key, currentStatus) { db.child(key).update({ pinned: !currentStatus }); }
+    function deleteProduct(key) { if (confirm("پروڈکٹ ڈلیٹ کریں؟")) db.child(key).remove(); }
+    function toggleSelectAll(masterCheckbox) {
+      document.querySelectorAll('.product-checkbox').forEach(cb => cb.checked = masterCheckbox.checked);
+      updateSelectedCount();
+    }
+    function updateSelectedCount() {
+      const count = document.querySelectorAll('.product-checkbox:checked').length;
+      document.getElementById('selectedCountText').innerText = `${count} منتخب شدہ`;
+      document.getElementById('deleteSelectedBtn').style.display = count > 0 ? "block" : "none";
+    }
+    function deleteSelectedProducts() {
+      const selected = document.querySelectorAll('.product-checkbox:checked');
+      if (selected.length === 0) return;
+      if (confirm(`کیا آپ ان ${selected.length} پروڈکٹس کو ایک ساتھ ڈلیٹ کرنا چاہتے ہیں؟`)) {
+        selected.forEach(cb => db.child(cb.value).remove());
+        alert("منتخب کردہ تمام پروڈکٹس ڈلیٹ کر دی گئی ہیں!");
+      }
+    }
+  </script>
+</body>
+</html>
