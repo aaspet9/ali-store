@@ -18,73 +18,73 @@
 
     /* Quran Strip Top */
     .quran-strip { background: linear-gradient(135deg, #0f5132 0%, #198754 100%); color: #ffffff; padding: 6px 12px; margin-bottom: 8px; text-align: center; border-radius: 8px; font-weight: bold; font-size: 16px; border: 1.5px solid #ffc107; box-shadow: 0 2px 6px rgba(15, 81, 50, 0.2); }
-
+    
     /* Main Header */
     .header { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #ffffff; text-align: center; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 16px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25); }
 
     /* LCD Screen Monitor */
     .lcd-monitor { background: #1e293b; padding: 8px; border-radius: 14px; border: 4px solid #334155; box-shadow: 0 8px 16px rgba(0,0,0,0.3); margin-bottom: 10px; position: relative; overflow: hidden; }
-    .lcd-screen { background: #000; height: 170px; border-radius: 8px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-    .lcd-screen img.slider-img { width: 100%; height: 100%; object-fit: cover; position: absolute; transition: transform 0.8s ease-in-out, opacity 0.8s; opacity: 0; transform: translateX(100%); }
-    .lcd-screen img.active { opacity: 1; transform: translateX(0); }
-    .lcd-screen img.prev { opacity: 0; transform: translateX(-100%); }
+    .lcd-screen { background: #000; height: 180px; border-radius: 8px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    
+    .prize-slide-img { width: 100%; height: 100%; object-fit: contain; position: absolute; top:0; left:0; opacity: 0; transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; }
+    .prize-slide-img.active { opacity: 1; transform: scale(1); }
+    .prize-slide-img.fast-spin { animation: spinFast 0.15s infinite linear; opacity: 1 !important; }
+
+    @keyframes spinFast {
+      0% { transform: scale(0.9) rotate(0deg); }
+      50% { transform: scale(1.05) rotate(180deg); }
+      100% { transform: scale(0.9) rotate(360deg); }
+    }
+
     .lcd-label { color: #34d399; font-size: 12px; background: rgba(0,0,0,0.75); position: absolute; bottom: 0; width: 100%; padding: 4px 0; font-weight: bold; text-align: center; z-index: 20; }
 
     #winnerOverlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 50; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; border: 3px solid #f59e0b; }
-    .winner-prize-img { width: 65px; height: 65px; object-fit: contain; border-radius: 8px; border: 2px solid white; margin-bottom: 4px; background: #fff; }
-    .winner-detail { color: #facc15; font-size: 17px; font-weight: bold; }
+    .winner-prize-img { width: 75px; height: 75px; object-fit: contain; border-radius: 8px; border: 2px solid white; margin-bottom: 4px; background: #fff; }
+    .winner-detail { color: #facc15; font-size: 18px; font-weight: bold; }
     .winner-phone-lcd { color: #38bdf8; font-size: 14px; font-weight: bold; }
 
-    /* Login & Entry Box */
+    /* Entry & User Box */
     .entry-card { background: #ffffff; padding: 12px; border-radius: 12px; border: 2px solid #10b981; margin-bottom: 10px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
     .entry-input { width: 90%; padding: 9px; margin: 4px 0; border: 1px solid #cbd5e1; border-radius: 20px; text-align: center; font-size: 13px; outline: none; }
     .btn-entry { width: 90%; padding: 10px; background: #10b981; color: white; font-weight: bold; border: none; border-radius: 20px; font-size: 13px; cursor: pointer; margin-top: 4px; }
 
-    /* User Profile Card */
     .user-profile-box { background: #ecfdf5; border: 1.5px solid #10b981; border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: center; display: none; }
     .user-profile-box h4 { color: #047857; font-size: 13px; margin-bottom: 3px; }
     .user-profile-box p { font-size: 12px; color: #065f46; font-weight: bold; }
 
     /* Action Buttons */
     .action-btn-group { display: flex; gap: 8px; margin-bottom: 10px; }
-    .user-upload-btn { flex: 1; background: #2563eb; color: #ffffff; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25); }
-    .promo-btn { flex: 1; background: #16a34a; color: #ffffff; text-decoration: none; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 3px 8px rgba(22, 163, 74, 0.25); text-align: center; }
+    .user-upload-btn { flex: 1; background: #2563eb; color: #ffffff; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .promo-btn { flex: 1; background: #16a34a; color: #ffffff; text-decoration: none; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; text-align: center; }
 
-    /* Category Scroll Bar */
+    /* Category Bar */
     .category-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 10px; scrollbar-width: none; }
-    .category-scroll::-webkit-scrollbar { display: none; }
-    .cat-btn { white-space: nowrap; background: #ffffff; border: 1px solid #e2e8f0; padding: 7px 14px; border-radius: 20px; font-size: 11px; font-weight: bold; color: #475569; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+    .cat-btn { white-space: nowrap; background: #ffffff; border: 1px solid #e2e8f0; padding: 7px 14px; border-radius: 20px; font-size: 11px; font-weight: bold; color: #475569; cursor: pointer; }
     .cat-btn.active { background: #059669; color: #ffffff; border-color: #059669; }
 
-    /* Adsterra Banners */
-    .adsterra-slim-banner { background: #ffffff; border-radius: 8px; padding: 4px; text-align: center; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; min-height: 55px; overflow: hidden; border: 1px dashed #cbd5e1; }
-    .adsterra-in-grid-banner { grid-column: span 2; background: #ffffff; border-radius: 8px; padding: 4px; text-align: center; margin: 6px 0; display: flex; justify-content: center; align-items: center; min-height: 55px; border: 1px dashed #cbd5e1; overflow: hidden; }
+    /* Banners */
+    .adsterra-slim-banner { background: #ffffff; border-radius: 8px; padding: 4px; text-align: center; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; min-height: 55px; border: 1px dashed #cbd5e1; }
+    .adsterra-in-grid-banner { grid-column: span 2; background: #ffffff; border-radius: 8px; padding: 4px; text-align: center; margin: 6px 0; display: flex; justify-content: center; align-items: center; min-height: 55px; border: 1px dashed #cbd5e1; }
 
     /* Products Grid */
     .products-container { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
-    .product-card { background: #ffffff; border-radius: 12px; padding: 8px; border: 1px solid #f0f0f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; width: 100%; overflow: hidden; position: relative; }
+    .product-card { background: #ffffff; border-radius: 12px; padding: 8px; border: 1px solid #f0f0f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; position: relative; }
     .product-card.pinned { border: 2px solid #eab308; background: #fffdf0; }
     .pinned-badge { position: absolute; top: 12px; right: 12px; background: #eab308; color: #000; font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 4px; z-index: 10; }
 
     .slider-wrapper { position: relative; width: 100%; height: 155px; border-radius: 8px; overflow: hidden; margin-bottom: 8px; background: #fdfdfd; }
-    .slider-track { display: flex; width: 100%; height: 100%; transition: transform 0.3s ease-in-out; }
-    .product-media { width: 100%; min-width: 100%; max-width: 100%; height: 155px; object-fit: cover; border-radius: 8px; border: none; display: block; }
-    .slide-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); color: white; border: none; width: 24px; height: 24px; border-radius: 50%; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 5; }
-    .slide-btn.left { left: 4px; }
-    .slide-btn.right { right: 4px; }
+    .product-media { width: 100%; min-width: 100%; height: 155px; object-fit: cover; border-radius: 8px; }
 
-    .product-title { font-size: 12px; font-weight: 600; color: #222222; margin-bottom: 4px; line-height: 1.3; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .product-title { font-size: 12px; font-weight: 600; color: #222222; margin-bottom: 4px; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
     .product-price { font-size: 14px; font-weight: 800; color: #059669; margin-bottom: 8px; }
-    .buy-btn { display: block; background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #ffffff; text-decoration: none; text-align: center; padding: 8px 4px; border-radius: 20px; font-weight: bold; font-size: 12px; box-shadow: 0 2px 6px rgba(5, 150, 105, 0.25); }
+    .buy-btn { display: block; background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #ffffff; text-decoration: none; text-align: center; padding: 8px 4px; border-radius: 20px; font-weight: bold; font-size: 12px; }
 
-    /* Modals */
+    /* Modal */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 15px; }
-    .modal-box { background: #ffffff; width: 100%; max-width: 420px; border-radius: 14px; padding: 18px; max-height: 90vh; overflow-y: auto; text-align: left; position: relative; }
+    .modal-box { background: #ffffff; width: 100%; max-width: 420px; border-radius: 14px; padding: 18px; max-height: 90vh; overflow-y: auto; position: relative; }
     .close-modal { position: absolute; right: 15px; top: 12px; background: #e2e8f0; border: none; font-size: 16px; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; }
     .modal-input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 10px; font-size: 13px; outline: none; }
     .file-btn { border: 2px dashed #2563eb; background: #eff6ff; padding: 10px; text-align: center; border-radius: 8px; cursor: pointer; margin-bottom: 10px; font-size: 12px; }
-
-    @media (max-width: 340px) { .products-container { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -97,17 +97,16 @@
     <button class="lang-btn" id="btnHi" onclick="switchLanguage('hi')">🇮🇳 हिंदी</button>
   </div>
 
-  <!-- Quranic Verse Strip Above Header -->
   <div class="quran-strip">
     <span>وَاللَّهُ خَيْرُ الرَّازِقِينَ</span>
   </div>
 
   <div class="header" id="appHeader">🎁 Afuma Best Deals & Lucky Draw</div>
 
-  <!-- LCD Screen Monitor for Giveaways -->
+  <!-- LCD Monitor Screen -->
   <div class="lcd-monitor">
       <div class="lcd-screen" id="lcdScreen">
-          <div style="color:white; z-index:1; font-size:12px;" id="lcdLoadingText">لوڈنگ شاندار انعامات... ⏳</div>
+          <div style="color:white; z-index:1; font-size:12px;" id="lcdLoadingText">انعامات لوڈ ہو رہے ہیں... ⏳</div>
           <div id="winnerOverlay">
               <div style="color:white; font-size:14px; font-weight:bold;" id="lcdWinBadge">🎉 مبارک ہو! انعام نکل گیا 🎉</div>
               <img id="lcdWinImg" src="" class="winner-prize-img">
@@ -119,7 +118,7 @@
       <div class="lcd-label" id="lcdLabelText">🎁 عفومہ بیسٹ ڈیلز شاندار انعامات 🎁</div>
   </div>
 
-  <!-- User Entry / Login Section -->
+  <!-- Entry Section -->
   <div id="entrySection" class="entry-card">
       <h3 style="font-size:13px; color:#047857; margin-bottom:6px;" id="entryTitle">🎟️ لکی ڈرا قرعہ اندازی میں شامل ہوں</h3>
       <input type="text" id="uEntryName" class="entry-input" placeholder="اپنا پورا نام درج کریں">
@@ -143,65 +142,43 @@
 
   <div class="category-scroll" id="categoryBar"></div>
 
-  <!-- Top Banner Ad -->
   <div class="adsterra-slim-banner">
     <script>
-      atOptions = {
-        'key' : 'cf3494f4a6b7bb56bec2bab7b59f7f36',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-      };
+      atOptions = { 'key' : 'cf3494f4a6b7bb56bec2bab7b59f7f36', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
     </script>
     <script src="https://bauval.org/22/cf3494f4a6b7bb56bec2bab7b59f7f36"></script>
   </div>
 
-  <!-- Products Grid Area -->
   <div class="products-container" id="productsGrid">
     <p style="text-align: center; grid-column: span 2; padding: 20px; color: #059669; font-weight:bold;" id="loadingTextGrid">Loading deals... ⏳</p>
   </div>
 
-  <!-- Bottom Banner Ad -->
   <div class="adsterra-slim-banner" style="margin-top: 16px;">
     <script>
-      atOptions = {
-        'key' : 'cf3494f4a6b7bb56bec2bab7b59f7f36',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-      };
+      atOptions = { 'key' : 'cf3494f4a6b7bb56bec2bab7b59f7f36', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
     </script>
     <script src="https://bauval.org/22/cf3494f4a6b7bb56bec2bab7b59f7f36"></script>
   </div>
 
-  <!-- User Product Upload Modal -->
+  <!-- Modal Form -->
   <div class="modal-overlay" id="uploadModal">
     <div class="modal-box">
       <button class="close-modal" onclick="closeUploadModal()">✕</button>
       <h3 style="margin-bottom: 12px; color:#059669; text-align:center;" id="modalHeading">🚀 اپنی پروڈکٹ شامل کریں</h3>
-      
       <label style="font-size:11px; font-weight:bold;" id="lblTitle">پروڈکٹ کا عنوان:</label>
       <input type="text" id="uTitle" class="modal-input" placeholder="...">
-
       <label style="font-size:11px; font-weight:bold;" id="lblCategory">کیٹیگری:</label>
       <select id="uCategory" class="modal-input"></select>
-
       <label style="font-size:11px; font-weight:bold;" id="lblPrice">قیمت:</label>
       <input type="text" id="uPrice" class="modal-input" placeholder="SAR 0.00">
-
       <label style="font-size:11px; font-weight:bold;" id="lblLink">افیلی ایٹ لنک:</label>
       <input type="text" id="uLink" class="modal-input" placeholder="https://..." dir="ltr">
-
       <label style="font-size:11px; font-weight:bold;" id="lblImages">تصاویر (گیلری سے منتخب کریں):</label>
       <div class="file-btn" onclick="document.getElementById('uImgInput').click()">
         <span id="uFileText">📁 گیلری سے تصاویر منتخب کریں</span>
         <input type="file" id="uImgInput" accept="image/*" multiple style="display:none;" onchange="handleUserImages(event)">
       </div>
-
       <div id="uLoader" style="display:none; text-align:center; font-size:12px; color:#059669; font-weight:bold; margin-bottom:8px;">اپلوڈ ہو رہا ہے... ⏳</div>
-
       <button style="width:100%; background:#059669; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;" id="btnSubmitModal" onclick="submitUserProduct()">شائع کرنے کے لیے بھیجیں 📤</button>
     </div>
   </div>
@@ -222,14 +199,21 @@
     const pendingDb = firebase.database().ref("pending_products");
     const settingsDb = firebase.database().ref("settings");
     const giveawayDb = firebase.database().ref("giveaway_entries");
+    const prizesDb = firebase.database().ref("prizes");
+    const winnersDb = firebase.database().ref("winners");
 
     const IMGBB_API_KEY = "66dcdf21e30733bfd85545d9fb5e76c4";
     let userFiles = [];
     let currentLang = 'ur'; 
     let currentCategory = 'all';
     let adminTrackingTag = ""; 
-    const sliderIndices = {};
     let globalProductsData = null;
+
+    let prizeSlideImages = [];
+    let currentPrizeIndex = 0;
+    let prizeInterval = null;
+    let isWinnerAnnouncementActive = false;
+    let lastWinnerTimestamp = 0;
 
     settingsDb.child("admin_tag").once('value', snap => {
       if(snap.exists()) adminTrackingTag = snap.val();
@@ -237,282 +221,47 @@
 
     const translations = {
       ur: { 
-        title: "🎁 عفومہ بیسٹ ڈیلز & لکی ڈرا", 
-        buyBtn: "🛒 خریداری کریں", 
-        emptyMsg: "کوئی پروڈکٹ موجود نہیں ہے۔", 
-        loadingMsg: "ڈیلز لوڈ ہو رہی ہیں... ⏳",
-        dir: "rtl",
-        btnUploadMain: "➕ اپنی ڈیلز شائع کریں",
-        btnPromoMain: "📌 پروڈکٹ پروموٹر کروائیں",
-        featuredBadge: "⭐ اسپانسرڈ",
-        modalHeading: "🚀 اپنی پروڈکٹ شامل کریں",
-        lblTitle: "پروڈکٹ کا عنوان:",
-        phTitle: "عنوان درج کریں...",
-        lblCategory: "کیٹیگری:",
-        lblPrice: "قیمت:",
-        lblLink: "افیلی ایٹ لنک:",
-        lblImages: "تصاویر (گیلری سے منتخب کریں):",
-        uFileText: "📁 گیلری سے تصاویر منتخب کریں",
-        btnSubmitModal: "شائع کرنے کے لیے بھیجیں 📤",
-        entryTitle: "🎟️ لکی ڈرا قرعہ اندازی میں شامل ہوں",
-        phName: "اپنا پورا نام درج کریں",
-        phPhone: "موبائل نمبر (05...)",
-        btnEntrySubmit: "اینٹری کریں 🚀",
-        userProfileStatus: "✅ آپ قرعہ اندازی میں شامل ہو چکے ہیں!",
-        lblCustomer: "کسٹمر",
-        lcdLabelText: "🎁 عفومہ بیسٹ ڈیلز شاندار انعامات 🎁",
-        lcdLoadingText: "لوڈنگ شاندار انعامات... ⏳",
-        lcdWinBadge: "🎉 مبارک ہو! انعام نکل گیا 🎉",
-        msgAlertNeedTitle: "براہ کرم عنوان اور افیلی ایٹ لنک درج کریں!",
-        msgAlertNeedImg: "براہ کرم کم از کم ایک پروڈکٹ کی تصویر اپلوڈ کریں!",
-        msgAlertImgErr: "تصویر اپلوڈ کرنے میں مسئلہ آیا ہے!",
-        msgAlertSuccess: "آپ کی پروڈکٹ ایڈمن کو بھیج دی گئی ہے۔ منظوری کے بعد لائیو شو ہو جائے گی! 🚀",
+        title: "🎁 عفومہ بیسٹ ڈیلز & لکی ڈرا", buyBtn: "🛒 خریداری کریں", emptyMsg: "کوئی پروڈکٹ موجود نہیں ہے۔", loadingMsg: "ڈیلز لوڈ ہو رہی ہیں... ⏳", dir: "rtl",
+        btnUploadMain: "➕ اپنی ڈیلز شائع کریں", btnPromoMain: "📌 پروڈکٹ پروموٹر کروائیں", featuredBadge: "⭐ اسپانسرڈ", modalHeading: "🚀 اپنی پروڈکٹ شامل کریں",
+        lblTitle: "پروڈکٹ کا عنوان:", phTitle: "عنوان درج کریں...", lblCategory: "کیٹیگری:", lblPrice: "قیمت:", lblLink: "افیلی ایٹ لنک:", lblImages: "تصاویر (گیلری سے منتخب کریں):",
+        uFileText: "📁 گیلری سے تصاویر منتخب کریں", btnSubmitModal: "شائع کرنے کے لیے بھیجیں 📤", entryTitle: "🎟️ لکی ڈرا قرعہ اندازی میں شامل ہوں", phName: "اپنا پورا نام درج کریں", phPhone: "موبائل نمبر (05...)",
+        btnEntrySubmit: "اینٹری کریں 🚀", userProfileStatus: "✅ آپ قرعہ اندازی میں شامل ہو چکے ہیں!", lblCustomer: "کسٹمر", lcdLabelText: "🎁 عفومہ بیسٹ ڈیلز شاندار انعامات 🎁",
+        lcdLoadingText: "انعامات لوڈ ہو رہے ہیں... ⏳", lcdWinBadge: "🎉 مبارک ہو! انعام نکل گیا 🎉",
         cats: { all: "سب", kids: "بچوں کے کپڑے", watch: "گھڑی", mobile: "موبائل فون", laptop: "لیپ ٹاپ", electronics: "الیکٹرانکس", keyboard: "کی بورڈ", shoes: "شوز", kitchen: "کچن کا سامان", medical: "میڈیکل سامان", beauty: "بیوٹی کریم", jewelry: "جیولری سامان" }
       },
       en: { 
-        title: "🎁 Afuma Best Deals & Lucky Draw", 
-        buyBtn: "🛒 Buy Now", 
-        emptyMsg: "No products available.", 
-        loadingMsg: "Loading deals... ⏳",
-        dir: "ltr",
-        btnUploadMain: "➕ Publish Deals",
-        btnPromoMain: "📌 Promote Deal",
-        featuredBadge: "⭐ Featured",
-        modalHeading: "🚀 Add Your Product",
-        lblTitle: "Product Title:",
-        phTitle: "Enter product title...",
-        lblCategory: "Category:",
-        lblPrice: "Price:",
-        lblLink: "Affiliate Link:",
-        lblImages: "Images (Select from Gallery):",
-        uFileText: "📁 Select Images from Gallery",
-        btnSubmitModal: "Submit for Approval 📤",
-        entryTitle: "🎟️ Join Lucky Draw Giveaway",
-        phName: "Enter your full name",
-        phPhone: "Mobile Number (05...)",
-        btnEntrySubmit: "Submit Entry 🚀",
-        userProfileStatus: "✅ You are entered in the Lucky Draw!",
-        lblCustomer: "Customer",
-        lcdLabelText: "🎁 Afuma Best Deals Grand Prizes 🎁",
-        lcdLoadingText: "Loading Prizes... ⏳",
-        lcdWinBadge: "🎉 Congratulations! Winner Declared 🎉",
-        msgAlertNeedTitle: "Please enter title and affiliate link!",
-        msgAlertNeedImg: "Please upload at least one product image!",
-        msgAlertImgErr: "Error uploading image!",
-        msgAlertSuccess: "Your product has been sent to admin! 🚀",
+        title: "🎁 Afuma Best Deals & Lucky Draw", buyBtn: "🛒 Buy Now", emptyMsg: "No products available.", loadingMsg: "Loading deals... ⏳", dir: "ltr",
+        btnUploadMain: "➕ Publish Deals", btnPromoMain: "📌 Promote Deal", featuredBadge: "⭐ Featured", modalHeading: "🚀 Add Your Product",
+        lblTitle: "Product Title:", phTitle: "Enter product title...", lblCategory: "Category:", lblPrice: "Price:", lblLink: "Affiliate Link:", lblImages: "Images:",
+        uFileText: "📁 Select Images", btnSubmitModal: "Submit for Approval 📤", entryTitle: "🎟️ Join Lucky Draw", phName: "Enter full name", phPhone: "Mobile (05...)",
+        btnEntrySubmit: "Submit Entry 🚀", userProfileStatus: "✅ Entered in Lucky Draw!", lblCustomer: "Customer", lcdLabelText: "🎁 Afuma Best Deals Grand Prizes 🎁",
+        lcdLoadingText: "Loading Prizes... ⏳", lcdWinBadge: "🎉 Winner Declared! 🎉",
         cats: { all: "All", kids: "Kids Clothes", watch: "Watches", mobile: "Mobiles", laptop: "Laptops", electronics: "Electronics", keyboard: "Keyboards", shoes: "Shoes", kitchen: "Kitchenware", medical: "Medical Items", beauty: "Beauty Creams", jewelry: "Jewelry" }
       },
       ar: { 
-        title: "🎁 أفضل العروض والمسابقات - عفومة", 
-        buyBtn: "🛒 اشتري الآن", 
-        emptyMsg: "لا توجد منتجات متاحة.", 
-        loadingMsg: "جاري تحميل العروض... ⏳",
-        dir: "rtl",
-        btnUploadMain: "➕ انشر عروضك",
-        btnPromoMain: "📌 روج لمنتجك",
-        featuredBadge: "⭐ مميز",
-        modalHeading: "🚀 أضف منتجك",
-        lblTitle: "عنوان المنتج:",
-        phTitle: "أدخل عنوان المنتج...",
-        lblCategory: "الفئة:",
-        lblPrice: "السعر:",
-        lblLink: "رابط التتبع:",
-        lblImages: "الصور (اختر من المعرض):",
-        uFileText: "📁 اختر الصور من المعرض",
-        btnSubmitModal: "إرسال للنشر 📤",
-        entryTitle: "🎟️ اشترك في السحب اليومي",
-        phName: "أدخل اسمك الكامل",
-        phPhone: "رقم الجوال (05...)",
-        btnEntrySubmit: "دخول السحب 🚀",
-        userProfileStatus: "✅ لقد تم تسجيلك في السحب بنجاح!",
-        lblCustomer: "العميل",
-        lcdLabelText: "🎁 جوائز عفومة الكبرى 🎁",
-        lcdLoadingText: "جاري تحميل الجوائز... ⏳",
-        lcdWinBadge: "🎉 مبروك! فائز بالفيسبوك 🎉",
-        msgAlertNeedTitle: "يرجى إدخال العنوان ورابط التتبع!",
-        msgAlertNeedImg: "يرجى تحميل صورة واحدة على الأقل!",
-        msgAlertImgErr: "حدث خطأ أثناء تحميل الصورة!",
-        msgAlertSuccess: "تم إرسال منتجك بنجاح! 🚀",
+        title: "🎁 أفضل العروض والمسابقات - عفومة", buyBtn: "🛒 اشتري الآن", emptyMsg: "لا توجد منتجات متاحة.", loadingMsg: "جاري تحميل العروض... ⏳", dir: "rtl",
+        btnUploadMain: "➕ انشر عروضك", btnPromoMain: "📌 روج لمنتجك", featuredBadge: "⭐ مميز", modalHeading: "🚀 أضف منتجك",
+        lblTitle: "عنوان المنتج:", phTitle: "أدخل عنوان المنتج...", lblCategory: "الفئة:", lblPrice: "السعر:", lblLink: "رابط التتبع:", lblImages: "الصور:",
+        uFileText: "📁 اختر الصور من المعرض", btnSubmitModal: "إرسال للنشر 📤", entryTitle: "🎟️ اشترك في السحب اليومي", phName: "أدخل اسمك الكامل", phPhone: "رقم الجوال (05...)",
+        btnEntrySubmit: "دخول السحب 🚀", userProfileStatus: "✅ لقد تم تسجيلك في السحب بنجاح!", lblCustomer: "العميل", lcdLabelText: "🎁 جوائز عفومة الكبرى 🎁",
+        lcdLoadingText: "جاري تحميل الجوائز... ⏳", lcdWinBadge: "🎉 مبروك! فائز بالفيسبوك 🎉",
         cats: { all: "الكل", kids: "ملابس الأطفال", watch: "ساعات", mobile: "جوالات", laptop: "لابتوب", electronics: "إلكترونيات", keyboard: "لوحة مفاتيح", shoes: "أحذية", kitchen: "أدوات المطبخ", medical: "مستلزمات طبية", beauty: "كريمات التجميل", jewelry: "مجوهرات" }
       },
       hi: { 
-        title: "🎁 अफ़ूमा बेस्ट डील्स और लकी ड्रॉ", 
-        buyBtn: "🛒 खरीदें", 
-        emptyMsg: "कोई उत्पाद उपलब्ध नहीं है।", 
-        loadingMsg: "डील्स लोड हो रही हैं... ⏳",
-        dir: "ltr",
-        btnUploadMain: "➕ अपनी डील पब्लिश करें",
-        btnPromoMain: "📌 प्रोडक्ट प्रमोट करें",
-        featuredBadge: "⭐ स्पॉन्सर्ड",
-        modalHeading: "🚀 अपना प्रोडक्ट जोड़ें",
-        lblTitle: "प्रोडक्ट का नाम:",
-        phTitle: "प्रोडक्ट का नाम दर्ज करें...",
-        lblCategory: "कैटेगरी:",
-        lblPrice: "कीमत:",
-        lblLink: "एफिलिएट लिंक:",
-        lblImages: "इमेजेस (गैलरी से चुनें):",
-        uFileText: "📁 गैलरी से इमेजेस चुनें",
-        btnSubmitModal: "पब्लिश करने के लिए भेजें 📤",
-        entryTitle: "🎟️ लकी ड्रॉ में शामिल हों",
-        phName: "अपना पूरा नाम दर्ज करें",
-        phPhone: "मोबाइल नंबर (05...)",
-        btnEntrySubmit: "एंट्री करें 🚀",
-        userProfileStatus: "✅ आप लकी ड्रॉ में शामिल हो चुके हैं!",
-        lblCustomer: "ग्राहक",
-        lcdLabelText: "🎁 अफ़ूमा बेस्ट डील्स शानदार इनाम 🎁",
-        lcdLoadingText: "इनाम लोड हो रहे हैं... ⏳",
-        lcdWinBadge: "🎉 बधाई हो! विजेता घोषित 🎉",
-        msgAlertNeedTitle: "कृपया नाम और एफिलिएट लिंक दर्ज करें!",
-        msgAlertNeedImg: "कृपया कम से कम एक प्रोडक्ट इमेज अपलोड करें!",
-        msgAlertImgErr: "इमेज अपलोड करने में त्रुटि!",
-        msgAlertSuccess: "आपका प्रोडक्ट एडमिन को भेज दिया गया है! 🚀",
+        title: "🎁 अफ़ूमा बेस्ट डील्स और लकी ड्रॉ", buyBtn: "🛒 खरीदें", emptyMsg: "कोई उत्पाद उपलब्ध नहीं है।", loadingMsg: "डील्स लोड हो रही हैं... ⏳", dir: "ltr",
+        btnUploadMain: "➕ अपनी डील पब्लिश करें", btnPromoMain: "📌 प्रोडक्ट प्रमोट करें", featuredBadge: "⭐ स्पॉन्सर्ड", modalHeading: "🚀 अपना प्रोडक्ट जोड़ें",
+        lblTitle: "प्रोडक्ट का नाम:", phTitle: "प्रोडक्ट का नाम दर्ज करें...", lblCategory: "कैटेगरी:", lblPrice: "कीमत:", lblLink: "एफिलिएट लिंक:", lblImages: "इमेजेस:",
+        uFileText: "📁 गैलरी से इमेजेस चुनें", btnSubmitModal: "पब्लिश करने के लिए भेजें 📤", entryTitle: "🎟️ लकी ड्रॉ में शामिल हों", phName: "अपना पूरा नाम दर्ज करें", phPhone: "मोबाइल नंबर (05...)",
+        btnEntrySubmit: "एंट्री करें 🚀", userProfileStatus: "✅ आप लकी ड्रॉ में शामिल हो चुके हैं!", lblCustomer: "ग्राहक", lcdLabelText: "🎁 अफ़ूमा बेस्ट डील्स शानदार इनाम 🎁",
+        lcdLoadingText: "इनाम लोड हो रहे हैं... ⏳", lcdWinBadge: "🎉 बधाई हो! विजेता घोषित 🎉",
         cats: { all: "सब", kids: "बच्चों के कपड़े", watch: "घड़ी", mobile: "मोबाइल", laptop: "लैपटॉप", electronics: "इलेक्ट्रॉनिक्स", keyboard: "कीबोर्ड", shoes: "जूते", kitchen: "रसोई का सामान", medical: "मेडिकल सामान", beauty: "ब्यूटी क्रीम", jewelry: "ज्वेलरी सामान" }
       }
     };
 
-    /* Smart Category Matcher Function */
-    function matchCategory(itemCat, selectedCat, itemTitle) {
-      if (selectedCat === 'all') return true;
-      
-      const c = (itemCat || '').toLowerCase().trim();
-      const t = (itemTitle || '').toLowerCase().trim();
-
-      if (selectedCat === 'watch') {
-        return c.includes('watch') || t.includes('watch') || c.includes('گھڑی');
-      }
-      if (selectedCat === 'kids') {
-        return c.includes('kid') || c.includes('child') || c.includes('cloth') || t.includes('kid') || t.includes('baby') || c.includes('کپڑے');
-      }
-      if (selectedCat === 'mobile') {
-        return c.includes('mobile') || c.includes('phone') || t.includes('phone') || t.includes('iphone') || t.includes('samsung') || c.includes('موبائل');
-      }
-      if (selectedCat === 'laptop') {
-        return c.includes('laptop') || c.includes('computer') || t.includes('laptop') || c.includes('لیپ ٹاپ');
-      }
-      if (selectedCat === 'electronics') {
-        return c.includes('electronic') || c.includes('gadget') || t.includes('cam') || t.includes('board') || c.includes('الیکٹرانکس');
-      }
-      if (selectedCat === 'keyboard') {
-        return c.includes('keyboard') || t.includes('keyboard') || c.includes('کی بورڈ');
-      }
-      if (selectedCat === 'shoes') {
-        return c.includes('shoe') || c.includes('sneaker') || t.includes('shoe') || c.includes('شوز');
-      }
-      if (selectedCat === 'kitchen') {
-        return c.includes('kitchen') || c.includes('cook') || t.includes('kitchen') || t.includes('coffee') || c.includes('کچن');
-      }
-      if (selectedCat === 'medical') {
-        return c.includes('medical') || c.includes('health') || t.includes('medical') || c.includes('میڈیکل');
-      }
-      if (selectedCat === 'beauty') {
-        return c.includes('beauty') || c.includes('cream') || t.includes('cream') || c.includes('بیوٹی');
-      }
-      if (selectedCat === 'jewelry') {
-        return c.includes('jewelry') || c.includes('silver') || c.includes('necklace') || t.includes('necklace') || t.includes('ring') || c.includes('جیولری');
-      }
-
-      return c.includes(selectedCat);
-    }
-
-    /* Realtime Firebase Product Listener */
-    function listenToProducts() {
-      db.on('value', (snapshot) => {
-        globalProductsData = snapshot.val();
-        displayData(globalProductsData);
-      });
-    }
-
-    /* User Registration Logic */
-    function registerUserEntry() {
-      const name = document.getElementById('uEntryName').value.trim();
-      const phone = document.getElementById('uEntryPhone').value.trim();
-
-      if (!name || !phone) { 
-        alert(currentLang === 'ur' ? "براہ کرم اپنا نام اور صحیح موبائل نمبر درج کریں!" : "Please enter your name and phone number!"); 
-        return; 
-      }
-
-      localStorage.setItem("afuma_user_name", name);
-      localStorage.setItem("afuma_user_phone", phone);
-
-      giveawayDb.child(phone).set({
-        name: name,
-        phone: phone,
-        timestamp: Date.now()
-      }).then(() => {
-        showSavedUserProfile(name, phone);
-        alert(currentLang === 'ur' ? "🎉 مبارک ہو! آپ کا نام لکی ڈرا میں شامل ہو گیا ہے۔" : "🎉 Congratulations! You are entered into the Lucky Draw.");
-      });
-    }
-
-    function showSavedUserProfile(name, phone) {
-      document.getElementById('entrySection').style.display = 'none';
-      const profBox = document.getElementById('userProfileBox');
-      profBox.style.display = 'block';
-      const labelCust = translations[currentLang].lblCustomer;
-      document.getElementById('profileCardText').innerText = `👤 ${labelCust}: ${name} | 📱 ${phone}`;
-    }
-
-    function checkSavedUser() {
-      const name = localStorage.getItem("afuma_user_name");
-      const phone = localStorage.getItem("afuma_user_phone");
-      if (name && phone) {
-        showSavedUserProfile(name, phone);
-      }
-    }
-
-    function openUploadModal() { document.getElementById('uploadModal').style.display = 'flex'; }
-    function closeUploadModal() { document.getElementById('uploadModal').style.display = 'none'; }
-
-    function handleUserImages(e) {
-      userFiles = Array.from(e.target.files);
-      if(userFiles.length > 0) {
-        document.getElementById('uFileText').innerText = `${userFiles.length} ${translations[currentLang].uFileText} ✅`;
-      }
-    }
-
-    async function submitUserProduct() {
-      const langObj = translations[currentLang];
-      const title = document.getElementById('uTitle').value.trim();
-      const category = document.getElementById('uCategory').value;
-      const price = document.getElementById('uPrice').value.trim();
-      const link = document.getElementById('uLink').value.trim();
-      const loader = document.getElementById('uLoader');
-
-      if (!title || !link) { alert(langObj.msgAlertNeedTitle); return; }
-      if (userFiles.length === 0) { alert(langObj.msgAlertNeedImg); return; }
-
-      loader.style.display = "block";
-      let imgUrls = [];
-
-      for (let file of userFiles) {
-        const formData = new FormData();
-        formData.append("image", file);
-        try {
-          const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
-          const imgData = await res.json();
-          if (imgData.success) imgUrls.push(imgData.data.url);
-        } catch(e){}
-      }
-
-      if (imgUrls.length === 0) {
-        loader.style.display = "none";
-        alert(langObj.msgAlertImgErr);
-        return;
-      }
-
-      pendingDb.push({
-        title: title, category: category, price: price || "Best Price", link: link, images: imgUrls, img: imgUrls[0], pinned: false, timestamp: Date.now()
-      }).then(() => {
-        loader.style.display = "none";
-        alert(langObj.msgAlertSuccess);
-        closeUploadModal();
-      });
-    }
-
+    /* Fully Dynamic 100% Language Switcher */
     function switchLanguage(lang) {
       currentLang = lang;
-      const langObj = translations[lang];
+      const langObj = translations[lang] || translations['ur'];
 
       document.getElementById('htmlTag').setAttribute('dir', langObj.dir);
       document.getElementById('htmlTag').setAttribute('lang', lang);
@@ -542,15 +291,14 @@
       const modalBox = document.querySelector('.modal-box');
       if (modalBox) modalBox.style.textAlign = langObj.dir === 'rtl' ? 'right' : 'left';
 
-      ['btnUr', 'btnEn', 'btnAr', 'btnHi'].forEach(btn => {
-        const el = document.getElementById(btn);
-        if(el) el.classList.remove('active');
+      // Active state button highlighting
+      ['btnUr', 'btnEn', 'btnAr', 'btnHi'].forEach(btnId => {
+        const btn = document.getElementById(btnId);
+        if(btn) btn.classList.remove('active');
       });
       
-      const activeBtnId = 'btn' + lang.charAt(0).toUpperCase() + lang.slice(1);
-      if (document.getElementById(activeBtnId)) {
-        document.getElementById(activeBtnId).classList.add('active');
-      }
+      const targetBtn = document.getElementById('btn' + lang.charAt(0).toUpperCase() + lang.slice(1));
+      if (targetBtn) targetBtn.classList.add('active');
 
       checkSavedUser();
       renderCategories();
@@ -558,14 +306,187 @@
       displayData(globalProductsData);
     }
 
+    /* Live LCD Slider and Winner Spin Logic */
+    function listenToLCDPrizes() {
+      prizesDb.on('value', (snap) => {
+        const data = snap.val();
+        const lcdScreen = document.getElementById('lcdScreen');
+        const overlay = document.getElementById('winnerOverlay');
+        
+        if (!data) {
+          document.getElementById('lcdLoadingText').innerText = translations[currentLang].lcdLoadingText;
+          return;
+        }
+
+        lcdScreen.innerHTML = "";
+        lcdScreen.appendChild(overlay);
+
+        prizeSlideImages = [];
+        Object.keys(data).forEach((key, index) => {
+          let p = data[key];
+          if(p.image) {
+            let img = document.createElement('img');
+            img.src = p.image;
+            img.className = "prize-slide-img";
+            if (index === 0) img.classList.add('active');
+            lcdScreen.appendChild(img);
+            prizeSlideImages.push(img);
+          }
+        });
+
+        if (prizeSlideImages.length > 0 && !isWinnerAnnouncementActive) {
+          startPrizeAutoSlider();
+        }
+      });
+    }
+
+    function startPrizeAutoSlider() {
+      clearInterval(prizeInterval);
+      prizeInterval = setInterval(() => {
+        if (isWinnerAnnouncementActive || prizeSlideImages.length <= 1) return;
+        prizeSlideImages[currentPrizeIndex].classList.remove('active');
+        currentPrizeIndex = (currentPrizeIndex + 1) % prizeSlideImages.length;
+        prizeSlideImages[currentPrizeIndex].classList.add('active');
+      }, 3000);
+    }
+
+    function listenForLiveWinners() {
+      winnersDb.limitToLast(1).on('value', (snap) => {
+        const data = snap.val();
+        if (!data) return;
+
+        const key = Object.keys(data)[0];
+        const winner = data[key];
+
+        if (winner.timestamp && winner.timestamp > lastWinnerTimestamp) {
+          lastWinnerTimestamp = winner.timestamp;
+          triggerSpinAndShowWinner(winner);
+        }
+      });
+    }
+
+    function triggerSpinAndShowWinner(winnerData) {
+      isWinnerAnnouncementActive = true;
+      clearInterval(prizeInterval);
+
+      prizeSlideImages.forEach(img => img.classList.add('fast-spin'));
+
+      setTimeout(() => {
+        prizeSlideImages.forEach(img => img.classList.remove('fast-spin'));
+
+        document.getElementById('lcdWinImg').src = winnerData.prize_image || 'https://via.placeholder.com/100';
+        document.getElementById('lcdWinName').innerText = winnerData.winner_name;
+        document.getElementById('lcdWinPhone').innerText = winnerData.winner_phone;
+        document.getElementById('lcdWinPrize').innerText = winnerData.prize_name;
+
+        const overlay = document.getElementById('winnerOverlay');
+        overlay.style.display = "flex";
+
+        setTimeout(() => {
+          overlay.style.display = "none";
+          isWinnerAnnouncementActive = false;
+          startPrizeAutoSlider();
+        }, 12000);
+      }, 3000);
+    }
+
+    function matchCategory(itemCat, selectedCat, itemTitle) {
+      if (selectedCat === 'all') return true;
+      const c = (itemCat || '').toLowerCase().trim();
+      const t = (itemTitle || '').toLowerCase().trim();
+      if (selectedCat === 'watch') return c.includes('watch') || t.includes('watch') || c.includes('گھڑی');
+      if (selectedCat === 'kids') return c.includes('kid') || c.includes('child') || t.includes('baby');
+      if (selectedCat === 'mobile') return c.includes('mobile') || c.includes('phone') || t.includes('phone');
+      if (selectedCat === 'laptop') return c.includes('laptop') || c.includes('computer');
+      if (selectedCat === 'electronics') return c.includes('electronic') || t.includes('cam') || t.includes('board');
+      return c.includes(selectedCat);
+    }
+
+    function listenToProducts() {
+      db.on('value', (snapshot) => {
+        globalProductsData = snapshot.val();
+        displayData(globalProductsData);
+      });
+    }
+
+    function registerUserEntry() {
+      const name = document.getElementById('uEntryName').value.trim();
+      const phone = document.getElementById('uEntryPhone').value.trim();
+      if (!name || !phone) { alert("براہ کرم اپنا نام اور موبائل نمبر درج کریں!"); return; }
+
+      localStorage.setItem("afuma_user_name", name);
+      localStorage.setItem("afuma_user_phone", phone);
+
+      giveawayDb.child(phone).set({ name: name, phone: phone, timestamp: Date.now() }).then(() => {
+        showSavedUserProfile(name, phone);
+        alert("🎉 مبارک ہو! آپ کا نام لکی ڈرا میں شامل ہو گیا ہے۔");
+      });
+    }
+
+    function showSavedUserProfile(name, phone) {
+      document.getElementById('entrySection').style.display = 'none';
+      const profBox = document.getElementById('userProfileBox');
+      profBox.style.display = 'block';
+      const labelCust = translations[currentLang].lblCustomer;
+      document.getElementById('profileCardText').innerText = `👤 ${labelCust}: ${name} | 📱 ${phone}`;
+    }
+
+    function checkSavedUser() {
+      const name = localStorage.getItem("afuma_user_name");
+      const phone = localStorage.getItem("afuma_user_phone");
+      if (name && phone) showSavedUserProfile(name, phone);
+    }
+
+    function openUploadModal() { document.getElementById('uploadModal').style.display = 'flex'; }
+    function closeUploadModal() { document.getElementById('uploadModal').style.display = 'none'; }
+
+    function handleUserImages(e) {
+      userFiles = Array.from(e.target.files);
+      if(userFiles.length > 0) {
+        document.getElementById('uFileText').innerText = `${userFiles.length} ${translations[currentLang].uFileText} ✅`;
+      }
+    }
+
+    async function submitUserProduct() {
+      const langObj = translations[currentLang];
+      const title = document.getElementById('uTitle').value.trim();
+      const category = document.getElementById('uCategory').value;
+      const price = document.getElementById('uPrice').value.trim();
+      const link = document.getElementById('uLink').value.trim();
+      const loader = document.getElementById('uLoader');
+
+      if (!title || !link || userFiles.length === 0) { alert("براہ کرم تمام معلومات مکمل کریں!"); return; }
+
+      loader.style.display = "block";
+      let imgUrls = [];
+
+      for (let file of userFiles) {
+        const formData = new FormData();
+        formData.append("image", file);
+        try {
+          const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
+          const imgData = await res.json();
+          if (imgData.success) imgUrls.push(imgData.data.url);
+        } catch(e){}
+      }
+
+      if (imgUrls.length === 0) { loader.style.display = "none"; alert("تصویر اپلوڈ نہیں ہو سکی!"); return; }
+
+      pendingDb.push({
+        title: title, category: category, price: price || "Best Price", link: link, images: imgUrls, img: imgUrls[0], pinned: false, timestamp: Date.now()
+      }).then(() => {
+        loader.style.display = "none";
+        alert("آپ کی پروڈکٹ ایڈمن کو منظوری کے لیے بھیج دی گئی ہے! 🚀");
+        closeUploadModal();
+      });
+    }
+
     function renderModalCategories() {
       const select = document.getElementById('uCategory');
       select.innerHTML = '';
       const catObj = translations[currentLang].cats;
       Object.keys(catObj).forEach(key => {
-        if(key !== 'all') {
-          select.innerHTML += `<option value="${key}">${catObj[key]}</option>`;
-        }
+        if(key !== 'all') select.innerHTML += `<option value="${key}">${catObj[key]}</option>`;
       });
     }
 
@@ -584,114 +505,32 @@
       displayData(globalProductsData);
     }
 
-    function moveSlide(cardKey, direction, totalImages) {
-      if (!sliderIndices[cardKey]) sliderIndices[cardKey] = 0;
-      sliderIndices[cardKey] += direction;
-      if (sliderIndices[cardKey] < 0) sliderIndices[cardKey] = totalImages - 1;
-      if (sliderIndices[cardKey] >= totalImages) sliderIndices[cardKey] = 0;
-      const track = document.getElementById(`track-${cardKey}`);
-      if (track) track.style.transform = `translateX(${sliderIndices[cardKey] * 100}%)`;
-    }
-
-    function getFinalLink(originalLink, itemIndex) {
-      if ((itemIndex + 1) % 5 === 0 && adminTrackingTag) {
-        if(originalLink.includes('?')) {
-          return originalLink + "&aff_fcid=" + adminTrackingTag;
-        } else {
-          return originalLink + "?aff_fcid=" + adminTrackingTag;
-        }
-      }
-      return originalLink;
-    }
-
-    function createAdBannerElement() {
-      const adDiv = document.createElement('div');
-      adDiv.className = 'adsterra-in-grid-banner';
-      const iframe = document.createElement('iframe');
-      iframe.style.width = '320px'; iframe.style.height = '50px'; iframe.style.border = 'none'; iframe.style.overflow = 'hidden';
-
-      const iframeDoc = `
-        <!DOCTYPE html>
-        <html>
-        <head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:100vh;}</style></head>
-        <body>
-          <script type="text/javascript">
-            atOptions = { 'key' : 'cf3494f4a6b7bb56bec2bab7b59f7f36', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-          <\/script>
-          <script type="text/javascript" src="https://bauval.org/22/cf3494f4a6b7bb56bec2bab7b59f7f36"><\/script>
-        </body>
-        </html>
-      `;
-      adDiv.appendChild(iframe);
-      setTimeout(() => {
-        const doc = iframe.contentWindow.document;
-        doc.open(); doc.write(iframeDoc); doc.close();
-      }, 50);
-      return adDiv;
-    }
-
     function displayData(data) {
       const grid = document.getElementById('productsGrid');
       if (!data) { grid.innerHTML = `<p style="text-align: center; grid-column: span 2; padding: 20px; color: #64748b;">${translations[currentLang].emptyMsg}</p>`; return; }
-
       grid.innerHTML = '';
       let count = 0;
-      const keysList = Object.keys(data);
-      
-      keysList.sort((a, b) => {
-        const isPinnedA = data[a].pinned ? 1 : 0;
-        const isPinnedB = data[b].pinned ? 1 : 0;
-        if (isPinnedA !== isPinnedB) return isPinnedB - isPinnedA;
-        return (data[b].timestamp || 0) - (data[a].timestamp || 0);
-      });
-
-      keysList.forEach((key) => {
+      Object.keys(data).reverse().forEach((key) => {
         const item = data[key];
-
-        // Smart Matching Check
         if (!matchCategory(item.category, currentCategory, item.title)) return;
-
         count++;
-
-        const finalBuyLink = getFinalLink(item.link, count - 1);
         const imgList = item.images && item.images.length > 0 ? item.images : [item.img || 'https://via.placeholder.com/150'];
-        let sliderHtml = imgList.length > 1 ? `
-          <div class="slider-wrapper">
-            <button class="slide-btn right" onclick="moveSlide('${key}', 1, ${imgList.length})">❯</button>
-            <div class="slider-track" id="track-${key}">
-              ${imgList.map(src => `<img src="${src}" class="product-media" onerror="this.src='https://via.placeholder.com/150'">`).join('')}
-            </div>
-            <button class="slide-btn left" onclick="moveSlide('${key}', -1, ${imgList.length})">❮</button>
-          </div>
-        ` : `<div class="slider-wrapper"><img src="${imgList[0]}" class="product-media" onerror="this.src='https://via.placeholder.com/150'"></div>`;
-
-        const pinnedClass = item.pinned ? 'pinned' : '';
-        const pinnedBadge = item.pinned ? `<div class="pinned-badge">${translations[currentLang].featuredBadge}</div>` : '';
-
         const cardDiv = document.createElement('div');
-        cardDiv.className = `product-card ${pinnedClass}`;
+        cardDiv.className = 'product-card';
         cardDiv.innerHTML = `
-          ${pinnedBadge}
-          <div>
-            ${sliderHtml}
-            <div class="product-title">${item.title}</div>
-            <div class="product-price">${item.price}</div>
-          </div>
-          <a href="${finalBuyLink}" target="_blank" class="buy-btn">${translations[currentLang].buyBtn}</a>
+          <div class="slider-wrapper"><img src="${imgList[0]}" class="product-media"></div>
+          <div class="product-title">${item.title}</div>
+          <div class="product-price">${item.price}</div>
+          <a href="${item.link}" target="_blank" class="buy-btn">${translations[currentLang].buyBtn}</a>
         `;
-
         grid.appendChild(cardDiv);
-
-        if (count % 6 === 0) {
-          grid.appendChild(createAdBannerElement());
-        }
       });
-
-      if (count === 0) grid.innerHTML = `<p style="text-align: center; grid-column: span 2; padding: 20px; color: #64748b;">${translations[currentLang].emptyMsg}</p>`;
     }
 
     window.onload = function() { 
       listenToProducts();
+      listenToLCDPrizes();
+      listenForLiveWinners();
       switchLanguage('ur'); 
     };
   </script>
