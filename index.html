@@ -22,9 +22,12 @@
     /* Main Header */
     .header { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #ffffff; text-align: center; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 16px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25); }
 
-    /* LCD Screen Monitor */
-    .lcd-monitor { background: #1e293b; padding: 8px; border-radius: 14px; border: 4px solid #334155; box-shadow: 0 8px 16px rgba(0,0,0,0.3); margin-bottom: 10px; position: relative; overflow: hidden; }
-    .lcd-screen { background: #000; height: 180px; border-radius: 8px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    /* LCD Screen Layout with Left and Right Ads */
+    .lcd-section-wrapper { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 10px; }
+    .lcd-side-ad { flex: 0 0 75px; height: 180px; background: #ffffff; border-radius: 10px; border: 1px dashed #cbd5e1; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+    
+    .lcd-monitor { flex: 1; background: #1e293b; padding: 6px; border-radius: 14px; border: 3px solid #334155; box-shadow: 0 8px 16px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
+    .lcd-screen { background: #000; height: 170px; border-radius: 8px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     
     .prize-slide-img { width: 100%; height: 100%; object-fit: contain; position: absolute; top:0; left:0; opacity: 0; transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; }
     .prize-slide-img.active { opacity: 1; transform: scale(1); }
@@ -36,14 +39,14 @@
       100% { transform: scale(0.9) rotate(360deg); }
     }
 
-    .lcd-label { color: #34d399; font-size: 12px; background: rgba(0,0,0,0.75); position: absolute; bottom: 0; width: 100%; padding: 4px 0; font-weight: bold; text-align: center; z-index: 20; }
+    .lcd-label { color: #34d399; font-size: 11px; background: rgba(0,0,0,0.75); position: absolute; bottom: 0; width: 100%; padding: 4px 0; font-weight: bold; text-align: center; z-index: 20; }
 
     #winnerOverlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 50; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; border: 3px solid #f59e0b; }
-    .winner-prize-img { width: 75px; height: 75px; object-fit: contain; border-radius: 8px; border: 2px solid white; margin-bottom: 4px; background: #fff; }
-    .winner-detail { color: #facc15; font-size: 18px; font-weight: bold; }
-    .winner-phone-lcd { color: #38bdf8; font-size: 14px; font-weight: bold; }
+    .winner-prize-img { width: 70px; height: 70px; object-fit: contain; border-radius: 8px; border: 2px solid white; margin-bottom: 4px; background: #fff; }
+    .winner-detail { color: #facc15; font-size: 16px; font-weight: bold; }
+    .winner-phone-lcd { color: #38bdf8; font-size: 13px; font-weight: bold; }
 
-    /* Entry & User Box */
+    /* Entry & User Profile Box */
     .entry-card { background: #ffffff; padding: 12px; border-radius: 12px; border: 2px solid #10b981; margin-bottom: 10px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
     .entry-input { width: 90%; padding: 9px; margin: 4px 0; border: 1px solid #cbd5e1; border-radius: 20px; text-align: center; font-size: 13px; outline: none; }
     .btn-entry { width: 90%; padding: 10px; background: #10b981; color: white; font-weight: bold; border: none; border-radius: 20px; font-size: 13px; cursor: pointer; margin-top: 4px; }
@@ -103,19 +106,25 @@
 
   <div class="header" id="appHeader">🎁 Afuma Best Deals & Lucky Draw</div>
 
-  <!-- LCD Monitor Screen -->
-  <div class="lcd-monitor">
-      <div class="lcd-screen" id="lcdScreen">
-          <div style="color:white; z-index:1; font-size:12px;" id="lcdLoadingText">انعامات لوڈ ہو رہے ہیں... ⏳</div>
-          <div id="winnerOverlay">
-              <div style="color:white; font-size:14px; font-weight:bold;" id="lcdWinBadge">🎉 مبارک ہو! انعام نکل گیا 🎉</div>
-              <img id="lcdWinImg" src="" class="winner-prize-img">
-              <div class="winner-detail" id="lcdWinName">Name</div>
-              <div class="winner-phone-lcd" id="lcdWinPhone">0300...</div>
-              <div style="color:#34d399; font-size:14px; font-weight:bold;" id="lcdWinPrize">Prize</div>
+  <!-- LCD Screen Monitor with Left and Right Adsterra Native Ads -->
+  <div class="lcd-section-wrapper">
+      <div class="lcd-side-ad" id="adLeft"></div>
+      
+      <div class="lcd-monitor">
+          <div class="lcd-screen" id="lcdScreen">
+              <div style="color:white; z-index:1; font-size:11px;" id="lcdLoadingText">انعامات لوڈ ہو رہے ہیں... ⏳</div>
+              <div id="winnerOverlay">
+                  <div style="color:white; font-size:13px; font-weight:bold;" id="lcdWinBadge">🎉 مبارک ہو! انعام نکل گیا 🎉</div>
+                  <img id="lcdWinImg" src="" class="winner-prize-img">
+                  <div class="winner-detail" id="lcdWinName">Name</div>
+                  <div class="winner-phone-lcd" id="lcdWinPhone">0300...</div>
+                  <div style="color:#34d399; font-size:13px; font-weight:bold;" id="lcdWinPrize">Prize</div>
+              </div>
           </div>
+          <div class="lcd-label" id="lcdLabelText">🎁 عفومہ بیسٹ ڈیلز شاندار انعامات 🎁</div>
       </div>
-      <div class="lcd-label" id="lcdLabelText">🎁 عفومہ بیسٹ ڈیلز شاندار انعامات 🎁</div>
+
+      <div class="lcd-side-ad" id="adRight"></div>
   </div>
 
   <!-- Entry Section -->
@@ -142,23 +151,15 @@
 
   <div class="category-scroll" id="categoryBar"></div>
 
-  <div class="adsterra-slim-banner">
-    <script>
-      atOptions = { 'key' : 'cf3494f4a6b7bb56bec2bab7b59f7f36', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-    </script>
-    <script src="https://bauval.org/22/cf3494f4a6b7bb56bec2bab7b59f7f36"></script>
-  </div>
+  <!-- Banner Ad Top -->
+  <div class="adsterra-slim-banner" id="bannerTop"></div>
 
   <div class="products-container" id="productsGrid">
     <p style="text-align: center; grid-column: span 2; padding: 20px; color: #059669; font-weight:bold;" id="loadingTextGrid">Loading deals... ⏳</p>
   </div>
 
-  <div class="adsterra-slim-banner" style="margin-top: 16px;">
-    <script>
-      atOptions = { 'key' : 'cf3494f4a6b7bb56bec2bab7b59f7f36', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-    </script>
-    <script src="https://bauval.org/22/cf3494f4a6b7bb56bec2bab7b59f7f36"></script>
-  </div>
+  <!-- Banner Ad Bottom -->
+  <div class="adsterra-slim-banner" style="margin-top: 16px;" id="bannerBottom"></div>
 
   <!-- Modal Form -->
   <div class="modal-overlay" id="uploadModal">
@@ -244,7 +245,7 @@
         lblTitle: "عنوان المنتج:", phTitle: "أدخل عنوان المنتج...", lblCategory: "الفئة:", lblPrice: "السعر:", lblLink: "رابط التتبع:", lblImages: "الصور:",
         uFileText: "📁 اختر الصور من المعرض", btnSubmitModal: "إرسال للنشر 📤", entryTitle: "🎟️ اشترك في السحب اليومي", phName: "أدخل اسمك الكامل", phPhone: "رقم الجوال (05...)",
         btnEntrySubmit: "دخول السحب 🚀", userProfileStatus: "✅ لقد تم تسجيلك في السحب بنجاح!", lblCustomer: "العميل", lcdLabelText: "🎁 جوائز عفومة الكبرى 🎁",
-        lcdLoadingText: "جاري تحميل الجوائز... ⏳", lcdWinBadge: "🎉 مبروك! فائز بالفيسبوك 🎉",
+        lcdLoadingText: "جاري تحميل الجوائز... ⏳", lcdWinBadge: "🎉 مبروك! فائز بالسحب 🎉",
         cats: { all: "الكل", kids: "ملابس الأطفال", watch: "ساعات", mobile: "جوالات", laptop: "لابتوب", electronics: "إلكترونيات", keyboard: "لوحة مفاتيح", shoes: "أحذية", kitchen: "أدوات المطبخ", medical: "مستلزمات طبية", beauty: "كريمات التجميل", jewelry: "مجوهرات" }
       },
       hi: { 
@@ -258,7 +259,39 @@
       }
     };
 
-    /* Fully Dynamic 100% Language Switcher */
+    /* Adsterra Native Ads Renderer Function */
+    function injectAdsterraNativeAd(elementId) {
+      const container = document.getElementById(elementId);
+      if(!container) return;
+      container.innerHTML = '';
+      const iframe = document.createElement('iframe');
+      iframe.style.width = '100%'; iframe.style.height = '100%'; iframe.style.border = 'none'; iframe.style.overflow = 'hidden';
+
+      const adHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head>
+        <body>
+          <script async="async" data-cfasync="false" src="https://bauval.org/21/3fab62c6626001573bda72aec616f74c"><\/script>
+          <div id="container-3fab62c6626001573bda72aec616f74c"></div>
+        </body>
+        </html>
+      `;
+      container.appendChild(iframe);
+      setTimeout(() => {
+        const doc = iframe.contentWindow.document;
+        doc.open(); doc.write(adHtml); doc.close();
+      }, 50);
+    }
+
+    function renderAllAds() {
+      injectAdsterraNativeAd('adLeft');
+      injectAdsterraNativeAd('adRight');
+      injectAdsterraNativeAd('bannerTop');
+      injectAdsterraNativeAd('bannerBottom');
+    }
+
+    /* 100% Dynamic Language Switcher */
     function switchLanguage(lang) {
       currentLang = lang;
       const langObj = translations[lang] || translations['ur'];
@@ -291,7 +324,6 @@
       const modalBox = document.querySelector('.modal-box');
       if (modalBox) modalBox.style.textAlign = langObj.dir === 'rtl' ? 'right' : 'left';
 
-      // Active state button highlighting
       ['btnUr', 'btnEn', 'btnAr', 'btnHi'].forEach(btnId => {
         const btn = document.getElementById(btnId);
         if(btn) btn.classList.remove('active');
@@ -505,6 +537,30 @@
       displayData(globalProductsData);
     }
 
+    function createAdBannerElement() {
+      const adDiv = document.createElement('div');
+      adDiv.className = 'adsterra-in-grid-banner';
+      const iframe = document.createElement('iframe');
+      iframe.style.width = '100%'; iframe.style.height = '50px'; iframe.style.border = 'none'; iframe.style.overflow = 'hidden';
+
+      const iframeDoc = `
+        <!DOCTYPE html>
+        <html>
+        <head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head>
+        <body>
+          <script async="async" data-cfasync="false" src="https://bauval.org/21/3fab62c6626001573bda72aec616f74c"><\/script>
+          <div id="container-3fab62c6626001573bda72aec616f74c"></div>
+        </body>
+        </html>
+      `;
+      adDiv.appendChild(iframe);
+      setTimeout(() => {
+        const doc = iframe.contentWindow.document;
+        doc.open(); doc.write(iframeDoc); doc.close();
+      }, 50);
+      return adDiv;
+    }
+
     function displayData(data) {
       const grid = document.getElementById('productsGrid');
       if (!data) { grid.innerHTML = `<p style="text-align: center; grid-column: span 2; padding: 20px; color: #64748b;">${translations[currentLang].emptyMsg}</p>`; return; }
@@ -524,6 +580,10 @@
           <a href="${item.link}" target="_blank" class="buy-btn">${translations[currentLang].buyBtn}</a>
         `;
         grid.appendChild(cardDiv);
+
+        if (count % 6 === 0) {
+          grid.appendChild(createAdBannerElement());
+        }
       });
     }
 
@@ -531,6 +591,7 @@
       listenToProducts();
       listenToLCDPrizes();
       listenForLiveWinners();
+      renderAllAds();
       switchLanguage('ur'); 
     };
   </script>
