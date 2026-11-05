@@ -12,36 +12,37 @@
     body { background-color: #f8fafc; color: #1e293b; padding: 8px; padding-bottom: 30px; overflow-x: hidden; }
 
     /* Language Switcher Bar */
-    .lang-bar { display: flex; justify-content: space-around; gap: 4px; margin-bottom: 10px; background: #ffffff; padding: 6px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .lang-bar { display: flex; justify-content: space-around; gap: 4px; margin-bottom: 8px; background: #ffffff; padding: 6px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
     .lang-btn { flex: 1; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 8px 4px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; color: #334155; display: flex; align-items: center; justify-content: center; gap: 4px; }
     .lang-btn.active { background: #059669; color: #ffffff; border-color: #059669; }
 
+    /* Quran Strip Top */
+    .quran-strip { background: linear-gradient(135deg, #0f5132 0%, #198754 100%); color: #ffffff; padding: 6px 12px; margin-bottom: 8px; text-align: center; border-radius: 8px; font-weight: bold; font-size: 16px; border: 1.5px solid #ffc107; box-shadow: 0 2px 6px rgba(15, 81, 50, 0.2); }
+
     /* Main Header */
-    .header { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #ffffff; text-align: center; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 17px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25); }
-    
-    .quran-strip { background: linear-gradient(135deg, #0f5132 0%, #198754 100%); color: #ffffff; padding: 6px 12px; margin-bottom: 10px; text-align: center; border-radius: 8px; font-weight: bold; font-size: 15px; border: 1.5px solid #ffc107; }
+    .header { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #ffffff; text-align: center; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 16px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25); }
 
     /* LCD Screen Monitor */
-    .lcd-monitor { background: #1e293b; padding: 8px; border-radius: 14px; border: 4px solid #334155; box-shadow: 0 8px 16px rgba(0,0,0,0.3); margin-bottom: 12px; position: relative; overflow: hidden; }
-    .lcd-screen { background: #000; height: 180px; border-radius: 8px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .lcd-monitor { background: #1e293b; padding: 8px; border-radius: 14px; border: 4px solid #334155; box-shadow: 0 8px 16px rgba(0,0,0,0.3); margin-bottom: 10px; position: relative; overflow: hidden; }
+    .lcd-screen { background: #000; height: 170px; border-radius: 8px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     .lcd-screen img.slider-img { width: 100%; height: 100%; object-fit: cover; position: absolute; transition: transform 0.8s ease-in-out, opacity 0.8s; opacity: 0; transform: translateX(100%); }
     .lcd-screen img.active { opacity: 1; transform: translateX(0); }
     .lcd-screen img.prev { opacity: 0; transform: translateX(-100%); }
-    .lcd-label { color: #34d399; font-size: 13px; background: rgba(0,0,0,0.75); position: absolute; bottom: 0; width: 100%; padding: 4px 0; font-weight: bold; text-align: center; z-index: 20; }
+    .lcd-label { color: #34d399; font-size: 12px; background: rgba(0,0,0,0.75); position: absolute; bottom: 0; width: 100%; padding: 4px 0; font-weight: bold; text-align: center; z-index: 20; }
 
     #winnerOverlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 50; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; border: 3px solid #f59e0b; }
-    .winner-prize-img { width: 70px; height: 70px; object-fit: contain; border-radius: 8px; border: 2px solid white; margin-bottom: 4px; background: #fff; }
-    .winner-detail { color: #facc15; font-size: 18px; font-weight: bold; }
-    .winner-phone-lcd { color: #38bdf8; font-size: 15px; font-weight: bold; }
+    .winner-prize-img { width: 65px; height: 65px; object-fit: contain; border-radius: 8px; border: 2px solid white; margin-bottom: 4px; background: #fff; }
+    .winner-detail { color: #facc15; font-size: 17px; font-weight: bold; }
+    .winner-phone-lcd { color: #38bdf8; font-size: 14px; font-weight: bold; }
 
     /* Login & Entry Box */
-    .entry-card { background: #ffffff; padding: 12px; border-radius: 12px; border: 2px solid #10b981; margin-bottom: 12px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-    .entry-input { width: 90%; padding: 9px; margin: 5px 0; border: 1px solid #cbd5e1; border-radius: 20px; text-align: center; font-size: 13px; outline: none; }
-    .btn-entry { width: 90%; padding: 10px; background: #10b981; color: white; font-weight: bold; border: none; border-radius: 20px; font-size: 14px; cursor: pointer; margin-top: 6px; }
+    .entry-card { background: #ffffff; padding: 12px; border-radius: 12px; border: 2px solid #10b981; margin-bottom: 10px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .entry-input { width: 90%; padding: 9px; margin: 4px 0; border: 1px solid #cbd5e1; border-radius: 20px; text-align: center; font-size: 13px; outline: none; }
+    .btn-entry { width: 90%; padding: 10px; background: #10b981; color: white; font-weight: bold; border: none; border-radius: 20px; font-size: 13px; cursor: pointer; margin-top: 4px; }
 
     /* User Profile Card */
-    .user-profile-box { background: #ecfdf5; border: 1.5px solid #10b981; border-radius: 10px; padding: 10px; margin-bottom: 12px; text-align: center; display: none; }
-    .user-profile-box h4 { color: #047857; font-size: 14px; margin-bottom: 4px; }
+    .user-profile-box { background: #ecfdf5; border: 1.5px solid #10b981; border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: center; display: none; }
+    .user-profile-box h4 { color: #047857; font-size: 13px; margin-bottom: 3px; }
     .user-profile-box p { font-size: 12px; color: #065f46; font-weight: bold; }
 
     /* Action & Navigation Buttons */
@@ -96,37 +97,38 @@
     <button class="lang-btn" id="btnHi" onclick="switchLanguage('hi')">🇮🇳 हिंदी</button>
   </div>
 
-  <div class="header" id="appHeader">🎁 Afuma Best Deals & Lucky Draw</div>
-
+  <!-- Quranic Verse Strip Above Header -->
   <div class="quran-strip">
     <span>وَاللَّهُ خَيْرُ الرَّازِقِينَ</span>
   </div>
 
+  <div class="header" id="appHeader">🎁 Afuma Best Deals & Lucky Draw</div>
+
   <!-- LCD Screen Monitor for Giveaways -->
   <div class="lcd-monitor">
       <div class="lcd-screen" id="lcdScreen">
-          <div style="color:white; z-index:1; font-size:12px;">لوڈنگ شاندار انعامات... ⏳</div>
+          <div style="color:white; z-index:1; font-size:12px;" id="lcdLoadingText">لوڈنگ شاندار انعامات... ⏳</div>
           <div id="winnerOverlay">
-              <div style="color:white; font-size:14px; font-weight:bold;">🎉 مبارک ہو! انعام نکل گیا 🎉</div>
+              <div style="color:white; font-size:14px; font-weight:bold;" id="lcdWinBadge">🎉 مبارک ہو! انعام نکل گیا 🎉</div>
               <img id="lcdWinImg" src="" class="winner-prize-img">
               <div class="winner-detail" id="lcdWinName">Name</div>
               <div class="winner-phone-lcd" id="lcdWinPhone">0300...</div>
               <div style="color:#34d399; font-size:14px; font-weight:bold;" id="lcdWinPrize">Prize</div>
           </div>
       </div>
-      <div class="lcd-label">🎁 عفومہ بیسٹ ڈیلز شاندار انعامات 🎁</div>
+      <div class="lcd-label" id="lcdLabelText">🎁 عفومہ بیسٹ ڈیلز شاندار انعامات 🎁</div>
   </div>
 
   <!-- User Entry / Login Section -->
   <div id="entrySection" class="entry-card">
-      <h3 style="font-size:13px; color:#047857; margin-bottom:6px;">🎟️ لکی ڈرا قرعہ اندازی میں شامل ہوں</h3>
+      <h3 style="font-size:13px; color:#047857; margin-bottom:6px;" id="entryTitle">🎟️ لکی ڈرا قرعہ اندازی میں شامل ہوں</h3>
       <input type="text" id="uEntryName" class="entry-input" placeholder="اپنا پورا نام درج کریں">
       <input type="tel" id="uEntryPhone" class="entry-input" placeholder="موبائل نمبر (05...)" maxlength="12">
-      <button class="btn-entry" onclick="registerUserEntry()">اینٹری کریں 🚀</button>
+      <button class="btn-entry" id="btnEntrySubmit" onclick="registerUserEntry()">اینٹری کریں 🚀</button>
   </div>
 
   <div id="userProfileBox" class="user-profile-box">
-      <h4>✅ آپ قرعہ اندازی میں شامل ہو چکے ہیں!</h4>
+      <h4 id="userProfileStatus">✅ آپ قرعہ اندازی میں شامل ہو چکے ہیں!</h4>
       <p id="profileCardText"></p>
   </div>
 
@@ -157,7 +159,7 @@
 
   <!-- Products Grid Area -->
   <div class="products-container" id="productsGrid">
-    <p style="text-align: center; grid-column: span 2; padding: 20px; color: #059669; font-weight:bold;">Loading deals... ⏳</p>
+    <p style="text-align: center; grid-column: span 2; padding: 20px; color: #059669; font-weight:bold;" id="loadingTextGrid">Loading deals... ⏳</p>
   </div>
 
   <!-- Bottom Banner Ad -->
@@ -227,7 +229,7 @@
     let currentCategory = 'all';
     let adminTrackingTag = ""; 
     const sliderIndices = {};
-    let cachedProducts = null;
+    let globalProductsData = null;
 
     settingsDb.child("admin_tag").once('value', snap => {
       if(snap.exists()) adminTrackingTag = snap.val();
@@ -238,6 +240,7 @@
         title: "🎁 عفومہ بیسٹ ڈیلز & لکی ڈرا", 
         buyBtn: "🛒 خریداری کریں", 
         emptyMsg: "کوئی پروڈکٹ موجود نہیں ہے۔", 
+        loadingMsg: "ڈیلز لوڈ ہو رہی ہیں... ⏳",
         dir: "rtl",
         btnUploadMain: "➕ اپنی ڈیلز شائع کریں",
         btnPromoMain: "📌 پروڈکٹ پروموٹر کروائیں",
@@ -251,16 +254,26 @@
         lblImages: "تصاویر (گیلری سے منتخب کریں):",
         uFileText: "📁 گیلری سے تصاویر منتخب کریں",
         btnSubmitModal: "شائع کرنے کے لیے بھیجیں 📤",
+        entryTitle: "🎟️ لکی ڈرا قرعہ اندازی میں شامل ہوں",
+        phName: "اپنا پورا نام درج کریں",
+        phPhone: "موبائل نمبر (05...)",
+        btnEntrySubmit: "اینٹری کریں 🚀",
+        userProfileStatus: "✅ آپ قرعہ اندازی میں شامل ہو چکے ہیں!",
+        lblCustomer: "کسٹمر",
+        lcdLabelText: "🎁 عفومہ بیسٹ ڈیلز شاندار انعامات 🎁",
+        lcdLoadingText: "لوڈنگ شاندار انعامات... ⏳",
+        lcdWinBadge: "🎉 مبارک ہو! انعام نکل گیا 🎉",
         msgAlertNeedTitle: "براہ کرم عنوان اور افیلی ایٹ لنک درج کریں!",
         msgAlertNeedImg: "براہ کرم کم از کم ایک پروڈکٹ کی تصویر اپلوڈ کریں!",
         msgAlertImgErr: "تصویر اپلوڈ کرنے میں مسئلہ آیا ہے!",
-        msgAlertSuccess: "آپ کی پروڈکٹ ایڈمن کو بھیج دی گئی ہے۔ ایڈمن کی منظوری کے بعد لائیو شو ہو جائے گی! 🚀",
+        msgAlertSuccess: "آپ کی پروڈکٹ ایڈمن کو بھیج دی گئی ہے۔ منظوری کے بعد لائیو شو ہو جائے گی! 🚀",
         cats: { all: "سب", kids: "بچوں کے کپڑے", watch: "گھڑی", mobile: "موبائل فون", laptop: "لیپ ٹاپ", electronics: "الیکٹرانکس", keyboard: "کی بورڈ", shoes: "شوز", kitchen: "کچن کا سامان", medical: "میڈیکل سامان", beauty: "بیوٹی کریم", jewelry: "جیولری سامان" }
       },
       en: { 
         title: "🎁 Afuma Best Deals & Lucky Draw", 
         buyBtn: "🛒 Buy Now", 
         emptyMsg: "No products available.", 
+        loadingMsg: "Loading deals... ⏳",
         dir: "ltr",
         btnUploadMain: "➕ Publish Deals",
         btnPromoMain: "📌 Promote Deal",
@@ -274,6 +287,15 @@
         lblImages: "Images (Select from Gallery):",
         uFileText: "📁 Select Images from Gallery",
         btnSubmitModal: "Submit for Approval 📤",
+        entryTitle: "🎟️ Join Lucky Draw Giveaway",
+        phName: "Enter your full name",
+        phPhone: "Mobile Number (05...)",
+        btnEntrySubmit: "Submit Entry 🚀",
+        userProfileStatus: "✅ You are entered in the Lucky Draw!",
+        lblCustomer: "Customer",
+        lcdLabelText: "🎁 Afuma Best Deals Grand Prizes 🎁",
+        lcdLoadingText: "Loading Prizes... ⏳",
+        lcdWinBadge: "🎉 Congratulations! Winner Declared 🎉",
         msgAlertNeedTitle: "Please enter title and affiliate link!",
         msgAlertNeedImg: "Please upload at least one product image!",
         msgAlertImgErr: "Error uploading image!",
@@ -284,6 +306,7 @@
         title: "🎁 أفضل العروض والمسابقات - عفومة", 
         buyBtn: "🛒 اشتري الآن", 
         emptyMsg: "لا توجد منتجات متاحة.", 
+        loadingMsg: "جاري تحميل العروض... ⏳",
         dir: "rtl",
         btnUploadMain: "➕ انشر عروضك",
         btnPromoMain: "📌 روج لمنتجك",
@@ -297,8 +320,17 @@
         lblImages: "الصور (اختر من المعرض):",
         uFileText: "📁 اختر الصور من المعرض",
         btnSubmitModal: "إرسال للنشر 📤",
+        entryTitle: "🎟️ اشترك في السحب اليومي",
+        phName: "أدخل اسمك الكامل",
+        phPhone: "رقم الجوال (05...)",
+        btnEntrySubmit: "دخول السحب 🚀",
+        userProfileStatus: "✅ لقد تم تسجيلك في السحب بنجاح!",
+        lblCustomer: "العميل",
+        lcdLabelText: "🎁 جوائز عفومة الكبرى 🎁",
+        lcdLoadingText: "جاري تحميل الجوائز... ⏳",
+        lcdWinBadge: "🎉 مبروك! فائز بالفيسبوك 🎉",
         msgAlertNeedTitle: "يرجى إدخال العنوان ورابط التتبع!",
-        msgAlertNeedImg: "يرجى تحميل صورة منتج واحدة على الأقل!",
+        msgAlertNeedImg: "يرجى تحميل صورة واحدة على الأقل!",
         msgAlertImgErr: "حدث خطأ أثناء تحميل الصورة!",
         msgAlertSuccess: "تم إرسال منتجك بنجاح! 🚀",
         cats: { all: "الكل", kids: "ملابس الأطفال", watch: "ساعات", mobile: "جوالات", laptop: "لابتوب", electronics: "إلكترونيات", keyboard: "لوحة مفاتيح", shoes: "أحذية", kitchen: "أدوات المطبخ", medical: "مستلزمات طبية", beauty: "كريمات التجميل", jewelry: "مجوهرات" }
@@ -307,6 +339,7 @@
         title: "🎁 अफ़ूमा बेस्ट डील्स और लकी ड्रॉ", 
         buyBtn: "🛒 खरीदें", 
         emptyMsg: "कोई उत्पाद उपलब्ध नहीं है।", 
+        loadingMsg: "डील्स लोड हो रही हैं... ⏳",
         dir: "ltr",
         btnUploadMain: "➕ अपनी डील पब्लिश करें",
         btnPromoMain: "📌 प्रोडक्ट प्रमोट करें",
@@ -320,6 +353,15 @@
         lblImages: "इमेजेस (गैलरी से चुनें):",
         uFileText: "📁 गैलरी से इमेजेस चुनें",
         btnSubmitModal: "पब्लिश करने के लिए भेजें 📤",
+        entryTitle: "🎟️ लकी ड्रॉ में शामिल हों",
+        phName: "अपना पूरा नाम दर्ज करें",
+        phPhone: "मोबाइल नंबर (05...)",
+        btnEntrySubmit: "एंट्री करें 🚀",
+        userProfileStatus: "✅ आप लकी ड्रॉ में शामिल हो चुके हैं!",
+        lblCustomer: "ग्राहक",
+        lcdLabelText: "🎁 अफ़ूमा बेस्ट डील्स शानदार इनाम 🎁",
+        lcdLoadingText: "इनाम लोड हो रहे हैं... ⏳",
+        lcdWinBadge: "🎉 बधाई हो! विजेता घोषित 🎉",
         msgAlertNeedTitle: "कृपया नाम और एफिलिएट लिंक दर्ज करें!",
         msgAlertNeedImg: "कृपया कम से कम एक प्रोडक्ट इमेज अपलोड करें!",
         msgAlertImgErr: "इमेज अपलोड करने में त्रुटि!",
@@ -328,12 +370,23 @@
       }
     };
 
+    /* Realtime Firebase Product Listener */
+    function listenToProducts() {
+      db.on('value', (snapshot) => {
+        globalProductsData = snapshot.val();
+        displayData(globalProductsData);
+      });
+    }
+
     /* User Registration Logic */
     function registerUserEntry() {
       const name = document.getElementById('uEntryName').value.trim();
       const phone = document.getElementById('uEntryPhone').value.trim();
 
-      if (!name || !phone) { alert("براہ کرم اپنا نام اور صحیح موبائل نمبر درج کریں!"); return; }
+      if (!name || !phone) { 
+        alert(currentLang === 'ur' ? "براہ کرم اپنا نام اور صحیح موبائل نمبر درج کریں!" : "Please enter your name and phone number!"); 
+        return; 
+      }
 
       localStorage.setItem("afuma_user_name", name);
       localStorage.setItem("afuma_user_phone", phone);
@@ -344,7 +397,7 @@
         timestamp: Date.now()
       }).then(() => {
         showSavedUserProfile(name, phone);
-        alert("🎉 مبارک ہو! آپ کا نام لکی ڈرا میں شامل ہو گیا ہے۔");
+        alert(currentLang === 'ur' ? "🎉 مبارک ہو! آپ کا نام لکی ڈرا میں شامل ہو گیا ہے۔" : "🎉 Congratulations! You are entered into the Lucky Draw.");
       });
     }
 
@@ -352,7 +405,8 @@
       document.getElementById('entrySection').style.display = 'none';
       const profBox = document.getElementById('userProfileBox');
       profBox.style.display = 'block';
-      document.getElementById('profileCardText').innerText = `👤 کسٹمر: ${name} | 📱 ${phone}`;
+      const labelCust = translations[currentLang].lblCustomer;
+      document.getElementById('profileCardText').innerText = `👤 ${labelCust}: ${name} | 📱 ${phone}`;
     }
 
     function checkSavedUser() {
@@ -369,7 +423,7 @@
     function handleUserImages(e) {
       userFiles = Array.from(e.target.files);
       if(userFiles.length > 0) {
-        document.getElementById('uFileText').innerText = `${userFiles.length} تصاویر منتخب ہو گئیں ✅`;
+        document.getElementById('uFileText').innerText = `${userFiles.length} ${translations[currentLang].uFileText} ✅`;
       }
     }
 
@@ -432,17 +486,28 @@
       document.getElementById('uFileText').innerText = langObj.uFileText;
       document.getElementById('btnSubmitModal').innerText = langObj.btnSubmitModal;
 
+      document.getElementById('entryTitle').innerText = langObj.entryTitle;
+      document.getElementById('uEntryName').placeholder = langObj.phName;
+      document.getElementById('uEntryPhone').placeholder = langObj.phPhone;
+      document.getElementById('btnEntrySubmit').innerText = langObj.btnEntrySubmit;
+      document.getElementById('userProfileStatus').innerText = langObj.userProfileStatus;
+      document.getElementById('lcdLabelText').innerText = langObj.lcdLabelText;
+      document.getElementById('lcdLoadingText').innerText = langObj.lcdLoadingText;
+      document.getElementById('lcdWinBadge').innerText = langObj.lcdWinBadge;
+
       const modalBox = document.querySelector('.modal-box');
       if (modalBox) modalBox.style.textAlign = langObj.dir === 'rtl' ? 'right' : 'left';
 
       ['btnUr', 'btnEn', 'btnAr', 'btnHi'].forEach(btn => document.getElementById(btn).classList.remove('active'));
-      if (document.getElementById(btn + lang.charAt(0).toUpperCase() + lang.slice(1))) {
-        document.getElementById(btn + lang.charAt(0).toUpperCase() + lang.slice(1)).classList.add('active');
+      const activeBtnId = 'btn' + lang.charAt(0).toUpperCase() + lang.slice(1);
+      if (document.getElementById(activeBtnId)) {
+        document.getElementById(activeBtnId).classList.add('active');
       }
 
+      checkSavedUser();
       renderCategories();
       renderModalCategories();
-      renderProducts();
+      displayData(globalProductsData);
     }
 
     function renderModalCategories() {
@@ -468,7 +533,7 @@
     function filterCategory(catKey) {
       currentCategory = catKey;
       renderCategories();
-      renderProducts();
+      displayData(globalProductsData);
     }
 
     function moveSlide(cardKey, direction, totalImages) {
@@ -574,19 +639,8 @@
       if (count === 0) grid.innerHTML = `<p style="text-align: center; grid-column: span 2; padding: 20px; color: #64748b;">${translations[currentLang].emptyMsg}</p>`;
     }
 
-    function renderProducts() {
-      if (cachedProducts) {
-        displayData(cachedProducts);
-      } else {
-        db.once('value', (snapshot) => {
-          cachedProducts = snapshot.val();
-          displayData(cachedProducts);
-        });
-      }
-    }
-
     window.onload = function() { 
-      checkSavedUser();
+      listenToProducts();
       switchLanguage('ur'); 
     };
   </script>
