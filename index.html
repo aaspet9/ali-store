@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>afuma water</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <style>
+        /* --- General Settings --- */
+        body { 
+            font-family: 'Arial', sans-serif; 
+            background: linear-gradient(135deg, #fff3e0 0%, #ffebee 100%); 
+            text-align: center; margin: 0; padding: 0; overflow-x: hidden;
+        }
+        .container { 
+            max-width: 450px; margin: auto; background: rgba(255,255,255,0.98); 
+            min-height: 100vh; padding: 20px; position: relative;
+        }
+
+        /* ---  واپسی کا خوبصورت بٹن  --- */
+        .btn-back-full {
+            width: 90%;
+            margin: 12px auto 6px auto;
+            padding: 13px 18px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(30, 60, 114, 0.35);
+            transition: all 0.3s ease;
+        }
+        .btn-back-full:hover {
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(30, 60, 114, 0.5);
+        }
+
+        /* ---  آیت کریمہ کی دلکش پٹی  --- */
+        .quran-strip {
+            background: linear-gradient(135deg, #0f5132 0%, #198754 100%);
+            color: #ffffff;
+            padding: 8px 12px;
+            margin: 0 auto 12px auto;
+            width: 90%;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 17px;
+            border: 1.5px solid #ffc107;
+            box-shadow: 0 3px 8px rgba(15, 81, 50, 0.25);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+        }
+
+        /* --- LCD Screen --- */
+        .lcd-monitor {
+            background: #222; padding: 10px; border-radius: 15px;
+            border: 5px solid #444; box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            margin-bottom: 25px; position: relative; overflow: hidden;
+        }
+        .lcd-screen {
+            background: #000; height: 220px; border-radius: 5px;
+            position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        .lcd-screen img.slider-img {
+            width: 100%; height: 100%; object-fit: cover; position: absolute;
+            transition: transform 0.8s ease-in-out, opacity 0.8s; opacity: 0; transform: translateX(100%); 
+        }
+        .lcd-screen img.active { opacity: 1; transform: translateX(0); }
+        .lcd-screen img.prev { opacity: 0; transform: translateX(-100%); }
+        .lcd-label {
+            color: #00ff00; font-size: 14px; background: rgba(0,0,0,0.7);
+            position: absolute; bottom: 0; width: 100%; padding: 5px 0; font-weight: bold; z-index: 20;
+        }
+
+        /* --- Winner Overlay --- */
+        #winnerOverlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 50; display: none;
+            flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; border: 4px solid gold;
+            animation: lcdFlash 0.5s infinite;
+        }
+        @keyframes lcdFlash { 0% { border-color: gold; } 50% { border-color: #d32f2f; } 100% { border-color: gold; } }
+        
+        .winner-prize-img { width: 90px; height: 90px; object-fit: contain; border-radius: 10px; border: 2px solid white; margin-bottom: 5px; background: #fff; }
+        .winner-detail { color: #ffff00; font-size: 22px; font-weight: bold; text-shadow: 2px 2px 0px #d32f2f; margin: 2px 0; }
+        .winner-phone-lcd { color: #00e5ff; font-size: 18px; font-weight: bold; letter-spacing: 1px; }
+
+        /* Inputs */
+        input { width: 90%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 30px; text-align: center; font-size: 16px; }
+        .btn-login { width: 95%; padding: 12px; background: #009688; color: white; font-weight: bold; border: none; border-radius: 30px; font-size: 18px; cursor: pointer; margin-top: 10px; }
+
+        /* --- Dashboard --- */
+        #dashboardSection { display: none; text-align: right; }
+        .logout-btn { background: #333; color: white; border: none; padding: 5px 15px; border-radius: 20px; cursor: pointer; float: left; margin-bottom: 10px; }
+
+        /* Buyer/Regret Cards */
+        .user-card { background: #e0f2f1; padding: 15px; border-radius: 10px; border: 1px solid #009688; margin-bottom: 20px; display: none; }
+        .app-receipt { border: 2px dashed #009688; background: white; padding: 10px; margin-top: 10px; border-radius: 5px; }
+        .receipt-hidden-content { display: none; transition: all 0.3s ease; }
+        .btn-show-receipt { background: #ff9800; color: white; border: none; padding: 8px 20px; border-radius: 20px; margin: 10px auto; display: block; cursor: pointer; font-weight: bold; }
+        .app-rec-row { display: flex; justify-content: space-between; border-bottom: 1px dotted #ccc; padding: 5px 0; font-size: 14px; }
+        .status-msg-box { margin-top:10px; font-weight:bold; text-align:center; padding: 10px; border-radius: 5px; background: #e8f5e9; color: green; border: 1px solid green; }
+
+        .regret-card { 
+            background: #ffebee; padding: 20px; border-radius: 10px; 
+            border: 3px solid #d32f2f; margin-bottom: 20px; text-align: center; 
+            display: none; animation: alertPulse 1.5s infinite alternate;
+            box-shadow: 0 0 15px rgba(211, 47, 47, 0.4);
+        }
+        @keyframes alertPulse {
+            0% { transform: scale(1); border-color: #d32f2f; }
+            100% { transform: scale(1.02); border-color: #ff1744; }
+        }
+        .regret-title { color: #d32f2f; font-weight: bold; font-size: 20px; margin-bottom: 10px; }
+        .regret-text { color: #333; font-size: 16px; line-height: 1.6; }
+
+        /* Winner List */
+        .list-header { background: #ff9800; color: white; padding: 10px; border-radius: 5px; text-align: center; font-weight: bold; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+        .winner-card { 
+            background: #fff8e1; border: 2px solid #ff9800; padding: 10px; 
+            margin-top: 12px; border-radius: 15px; display: flex; align-items: center; 
+            justify-content: space-between; position: relative; box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+        }
+        .winner-img { width: 60px; height: 60px; object-fit: contain; border-radius: 50%; border: 2px solid white; background: white; margin-left: 5px;}
+        .winner-info { text-align: right; flex: 1; margin-right: 5px; margin-left: 5px; }
+        .w-name { color:#d84315; font-weight:bold; font-size:18px; }
+        .w-phone { color:#333; font-size:16px; font-family: monospace; font-weight:bold; letter-spacing: 0.5px; }
+        .w-prize { color:#d32f2f; font-weight:bold; font-size:14px; margin-top: 2px;}
+
+        /* Admin Badge */
+        .brand-area { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 75px; }
+        
+        .brand-badge-img { 
+            width: 55px; height: 55px; 
+            border-radius: 50%; border: 2px solid gold; 
+            object-fit: cover; 
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+        }
+
+        .admin-contact { font-size: 10px; color: #555; margin-top: 3px; font-weight: bold; }
+
+        /* Flower Rain */
+        #flowerContainer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; overflow: hidden; }
+        .falling-flower { position: absolute; top: -50px; font-size: 24px; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+<div id="flowerContainer"></div>
+
+<div class="container">
+    
+    <!-- واپسی جی بھائی کھاتا بٹن اور آیت کریمہ -->
+    <button onclick="window.history.back()" class="btn-back-full">
+      <svg width="20" height="18" viewBox="0 0 24 24" fill="#ffffff">
+        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+      </svg>
+      <span data-i18n="backCashbook">واپسی کیش بک (جی بھائی کھاتا) 🏠</span>
+    </button>
+
+    <div class="quran-strip">
+      <span class="quran-text">وَاللَّهُ خَيْرُ الرَّازِقِينَ</span>
+    </div>
+
+    <div class="lcd-monitor">
+        <div class="lcd-screen" id="lcdScreen">
+            <div style="color:white; z-index:1;">لوڈنگ انعامات...</div>
+            <div id="winnerOverlay">
+                <div style="color:white; font-size:16px; font-weight:bold;">🎉 مبارک ہو! انعام نکل گیا 🎉</div>
+                <img id="lcdWinImg" src="" class="winner-prize-img">
+                <div class="winner-detail" id="lcdWinName">Name</div>
+                <div class="winner-phone-lcd" id="lcdWinPhone">0300...</div>
+                <div style="color:#00ff00; font-size:16px; font-weight:bold;" id="lcdWinPrize">Prize</div>
+            </div>
+        </div>
+        <div class="lcd-label">💦 افوما واٹر شاندار انعامات 💦</div>
+    </div>
+    <div style="font-size:14px; margin-top:-15px; margin-bottom:20px; font-weight:bold; color:#d32f2f;">یہ سارے انعامات نکلنے ہیں ابھی قسمت آزمائیں</div>
+
+    <div id="loginSection">
+        <h1 style="margin-top: 10px;">Afuma Mineral Water</h1>
+        <p>اپنی رسید اور انعام دیکھنے کے لیے جو رسید پر نام اور موبائل نمبر لکھا ہے اوس سے لاگ ان کریں</p>
+
+        <input type="text" id="loginName" placeholder="کسٹمر کا نام">
+        <input type="tel" id="loginPhone" placeholder="موبائل نمبر (03...)" maxlength="11">
+        <button class="btn-login" onclick="loginUser()">لاگ ان کریں</button>
+    </div>
+
+    <div id="dashboardSection">
+        <button class="logout-btn" onclick="logout()">لاگ آؤٹ</button>
+        
+        <div id="buyerCard" class="user-card">
+            <h2 style="color:#009688; text-align:center; margin-top:0;">🎉 شکریہ برائے خریداری 🎉</h2>
+            <div id="statusArea" class="status-msg-box">✅ آپ لکی ڈرا میں شامل ہیں!</div>
+
+            <div class="app-receipt">
+                <div style="text-align:center; font-weight:bold; margin-bottom:5px;">AFUMA MINERAL WATER</div>
+                <button class="btn-show-receipt" onclick="toggleReceipt()">📄 اپنی رسید دیکھیں</button>
+                <div id="receiptDetails" class="receipt-hidden-content">
+                    <hr>
+                    <div class="app-rec-row"><span>رسید:</span><strong id="uRec"></strong></div>
+                    <div class="app-rec-row"><span>تاریخ:</span><span id="uDate"></span></div>
+                    <div class="app-rec-row"><span>نام:</span><strong id="uName"></strong></div>
+                    <div class="app-rec-row"><span>موبائل:</span><span id="uPhone"></span></div>
+                    <hr>
+                    <div class="app-rec-row"><span>سائز:</span><span id="uSize"></span></div>
+                    <div class="app-rec-row"><span>تعداد:</span><span id="uQty"></span></div>
+                    <div class="app-rec-row" style="color:#d32f2f;"><span>ٹوٹل:</span><strong id="uTotal"></strong></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="regretCard" class="regret-card">
+            <div class="regret-title">⏰ افسوس کاش آپ بھی ونر ہوتے!</div>
+            <div class="regret-text">
+                دیکھیں کتنے خوش نصیب ہیں جن کے انعام نکلے ہیں۔<br><br>
+                <b>ابھی جائیں، افوما واٹر کا حصہ بنیں اور انعام جیتیں!</b>
+            </div>
+        </div>
+
+        <div class="list-header">🏆 خوش نصیب ونرز کی لسٹ 🏆</div>
+        <div id="winnersList">ڈیٹا لوڈ ہو رہا ہے...</div>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = { apiKey: "AIzaSyCmR_7XUOOGowcDJpdaNrXjhLIo3YiwVlM", authDomain: "photo-asghar.firebaseapp.com", projectId: "photo-asghar", storageBucket: "photo-asghar.firebasestorage.app", messagingSenderId: "888895627902", appId: "1:888895627902:web:b436aab80f0024b6fd6e2f" };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let currentUserPhone = localStorage.getItem("loggedInPhone");
+    let prizeImages = [];
+    let currentSlide = 0;
+    let slideInterval;
+    let isWinnerDisplayActive = false;
+    let firstLoadComplete = false;
+    let overlayTimeout;
+
+    const ADMIN_NUMBER = "0325-8833319";
+    const LOGO_URL = "https://i.ibb.co/xtxD8VRD/9778.jpg";
+
+    window.onload = function() {
+        startFlowerRain();
+        loadLcdPrizes(); 
+        
+        let storedName = localStorage.getItem("loggedInName");
+        if(currentUserPhone && storedName) {
+            checkUserAndShowDashboard(storedName, currentUserPhone);
+        } else {
+            startLiveWinners();
+        }
+    }
+
+    function toggleReceipt() {
+        var x = document.getElementById("receiptDetails");
+        x.style.display = (x.style.display === "block") ? "none" : "block";
+    }
+
+    function loadLcdPrizes() {
+        db.collection("prizes").get().then(snap => {
+            const screen = document.getElementById('lcdScreen');
+            let overlay = document.getElementById('winnerOverlay');
+            screen.innerHTML = "";
+            screen.appendChild(overlay);
+
+            if(snap.empty) return;
+            snap.forEach((doc, index) => {
+                let p = doc.data();
+                let img = document.createElement('img');
+                img.src = p.image;
+                img.className = "slider-img";
+                if(index === 0) img.classList.add("active");
+                screen.appendChild(img);
+            });
+            prizeImages = document.querySelectorAll('.lcd-screen img.slider-img');
+            if(prizeImages.length > 1) startSlider();
+        });
+    }
+
+    function startSlider() {
+        clearInterval(slideInterval);
+        slideInterval = setInterval(nextSlide, 3000);
+    }
+
+    function nextSlide() {
+        if(isWinnerDisplayActive) return;
+        prizeImages[currentSlide].className = "slider-img prev";
+        currentSlide = (currentSlide + 1) % prizeImages.length;
+        prizeImages[currentSlide].className = "slider-img active";
+        setTimeout(() => {
+            prizeImages.forEach((img, idx) => { if(idx !== currentSlide) img.classList.remove('prev'); });
+        }, 800);
+    }
+
+    function loginUser() {
+        let name = document.getElementById('loginName').value.trim();
+        let phone = document.getElementById('loginPhone').value.trim();
+        if(!name || !phone) return alert("براہ کرم نام اور نمبر دونوں لکھیں");
+
+        localStorage.setItem("loggedInPhone", phone);
+        localStorage.setItem("loggedInName", name);
+        currentUserPhone = phone;
+
+        checkUserAndShowDashboard(name, phone);
+    }
+
+    function checkUserAndShowDashboard(name, phone) {
+        document.getElementById('loginSection').style.display='none';
+        document.getElementById('dashboardSection').style.display='block';
+        
+        db.collection("orders").where("phone", "==", phone).limit(1).get().then(snap => {
+            if(!snap.empty) {
+                let data = snap.docs[0].data();
+                document.getElementById('buyerCard').style.display = 'block';
+                document.getElementById('regretCard').style.display = 'none';
+
+                document.getElementById('uRec').innerText = data.rec_display || data.rec_no || "--";
+                document.getElementById('uName').innerText = data.name;
+                document.getElementById('uPhone').innerText = data.phone;
+                document.getElementById('uDate').innerText = data.date;
+                document.getElementById('uSize').innerText = data.size;
+                document.getElementById('uQty').innerText = data.qty;
+                document.getElementById('uTotal').innerText = data.total;
+
+                db.collection("lucky_draw_results").where("winner_phone", "==", phone).get().then(winSnap => {
+                    let msgBox = document.getElementById('statusArea');
+                    if(!winSnap.empty) {
+                        msgBox.innerHTML = "🎉 مبارک ہو! آپ کا انعام نکل گیا ہے";
+                        msgBox.style.background = "#ffebee"; msgBox.style.color = "#d32f2f"; msgBox.style.border = "1px solid red";
+                    }
+                });
+
+            } else {
+                document.getElementById('buyerCard').style.display = 'none';
+                document.getElementById('regretCard').style.display = 'block';
+            }
+        });
+        
+        startLiveWinners(); 
+    }
+
+    function startLiveWinners() {
+        db.collection("lucky_draw_results").orderBy("timestamp", "desc").onSnapshot(snap => {
+            if(snap.empty) {
+                document.getElementById('winnersList').innerHTML = "ابھی تک کوئی ونر نہیں نکلا";
+                firstLoadComplete = true;
+                return;
+            }
+
+            snap.docChanges().forEach(change => {
+                if (change.type === "added" && firstLoadComplete) {
+                    triggerLCDAnnouncement(change.doc.data());
+                }
+            });
+
+            let html = "";
+            snap.forEach(doc => {
+                let win = doc.data();
+                html += `
+                <div class="winner-card">
+                    <div class="brand-area">
+                        <img src="${LOGO_URL}" class="brand-badge-img">
+                        <div class="admin-contact">${ADMIN_NUMBER}</div>
+                    </div>
+                    <div class="winner-info">
+                        <div class="w-name">${win.winner_name}</div>
+                        <div class="w-phone">${win.winner_phone}</div>
+                        <div class="w-prize">${win.prize_name}</div>
+                    </div>
+                    <img src="${win.prize_image}" class="winner-img">
+                </div>`;
+            });
+            document.getElementById('winnersList').innerHTML = html;
+            firstLoadComplete = true;
+        });
+    }
+
+    function triggerLCDAnnouncement(data) {
+        clearTimeout(overlayTimeout);
+        clearInterval(slideInterval);
+        isWinnerDisplayActive = true;
+
+        document.getElementById('lcdWinImg').src = data.prize_image;
+        document.getElementById('lcdWinName').innerText = data.winner_name;
+        document.getElementById('lcdWinPhone').innerText = data.winner_phone;
+        document.getElementById('lcdWinPrize').innerText = data.prize_name;
+
+        let overlay = document.getElementById('winnerOverlay');
+        overlay.style.display = "flex";
+        
+        window.scrollTo({top: 0, behavior: 'smooth'});
+
+        overlayTimeout = setTimeout(() => {
+            overlay.style.display = "none";
+            isWinnerDisplayActive = false;
+            startSlider();
+        }, 15000);
+    }
+
+    function logout() { 
+        localStorage.clear(); 
+        location.reload(); 
+    }
+    
+    function startFlowerRain() {
+        const c = document.getElementById('flowerContainer');
+        setInterval(() => {
+            const f = document.createElement('div'); f.innerText = ['📱','🌹','⏰','🏆','🇵🇰'][Math.floor(Math.random()*4)];
+            f.className = 'falling-flower'; 
+            f.style.left = Math.random() * 90 + 'vw';
+            f.style.animationDuration = Math.random() * 3 + 3 + 's';
+            c.appendChild(f); 
+            setTimeout(() => f.remove(), 6000);
+        }, 500); 
+    }
+</script>
+</body>
+</html>
