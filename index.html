@@ -45,7 +45,7 @@
     .user-profile-box h4 { color: #047857; font-size: 13px; margin-bottom: 3px; }
     .user-profile-box p { font-size: 12px; color: #065f46; font-weight: bold; }
 
-    /* Action & Navigation Buttons */
+    /* Action Buttons */
     .action-btn-group { display: flex; gap: 8px; margin-bottom: 10px; }
     .user-upload-btn { flex: 1; background: #2563eb; color: #ffffff; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25); }
     .promo-btn { flex: 1; background: #16a34a; color: #ffffff; text-decoration: none; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 3px 8px rgba(22, 163, 74, 0.25); text-align: center; }
@@ -370,6 +370,50 @@
       }
     };
 
+    /* Smart Category Matcher Function */
+    function matchCategory(itemCat, selectedCat, itemTitle) {
+      if (selectedCat === 'all') return true;
+      
+      const c = (itemCat || '').toLowerCase().trim();
+      const t = (itemTitle || '').toLowerCase().trim();
+
+      if (selectedCat === 'watch') {
+        return c.includes('watch') || t.includes('watch') || c.includes('گھڑی');
+      }
+      if (selectedCat === 'kids') {
+        return c.includes('kid') || c.includes('child') || c.includes('cloth') || t.includes('kid') || t.includes('baby') || c.includes('کپڑے');
+      }
+      if (selectedCat === 'mobile') {
+        return c.includes('mobile') || c.includes('phone') || t.includes('phone') || t.includes('iphone') || t.includes('samsung') || c.includes('موبائل');
+      }
+      if (selectedCat === 'laptop') {
+        return c.includes('laptop') || c.includes('computer') || t.includes('laptop') || c.includes('لیپ ٹاپ');
+      }
+      if (selectedCat === 'electronics') {
+        return c.includes('electronic') || c.includes('gadget') || t.includes('cam') || t.includes('board') || c.includes('الیکٹرانکس');
+      }
+      if (selectedCat === 'keyboard') {
+        return c.includes('keyboard') || t.includes('keyboard') || c.includes('کی بورڈ');
+      }
+      if (selectedCat === 'shoes') {
+        return c.includes('shoe') || c.includes('sneaker') || t.includes('shoe') || c.includes('شوز');
+      }
+      if (selectedCat === 'kitchen') {
+        return c.includes('kitchen') || c.includes('cook') || t.includes('kitchen') || t.includes('coffee') || c.includes('کچن');
+      }
+      if (selectedCat === 'medical') {
+        return c.includes('medical') || c.includes('health') || t.includes('medical') || c.includes('میڈیکل');
+      }
+      if (selectedCat === 'beauty') {
+        return c.includes('beauty') || c.includes('cream') || t.includes('cream') || c.includes('بیوٹی');
+      }
+      if (selectedCat === 'jewelry') {
+        return c.includes('jewelry') || c.includes('silver') || c.includes('necklace') || t.includes('necklace') || t.includes('ring') || c.includes('جیولری');
+      }
+
+      return c.includes(selectedCat);
+    }
+
     /* Realtime Firebase Product Listener */
     function listenToProducts() {
       db.on('value', (snapshot) => {
@@ -498,7 +542,11 @@
       const modalBox = document.querySelector('.modal-box');
       if (modalBox) modalBox.style.textAlign = langObj.dir === 'rtl' ? 'right' : 'left';
 
-      ['btnUr', 'btnEn', 'btnAr', 'btnHi'].forEach(btn => document.getElementById(btn).classList.remove('active'));
+      ['btnUr', 'btnEn', 'btnAr', 'btnHi'].forEach(btn => {
+        const el = document.getElementById(btn);
+        if(el) el.classList.remove('active');
+      });
+      
       const activeBtnId = 'btn' + lang.charAt(0).toUpperCase() + lang.slice(1);
       if (document.getElementById(activeBtnId)) {
         document.getElementById(activeBtnId).classList.add('active');
@@ -599,7 +647,10 @@
 
       keysList.forEach((key) => {
         const item = data[key];
-        if (currentCategory !== 'all' && item.category !== currentCategory) return;
+
+        // Smart Matching Check
+        if (!matchCategory(item.category, currentCategory, item.title)) return;
+
         count++;
 
         const finalBuyLink = getFinalLink(item.link, count - 1);
