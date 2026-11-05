@@ -22,12 +22,17 @@
     /* Main Header */
     .header { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #ffffff; text-align: center; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 16px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25); }
 
-    /* LCD Screen Layout with Left and Right Ads */
-    .lcd-section-wrapper { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 10px; }
-    .lcd-side-ad { flex: 0 0 75px; height: 180px; background: #ffffff; border-radius: 10px; border: 1px dashed #cbd5e1; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+    /* LCD Screen Compact Layout */
+    .lcd-section-wrapper { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 10px; }
+    .lcd-side-ad { width: 60px; height: 130px; background: #ffffff; border-radius: 8px; border: 1px dashed #cbd5e1; display: none; justify-content: center; align-items: center; overflow: hidden; }
     
-    .lcd-monitor { flex: 1; background: #1e293b; padding: 6px; border-radius: 14px; border: 3px solid #334155; box-shadow: 0 8px 16px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
-    .lcd-screen { background: #000; height: 170px; border-radius: 8px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    /* Responsive Display for Ads on Larger Screens */
+    @media (min-width: 480px) {
+      .lcd-side-ad { display: flex; }
+    }
+
+    .lcd-monitor { flex: 1; max-width: 100%; background: #1e293b; padding: 4px; border-radius: 12px; border: 2px solid #334155; box-shadow: 0 4px 10px rgba(0,0,0,0.2); position: relative; overflow: hidden; }
+    .lcd-screen { background: #000; height: 130px; border-radius: 6px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     
     .prize-slide-img { width: 100%; height: 100%; object-fit: contain; position: absolute; top:0; left:0; opacity: 0; transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; }
     .prize-slide-img.active { opacity: 1; transform: scale(1); }
@@ -39,54 +44,52 @@
       100% { transform: scale(0.9) rotate(360deg); }
     }
 
-    .lcd-label { color: #34d399; font-size: 11px; background: rgba(0,0,0,0.75); position: absolute; bottom: 0; width: 100%; padding: 4px 0; font-weight: bold; text-align: center; z-index: 20; }
+    .lcd-label { color: #34d399; font-size: 10px; background: rgba(0,0,0,0.85); position: absolute; bottom: 0; width: 100%; padding: 3px 0; font-weight: bold; text-align: center; z-index: 20; }
 
-    #winnerOverlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 50; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; border: 3px solid #f59e0b; }
-    .winner-prize-img { width: 70px; height: 70px; object-fit: contain; border-radius: 8px; border: 2px solid white; margin-bottom: 4px; background: #fff; }
-    .winner-detail { color: #facc15; font-size: 16px; font-weight: bold; }
-    .winner-phone-lcd { color: #38bdf8; font-size: 13px; font-weight: bold; }
+    #winnerOverlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 50; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; border: 2px solid #f59e0b; }
+    .winner-prize-img { width: 50px; height: 50px; object-fit: contain; border-radius: 6px; border: 2px solid white; margin-bottom: 2px; background: #fff; }
+    .winner-detail { color: #facc15; font-size: 13px; font-weight: bold; }
+    .winner-phone-lcd { color: #38bdf8; font-size: 11px; font-weight: bold; }
 
     /* Entry & User Profile Box */
-    .entry-card { background: #ffffff; padding: 12px; border-radius: 12px; border: 2px solid #10b981; margin-bottom: 10px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-    .entry-input { width: 90%; padding: 9px; margin: 4px 0; border: 1px solid #cbd5e1; border-radius: 20px; text-align: center; font-size: 13px; outline: none; }
-    .btn-entry { width: 90%; padding: 10px; background: #10b981; color: white; font-weight: bold; border: none; border-radius: 20px; font-size: 13px; cursor: pointer; margin-top: 4px; }
+    .entry-card { background: #ffffff; padding: 10px; border-radius: 12px; border: 2px solid #10b981; margin-bottom: 10px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .entry-input { width: 90%; padding: 8px; margin: 4px 0; border: 1px solid #cbd5e1; border-radius: 20px; text-align: center; font-size: 12px; outline: none; }
+    .btn-entry { width: 90%; padding: 9px; background: #10b981; color: white; font-weight: bold; border: none; border-radius: 20px; font-size: 12px; cursor: pointer; margin-top: 4px; }
 
-    .user-profile-box { background: #ecfdf5; border: 1.5px solid #10b981; border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: center; display: none; }
-    .user-profile-box h4 { color: #047857; font-size: 13px; margin-bottom: 3px; }
-    .user-profile-box p { font-size: 12px; color: #065f46; font-weight: bold; }
+    .user-profile-box { background: #ecfdf5; border: 1.5px solid #10b981; border-radius: 10px; padding: 8px; margin-bottom: 10px; text-align: center; display: none; }
+    .user-profile-box h4 { color: #047857; font-size: 12px; margin-bottom: 2px; }
+    .user-profile-box p { font-size: 11px; color: #065f46; font-weight: bold; }
 
     /* Action Buttons */
     .action-btn-group { display: flex; gap: 8px; margin-bottom: 10px; }
-    .user-upload-btn { flex: 1; background: #2563eb; color: #ffffff; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
-    .promo-btn { flex: 1; background: #16a34a; color: #ffffff; text-decoration: none; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; text-align: center; }
+    .user-upload-btn { flex: 1; background: #2563eb; color: #ffffff; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .promo-btn { flex: 1; background: #16a34a; color: #ffffff; text-decoration: none; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; text-align: center; }
 
     /* Category Bar */
-    .category-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 10px; scrollbar-width: none; }
-    .cat-btn { white-space: nowrap; background: #ffffff; border: 1px solid #e2e8f0; padding: 7px 14px; border-radius: 20px; font-size: 11px; font-weight: bold; color: #475569; cursor: pointer; }
+    .category-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px; scrollbar-width: none; }
+    .cat-btn { white-space: nowrap; background: #ffffff; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; color: #475569; cursor: pointer; }
     .cat-btn.active { background: #059669; color: #ffffff; border-color: #059669; }
 
     /* Banners */
-    .adsterra-slim-banner { background: #ffffff; border-radius: 8px; padding: 4px; text-align: center; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; min-height: 55px; border: 1px dashed #cbd5e1; }
-    .adsterra-in-grid-banner { grid-column: span 2; background: #ffffff; border-radius: 8px; padding: 4px; text-align: center; margin: 6px 0; display: flex; justify-content: center; align-items: center; min-height: 55px; border: 1px dashed #cbd5e1; }
+    .adsterra-slim-banner { background: #ffffff; border-radius: 8px; padding: 4px; text-align: center; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; min-height: 55px; border: 1px dashed #cbd5e1; overflow: hidden; }
+    .adsterra-in-grid-banner { grid-column: span 2; background: #ffffff; border-radius: 8px; padding: 4px; text-align: center; margin: 6px 0; display: flex; justify-content: center; align-items: center; min-height: 55px; border: 1px dashed #cbd5e1; overflow: hidden; }
 
     /* Products Grid */
     .products-container { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
     .product-card { background: #ffffff; border-radius: 12px; padding: 8px; border: 1px solid #f0f0f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; position: relative; }
-    .product-card.pinned { border: 2px solid #eab308; background: #fffdf0; }
-    .pinned-badge { position: absolute; top: 12px; right: 12px; background: #eab308; color: #000; font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 4px; z-index: 10; }
 
-    .slider-wrapper { position: relative; width: 100%; height: 155px; border-radius: 8px; overflow: hidden; margin-bottom: 8px; background: #fdfdfd; }
-    .product-media { width: 100%; min-width: 100%; height: 155px; object-fit: cover; border-radius: 8px; }
+    .slider-wrapper { position: relative; width: 100%; height: 140px; border-radius: 8px; overflow: hidden; margin-bottom: 6px; background: #fdfdfd; }
+    .product-media { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; }
 
-    .product-title { font-size: 12px; font-weight: 600; color: #222222; margin-bottom: 4px; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-    .product-price { font-size: 14px; font-weight: 800; color: #059669; margin-bottom: 8px; }
-    .buy-btn { display: block; background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #ffffff; text-decoration: none; text-align: center; padding: 8px 4px; border-radius: 20px; font-weight: bold; font-size: 12px; }
+    .product-title { font-size: 11px; font-weight: 600; color: #222222; margin-bottom: 4px; height: 30px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .product-price { font-size: 13px; font-weight: 800; color: #059669; margin-bottom: 6px; }
+    .buy-btn { display: block; background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #ffffff; text-decoration: none; text-align: center; padding: 7px 4px; border-radius: 20px; font-weight: bold; font-size: 11px; }
 
     /* Modal */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 15px; }
     .modal-box { background: #ffffff; width: 100%; max-width: 420px; border-radius: 14px; padding: 18px; max-height: 90vh; overflow-y: auto; position: relative; }
     .close-modal { position: absolute; right: 15px; top: 12px; background: #e2e8f0; border: none; font-size: 16px; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; }
-    .modal-input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 10px; font-size: 13px; outline: none; }
+    .modal-input { width: 100%; padding: 9px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 8px; font-size: 12px; outline: none; }
     .file-btn { border: 2px dashed #2563eb; background: #eff6ff; padding: 10px; text-align: center; border-radius: 8px; cursor: pointer; margin-bottom: 10px; font-size: 12px; }
   </style>
 </head>
@@ -106,7 +109,7 @@
 
   <div class="header" id="appHeader">🎁 Afuma Best Deals & Lucky Draw</div>
 
-  <!-- LCD Screen Monitor with Left and Right Adsterra Native Ads -->
+  <!-- LCD Screen Monitor Layout -->
   <div class="lcd-section-wrapper">
       <div class="lcd-side-ad" id="adLeft"></div>
       
@@ -114,11 +117,11 @@
           <div class="lcd-screen" id="lcdScreen">
               <div style="color:white; z-index:1; font-size:11px;" id="lcdLoadingText">انعامات لوڈ ہو رہے ہیں... ⏳</div>
               <div id="winnerOverlay">
-                  <div style="color:white; font-size:13px; font-weight:bold;" id="lcdWinBadge">🎉 مبارک ہو! انعام نکل گیا 🎉</div>
+                  <div style="color:white; font-size:12px; font-weight:bold;" id="lcdWinBadge">🎉 مبارک ہو! انعام نکل گیا 🎉</div>
                   <img id="lcdWinImg" src="" class="winner-prize-img">
                   <div class="winner-detail" id="lcdWinName">Name</div>
                   <div class="winner-phone-lcd" id="lcdWinPhone">0300...</div>
-                  <div style="color:#34d399; font-size:13px; font-weight:bold;" id="lcdWinPrize">Prize</div>
+                  <div style="color:#34d399; font-size:12px; font-weight:bold;" id="lcdWinPrize">Prize</div>
               </div>
           </div>
           <div class="lcd-label" id="lcdLabelText">🎁 عفومہ بیسٹ ڈیلز شاندار انعامات 🎁</div>
@@ -129,7 +132,7 @@
 
   <!-- Entry Section -->
   <div id="entrySection" class="entry-card">
-      <h3 style="font-size:13px; color:#047857; margin-bottom:6px;" id="entryTitle">🎟️ لکی ڈرا قرعہ اندازی میں شامل ہوں</h3>
+      <h3 style="font-size:12px; color:#047857; margin-bottom:4px;" id="entryTitle">🎟️ لکی ڈرا قرعہ اندازی میں شامل ہوں</h3>
       <input type="text" id="uEntryName" class="entry-input" placeholder="اپنا پورا نام درج کریں">
       <input type="tel" id="uEntryPhone" class="entry-input" placeholder="موبائل نمبر (05...)" maxlength="12">
       <button class="btn-entry" id="btnEntrySubmit" onclick="registerUserEntry()">اینٹری کریں 🚀</button>
@@ -151,14 +154,14 @@
 
   <div class="category-scroll" id="categoryBar"></div>
 
-  <!-- Banner Ad Top -->
+  <!-- Banner Ad Top (First Ad) -->
   <div class="adsterra-slim-banner" id="bannerTop"></div>
 
   <div class="products-container" id="productsGrid">
     <p style="text-align: center; grid-column: span 2; padding: 20px; color: #059669; font-weight:bold;" id="loadingTextGrid">Loading deals... ⏳</p>
   </div>
 
-  <!-- Banner Ad Bottom -->
+  <!-- Banner Ad Bottom (Second Ad Format) -->
   <div class="adsterra-slim-banner" style="margin-top: 16px;" id="bannerBottom"></div>
 
   <!-- Modal Form -->
@@ -223,7 +226,7 @@
     const translations = {
       ur: { 
         title: "🎁 عفومہ بیسٹ ڈیلز & لکی ڈرا", buyBtn: "🛒 خریداری کریں", emptyMsg: "کوئی پروڈکٹ موجود نہیں ہے۔", loadingMsg: "ڈیلز لوڈ ہو رہی ہیں... ⏳", dir: "rtl",
-        btnUploadMain: "➕ اپنی ڈیلز شائع کریں", btnPromoMain: "📌 پروڈکٹ پروموٹر کروائیں", featuredBadge: "⭐ اسپانسرڈ", modalHeading: "🚀 اپنی پروڈکٹ شامل کریں",
+        btnUploadMain: "➕ اپنی ڈیل شائع کریں", btnPromoMain: "📌 پروڈکٹ پروموٹر کروائیں", modalHeading: "🚀 اپنی پروڈکٹ شامل کریں",
         lblTitle: "پروڈکٹ کا عنوان:", phTitle: "عنوان درج کریں...", lblCategory: "کیٹیگری:", lblPrice: "قیمت:", lblLink: "افیلی ایٹ لنک:", lblImages: "تصاویر (گیلری سے منتخب کریں):",
         uFileText: "📁 گیلری سے تصاویر منتخب کریں", btnSubmitModal: "شائع کرنے کے لیے بھیجیں 📤", entryTitle: "🎟️ لکی ڈرا قرعہ اندازی میں شامل ہوں", phName: "اپنا پورا نام درج کریں", phPhone: "موبائل نمبر (05...)",
         btnEntrySubmit: "اینٹری کریں 🚀", userProfileStatus: "✅ آپ قرعہ اندازی میں شامل ہو چکے ہیں!", lblCustomer: "کسٹمر", lcdLabelText: "🎁 عفومہ بیسٹ ڈیلز شاندار انعامات 🎁",
@@ -232,7 +235,7 @@
       },
       en: { 
         title: "🎁 Afuma Best Deals & Lucky Draw", buyBtn: "🛒 Buy Now", emptyMsg: "No products available.", loadingMsg: "Loading deals... ⏳", dir: "ltr",
-        btnUploadMain: "➕ Publish Deals", btnPromoMain: "📌 Promote Deal", featuredBadge: "⭐ Featured", modalHeading: "🚀 Add Your Product",
+        btnUploadMain: "➕ Publish Deals", btnPromoMain: "📌 Promote Deal", modalHeading: "🚀 Add Your Product",
         lblTitle: "Product Title:", phTitle: "Enter product title...", lblCategory: "Category:", lblPrice: "Price:", lblLink: "Affiliate Link:", lblImages: "Images:",
         uFileText: "📁 Select Images", btnSubmitModal: "Submit for Approval 📤", entryTitle: "🎟️ Join Lucky Draw", phName: "Enter full name", phPhone: "Mobile (05...)",
         btnEntrySubmit: "Submit Entry 🚀", userProfileStatus: "✅ Entered in Lucky Draw!", lblCustomer: "Customer", lcdLabelText: "🎁 Afuma Best Deals Grand Prizes 🎁",
@@ -241,7 +244,7 @@
       },
       ar: { 
         title: "🎁 أفضل العروض والمسابقات - عفومة", buyBtn: "🛒 اشتري الآن", emptyMsg: "لا توجد منتجات متاحة.", loadingMsg: "جاري تحميل العروض... ⏳", dir: "rtl",
-        btnUploadMain: "➕ انشر عروضك", btnPromoMain: "📌 روج لمنتجك", featuredBadge: "⭐ مميز", modalHeading: "🚀 أضف منتجك",
+        btnUploadMain: "➕ انشر عروضك", btnPromoMain: "📌 روج لمنتجك", modalHeading: "🚀 أضف منتجك",
         lblTitle: "عنوان المنتج:", phTitle: "أدخل عنوان المنتج...", lblCategory: "الفئة:", lblPrice: "السعر:", lblLink: "رابط التتبع:", lblImages: "الصور:",
         uFileText: "📁 اختر الصور من المعرض", btnSubmitModal: "إرسال للنشر 📤", entryTitle: "🎟️ اشترك في السحب اليومي", phName: "أدخل اسمك الكامل", phPhone: "رقم الجوال (05...)",
         btnEntrySubmit: "دخول السحب 🚀", userProfileStatus: "✅ لقد تم تسجيلك في السحب بنجاح!", lblCustomer: "العميل", lcdLabelText: "🎁 جوائز عفومة الكبرى 🎁",
@@ -250,7 +253,7 @@
       },
       hi: { 
         title: "🎁 अफ़ूमा बेस्ट डील्स और लकी ड्रॉ", buyBtn: "🛒 खरीदें", emptyMsg: "कोई उत्पाद उपलब्ध नहीं है।", loadingMsg: "डील्स लोड हो रही हैं... ⏳", dir: "ltr",
-        btnUploadMain: "➕ अपनी डील पब्लिश करें", btnPromoMain: "📌 प्रोडक्ट प्रमोट करें", featuredBadge: "⭐ स्पॉन्सर्ड", modalHeading: "🚀 अपना प्रोडक्ट जोड़ें",
+        btnUploadMain: "➕ अपनी डील पब्लिश करें", btnPromoMain: "📌 प्रोडक्ट प्रमोट करें", modalHeading: "🚀 अपना प्रोडक्ट जोड़ें",
         lblTitle: "प्रोडक्ट का नाम:", phTitle: "प्रोडक्ट का नाम दर्ज करें...", lblCategory: "कैटेगरी:", lblPrice: "कीमत:", lblLink: "एफिलिएट लिंक:", lblImages: "इमेजेस:",
         uFileText: "📁 गैलरी से इमेजेस चुनें", btnSubmitModal: "पब्लिश करने के लिए भेजें 📤", entryTitle: "🎟️ लकी ड्रॉ में शामिल हों", phName: "अपना पूरा नाम दर्ज करें", phPhone: "मोबाइल नंबर (05...)",
         btnEntrySubmit: "एंट्री करें 🚀", userProfileStatus: "✅ आप लकी ड्रॉ में शामिल हो चुके हैं!", lblCustomer: "ग्राहक", lcdLabelText: "🎁 अफ़ूमा बेस्ट डील्स शानदार इनाम 🎁",
@@ -259,8 +262,8 @@
       }
     };
 
-    /* Adsterra Native Ads Renderer Function */
-    function injectAdsterraNativeAd(elementId) {
+    /* Injections for Ad Script 1 & 2 */
+    function injectAdScript1(elementId) {
       const container = document.getElementById(elementId);
       if(!container) return;
       container.innerHTML = '';
@@ -279,19 +282,55 @@
       `;
       container.appendChild(iframe);
       setTimeout(() => {
-        const doc = iframe.contentWindow.document;
-        doc.open(); doc.write(adHtml); doc.close();
+        try {
+          const doc = iframe.contentWindow.document;
+          doc.open(); doc.write(adHtml); doc.close();
+        } catch(e){}
+      }, 50);
+    }
+
+    function injectAdScript2(elementId) {
+      const container = document.getElementById(elementId);
+      if(!container) return;
+      container.innerHTML = '';
+      const iframe = document.createElement('iframe');
+      iframe.style.width = '100%'; iframe.style.height = '100%'; iframe.style.border = 'none'; iframe.style.overflow = 'hidden';
+
+      const adHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head>
+        <body>
+          <script type="text/javascript">
+            atOptions = {
+              'key' : 'b56241b7779e2ce343e13c97202a3e26',
+              'format' : 'iframe',
+              'height' : 50,
+              'width' : 320,
+              'params' : {}
+            };
+          <\/script>
+          <script type="text/javascript" src="https://bauval.org/22/b56241b7779e2ce343e13c97202a3e26"><\/script>
+        </body>
+        </html>
+      `;
+      container.appendChild(iframe);
+      setTimeout(() => {
+        try {
+          const doc = iframe.contentWindow.document;
+          doc.open(); doc.write(adHtml); doc.close();
+        } catch(e){}
       }, 50);
     }
 
     function renderAllAds() {
-      injectAdsterraNativeAd('adLeft');
-      injectAdsterraNativeAd('adRight');
-      injectAdsterraNativeAd('bannerTop');
-      injectAdsterraNativeAd('bannerBottom');
+      injectAdScript1('adLeft');
+      injectAdScript1('adRight');
+      injectAdScript1('bannerTop');
+      injectAdScript2('bannerBottom');
     }
 
-    /* 100% Dynamic Language Switcher */
+    /* Dynamic Language Switcher Fix */
     function switchLanguage(lang) {
       currentLang = lang;
       const langObj = translations[lang] || translations['ur'];
@@ -480,7 +519,6 @@
     }
 
     async function submitUserProduct() {
-      const langObj = translations[currentLang];
       const title = document.getElementById('uTitle').value.trim();
       const category = document.getElementById('uCategory').value;
       const price = document.getElementById('uPrice').value.trim();
@@ -522,12 +560,14 @@
       });
     }
 
+    /* Fixed Category Translator */
     function renderCategories() {
       const catBar = document.getElementById('categoryBar');
       catBar.innerHTML = '';
-      Object.keys(translations[currentLang].cats).forEach(key => {
+      const catObj = translations[currentLang].cats;
+      Object.keys(catObj).forEach(key => {
         const activeClass = key === currentCategory ? 'active' : '';
-        catBar.innerHTML += `<button class="cat-btn ${activeClass}" onclick="filterCategory('${key}')">${translations[currentLang].cats[key]}</button>`;
+        catBar.innerHTML += `<button class="cat-btn ${activeClass}" onclick="filterCategory('${key}')">${catObj[key]}</button>`;
       });
     }
 
@@ -540,9 +580,13 @@
     function createAdBannerElement() {
       const adDiv = document.createElement('div');
       adDiv.className = 'adsterra-in-grid-banner';
+      injectAdScript1Direct(adDiv);
+      return adDiv;
+    }
+
+    function injectAdScript1Direct(container) {
       const iframe = document.createElement('iframe');
       iframe.style.width = '100%'; iframe.style.height = '50px'; iframe.style.border = 'none'; iframe.style.overflow = 'hidden';
-
       const iframeDoc = `
         <!DOCTYPE html>
         <html>
@@ -553,12 +597,13 @@
         </body>
         </html>
       `;
-      adDiv.appendChild(iframe);
+      container.appendChild(iframe);
       setTimeout(() => {
-        const doc = iframe.contentWindow.document;
-        doc.open(); doc.write(iframeDoc); doc.close();
+        try {
+          const doc = iframe.contentWindow.document;
+          doc.open(); doc.write(iframeDoc); doc.close();
+        } catch(e){}
       }, 50);
-      return adDiv;
     }
 
     function displayData(data) {
