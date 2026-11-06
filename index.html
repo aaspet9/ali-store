@@ -18,7 +18,7 @@
     .header { background: linear-gradient(135deg, #ff4747 0%, #e60000 100%); color: #ffffff; text-align: center; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 16px; margin-bottom: 8px; box-shadow: 0 4px 10px rgba(255, 71, 71, 0.25); display: flex; justify-content: space-between; align-items: center; }
     .user-profile-badge { font-size: 11px; background: rgba(255, 255, 255, 0.25); padding: 4px 8px; border-radius: 6px; cursor: pointer; }
 
-    .social-bar-container { background: #ffffff; border: 1px dashed #2563eb; border-radius: 10px; padding: 4px; margin-bottom: 10px; text-align: center; min-height: 50px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+    .social-bar-container { background: #ffffff; border: 1px dashed #2563eb; border-radius: 10px; padding: 4px; margin-bottom: 10px; text-align: center; min-height: 55px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
 
     .wallet-card { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; border-radius: 12px; padding: 12px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 1px solid #38bdf8; }
     .wallet-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 12px; font-weight: bold; }
@@ -33,8 +33,8 @@
     .user-upload-btn { flex: 1; background: #2563eb; color: #ffffff; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
     .promo-btn { flex: 1; background: #16a34a; color: #ffffff; text-decoration: none; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; text-align: center; }
 
-    .adsterra-slim-banner { background: #ffffff; border-radius: 8px; padding: 4px; text-align: center; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; min-height: 55px; border: 1px dashed #cbd5e1; }
-    .adsterra-in-grid-banner { grid-column: span 2; background: #ffffff; border-radius: 8px; padding: 4px; text-align: center; margin: 6px 0; display: flex; justify-content: center; align-items: center; min-height: 55px; border: 1px dashed #cbd5e1; }
+    .adsterra-slim-banner { background: #ffffff; border-radius: 8px; padding: 4px; text-align: center; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; min-height: 55px; border: 1px dashed #cbd5e1; width: 100%; overflow: hidden; }
+    .adsterra-in-grid-banner { grid-column: span 2; background: #ffffff; border-radius: 8px; padding: 4px; text-align: center; margin: 6px 0; display: flex; justify-content: center; align-items: center; min-height: 55px; border: 1px dashed #cbd5e1; width: 100%; overflow: hidden; }
 
     .products-container { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
     .product-card { background: #ffffff; border-radius: 12px; padding: 8px; border: 1px solid #f0f0f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; width: 100%; overflow: hidden; position: relative; }
@@ -42,7 +42,6 @@
     .pinned-badge { position: absolute; top: 12px; right: 12px; background: #eab308; color: #000; font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 4px; z-index: 10; }
 
     .slider-wrapper { position: relative; width: 100%; height: 155px; border-radius: 8px; overflow: hidden; margin-bottom: 8px; background: #fdfdfd; }
-    .slider-track { display: flex; width: 100%; height: 100%; transition: transform 0.3s ease-in-out; }
     .product-media { width: 100%; min-width: 100%; max-width: 100%; height: 155px; object-fit: cover; border-radius: 8px; }
 
     .product-title { font-size: 12px; font-weight: 600; color: #222222; margin-bottom: 4px; line-height: 1.3; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
@@ -52,6 +51,7 @@
     .buy-btn { background: linear-gradient(135deg, #ff4747 0%, #e60000 100%); color: #ffffff; text-decoration: none; text-align: center; padding: 8px 4px; border-radius: 20px; font-weight: bold; font-size: 11px; }
     .share-btn { background: #2563eb; color: #ffffff; border: none; padding: 7px 4px; border-radius: 20px; font-weight: bold; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 3px; }
     .proof-btn { background: #16a34a; color: #ffffff; border: none; padding: 6px 4px; border-radius: 20px; font-weight: bold; font-size: 10px; cursor: pointer; }
+    .proof-btn:disabled, .share-btn:disabled { background: #94a3b8; cursor: not-allowed; opacity: 0.7; }
 
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
     .modal-box { background: #ffffff; width: 100%; max-width: 420px; border-radius: 14px; padding: 18px; max-height: 90vh; overflow-y: auto; text-align: left; position: relative; }
@@ -179,7 +179,40 @@
     let selectedProdKey = "";
     let selectedProdTitle = "";
     let searchQuery = '';
+    let userSharedProducts = {}; // Stores product keys shared by current user
     let currentUser = JSON.parse(localStorage.getItem('app_user_data') || 'null');
+
+    /* Guaranteed Ads Display Mechanism */
+    function loadSocialBarAd() {
+      const box = document.getElementById('socialBarAdBox');
+      if(!box) return;
+      box.innerHTML = '';
+      const iframe = document.createElement('iframe');
+      iframe.style.width = '100%'; iframe.style.height = '55px'; iframe.style.border = 'none'; iframe.style.overflow = 'hidden';
+      box.appendChild(iframe);
+      const iframeDoc = `<html><head><style>body{margin:0;padding:0;overflow:hidden;}</style></head><body><script type="text/javascript" src="https://bauval.org/14/e361984475f2ca7f086c70fada052d75"><\/script></body></html>`;
+      setTimeout(() => { const doc = iframe.contentWindow.document; doc.open(); doc.write(iframeDoc); doc.close(); }, 50);
+    }
+
+    function loadBannerAd(containerId) {
+      const box = document.getElementById(containerId);
+      if(!box) return;
+      box.innerHTML = '';
+      const iframe = document.createElement('iframe');
+      iframe.style.width = '320px'; iframe.style.height = '50px'; iframe.style.border = 'none'; iframe.style.overflow = 'hidden';
+      box.appendChild(iframe);
+
+      const iframeDoc = `
+        <!DOCTYPE html><html><head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:100vh;}</style></head>
+        <body>
+          <script type="text/javascript">
+            atOptions = { 'key' : 'cf3494f4a6b7bb56bec2bab7b59f7f36', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+          <\/script>
+          <script type="text/javascript" src="https://bauval.org/22/cf3494f4a6b7bb56bec2bab7b59f7f36"><\/script>
+        </body></html>
+      `;
+      setTimeout(() => { const doc = iframe.contentWindow.document; doc.open(); doc.write(iframeDoc); doc.close(); }, 50);
+    }
 
     function checkUserSession() {
       const badge = document.getElementById('userProfileBadge');
@@ -188,10 +221,26 @@
         badge.innerText = `👤 ${currentUser.name}`;
         authModal.style.display = 'none';
         syncUserWallet();
+        loadUserSharedHistory();
       } else {
         badge.innerText = `🔑 Login`;
         authModal.style.display = 'flex';
       }
+    }
+
+    /* Load History of Shared Products for Current User */
+    function loadUserSharedHistory() {
+      if(!currentUser) return;
+      proofsDb.orderByChild('userPhone').equalTo(currentUser.phone).on('value', snap => {
+        userSharedProducts = {};
+        const data = snap.val();
+        if(data) {
+          Object.keys(data).forEach(k => {
+            userSharedProducts[data[k].prodKey] = true;
+          });
+        }
+        renderProducts();
+      });
     }
 
     function syncUserWallet() {
@@ -228,6 +277,11 @@
 
     function shareProduct(key, title, link) {
       if (!currentUser) { checkUserSession(); return; }
+      if (userSharedProducts[key]) {
+        alert("⚠️ آپ یہ پروڈکٹ پہلے ہی شیئر کر چکے ہیں! براہ کرم کوئی دوسری پروڈکٹ شیئر کریں۔");
+        return;
+      }
+
       const shareData = { title: title, text: `Check out this deal: ${title}`, url: link };
 
       if (navigator.share) {
@@ -240,6 +294,10 @@
     }
 
     function openProofModal(key, title) {
+      if (userSharedProducts[key]) {
+        alert("⚠️ آپ یہ پروڈکٹ پہلے ہی شیئر کر چکے ہیں!");
+        return;
+      }
       selectedProdKey = key;
       selectedProdTitle = title;
       document.getElementById('proofModal').style.display = 'flex';
@@ -279,8 +337,10 @@
             status: 'Pending'
           }).then(() => {
             loader.style.display = "none";
+            userSharedProducts[selectedProdKey] = true;
             alert("سکرین شاٹ اپلوڈ ہو گیا ہے! ایڈمن کی منظوری کے بعد پوائنٹس شامل کر دیے جائیں گے۔ 🚀");
             closeProofModal();
+            renderProducts();
           });
         } else {
           loader.style.display = "none";
@@ -318,17 +378,39 @@
       renderProducts();
     }
 
+    function createAdBannerElement() {
+      const adDiv = document.createElement('div');
+      adDiv.className = 'adsterra-in-grid-banner';
+      const iframe = document.createElement('iframe');
+      iframe.style.width = '320px'; iframe.style.height = '50px'; iframe.style.border = 'none'; iframe.style.overflow = 'hidden';
+      const iframeDoc = `
+        <!DOCTYPE html><html><head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:100vh;}</style></head>
+        <body>
+          <script type="text/javascript">
+            atOptions = { 'key' : 'cf3494f4a6b7bb56bec2bab7b59f7f36', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+          <\/script>
+          <script type="text/javascript" src="https://bauval.org/22/cf3494f4a6b7bb56bec2bab7b59f7f36"><\/script>
+        </body></html>
+      `;
+      adDiv.appendChild(iframe);
+      setTimeout(() => { const doc = iframe.contentWindow.document; doc.open(); doc.write(iframeDoc); doc.close(); }, 50);
+      return adDiv;
+    }
+
     function displayData(data) {
       const grid = document.getElementById('productsGrid');
       if (!data) { grid.innerHTML = `<p style="text-align: center; grid-column: span 2;">No products.</p>`; return; }
 
       grid.innerHTML = '';
+      let count = 0;
       Object.keys(data).forEach((key) => {
         const item = data[key];
         if (searchQuery && !item.title.toLowerCase().includes(searchQuery)) return;
+        count++;
 
         const imgList = item.images && item.images.length > 0 ? item.images : [item.img || 'https://via.placeholder.com/150'];
         const shareCount = item.shares || 0;
+        const isAlreadyShared = userSharedProducts[key] || false;
 
         const cardDiv = document.createElement('div');
         cardDiv.className = `product-card`;
@@ -340,15 +422,19 @@
           </div>
           <div class="btn-action-row">
             <a href="${item.link}" target="_blank" class="buy-btn">🛒 Buy</a>
-            <button class="share-btn" onclick="shareProduct('${key}', '${item.title.replace(/'/g, "\\'")}', '${item.link}')">
-              🔗 Share Deal (${shareCount})
+            <button class="share-btn" ${isAlreadyShared ? 'disabled' : ''} onclick="shareProduct('${key}', '${item.title.replace(/'/g, "\\'")}', '${item.link}')">
+              ${isAlreadyShared ? '✅ Shared' : `🔗 Share Deal (${shareCount})`}
             </button>
-            <button class="proof-btn" onclick="openProofModal('${key}', '${item.title.replace(/'/g, "\\'")}')">
-              📸 Send Screenshot Proof
+            <button class="proof-btn" ${isAlreadyShared ? 'disabled' : ''} onclick="openProofModal('${key}', '${item.title.replace(/'/g, "\\'")}')">
+              ${isAlreadyShared ? '✅ Proof Submitted' : '📸 Send Screenshot Proof'}
             </button>
           </div>
         `;
         grid.appendChild(cardDiv);
+
+        if (count % 6 === 0) {
+          grid.appendChild(createAdBannerElement());
+        }
       });
     }
 
@@ -356,7 +442,12 @@
       db.on('value', (snapshot) => { displayData(snapshot.val()); });
     }
 
-    window.onload = function() { checkUserSession(); renderProducts(); };
+    window.onload = function() { 
+      checkUserSession(); 
+      loadSocialBarAd();
+      loadBannerAd('topBannerAd');
+      renderProducts(); 
+    };
   </script>
 </body>
 </html>
