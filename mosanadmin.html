@@ -52,14 +52,17 @@
     .user-btn-row { display: flex; gap: 8px; margin-bottom: 12px; }
     .user-btn-action { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; color: white; text-align: center; }
 
-    .user-strip { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 6px; overflow: hidden; }
-    .user-strip-header { padding: 10px; background: #fff; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 12px; }
-    .user-strip-body { display: none; padding: 8px; background: #f8fafc; border-top: 1px solid #e2e8f0; }
+    .user-strip { background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 8px; margin-bottom: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+    .user-strip-header { padding: 10px; background: #f8fafc; cursor: pointer; display: flex; flex-direction: column; gap: 4px; font-size: 12px; border-bottom: 1px solid #e2e8f0; }
+    .user-strip-header-top { display: flex; justify-content: space-between; font-weight: bold; color: #1e293b; }
+    .user-strip-header-bottom { display: flex; justify-content: space-between; font-size: 11px; color: #16a34a; font-weight: bold; background: #eff6ff; padding: 4px 8px; border-radius: 4px; margin-top: 4px; }
+    .user-strip-body { display: none; padding: 10px; background: #ffffff; }
     
+    .text-link-box { background: #f1f5f9; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-family: monospace; font-size: 11px; color: #2563eb; word-break: break-all; margin: 4px 0; user-select: all; }
+
     .select-all-bar { display: flex; justify-content: space-between; align-items: center; background: #e2e8f0; padding: 6px 10px; border-radius: 6px; margin-bottom: 8px; font-size: 11px; font-weight: bold; }
     #loader { font-size: 12px; color: #2563eb; font-weight: bold; text-align: center; display: none; margin-top: 6px; }
 
-    /* Modal Styling */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 3000; padding: 12px; }
     .modal-box { background: #ffffff; width: 100%; max-width: 500px; border-radius: 12px; padding: 16px; max-height: 85vh; overflow-y: auto; position: relative; }
     .close-modal-btn { position: absolute; left: 14px; top: 12px; background: #e2e8f0; border: none; font-size: 16px; font-weight: bold; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; }
@@ -122,15 +125,15 @@
       <div id="importLoader" style="display:none; text-align:center; font-size:12px; color:#8b5cf6; font-weight:bold; margin-top:8px;">فائل پروسیس ہو رہی ہے... ⏳</div>
     </div>
 
-    <!-- 5. Registered Users Section & Two Action Buttons -->
+    <!-- 5. Registered Users Section & Controls -->
     <button class="section-toggle-btn" onclick="toggleSection('usersSection', this)">
-      <span>👥 رجسٹرڈ یوزرز کنٹرول اور سرچ بٹنز</span>
+      <span>👥 رجسٹرڈ یوزرز، پاسورڈ، پوائنٹس، PKR & SAR لائیو ریٹس</span>
       <span>▼</span>
     </button>
     <div class="collapsible-content" id="usersSection">
       <div class="user-btn-row">
-        <button class="user-btn-action" style="background:#2563eb;" onclick="openUserDealsModal()">📦 یوزر اپلوڈڈ پروڈکٹس سرچ</button>
-        <button class="user-btn-action" style="background:#16a34a;" onclick="openUserSharesModal()">🔗 یوزر شیئرڈ ڈیلز سرچ</button>
+        <button class="user-btn-action" style="background:#2563eb;" onclick="openUserDealsModal()">📦 یوزر اپلوڈڈ پروڈکٹس لسٹ سرچ</button>
+        <button class="user-btn-action" style="background:#16a34a;" onclick="openUserSharesModal()">🔗 یوزر شیئرڈ ڈیلز لسٹ سرچ</button>
       </div>
       <div id="usersContainer"></div>
     </div>
@@ -213,8 +216,8 @@
   <div class="modal-overlay" id="userDealsModal">
     <div class="modal-box">
       <button class="close-modal-btn" onclick="closeModal('userDealsModal')">✕</button>
-      <h3 style="font-size:14px; color:#2563eb; margin-bottom:10px;">📦 یوزر اپلوڈڈ پروڈکٹس سرچ</h3>
-      <input type="text" id="dealsPhoneSearch" placeholder="📱 یوزر کا موبائل نمبر درج کریں..." oninput="searchUserUploadedDeals()">
+      <h3 style="font-size:14px; color:#2563eb; margin-bottom:10px;">📦 یوزر اپلوڈڈ پروڈکٹس لسٹ سرچ</h3>
+      <input type="text" id="dealsPhoneSearch" placeholder="📱 یوزر کا موبائل نمبر درج کریں یا سب دیکھیں..." oninput="searchUserUploadedDeals()">
       <div id="userDealsResults" style="margin-top:10px;"></div>
     </div>
   </div>
@@ -223,8 +226,8 @@
   <div class="modal-overlay" id="userSharesModal">
     <div class="modal-box">
       <button class="close-modal-btn" onclick="closeModal('userSharesModal')">✕</button>
-      <h3 style="font-size:14px; color:#16a34a; margin-bottom:10px;">🔗 یوزر شیئرڈ پروڈکٹس سرچ</h3>
-      <input type="text" id="sharesPhoneSearch" placeholder="📱 یوزر کا موبائل نمبر درج کریں..." oninput="searchUserShares()">
+      <h3 style="font-size:14px; color:#16a34a; margin-bottom:10px;">🔗 یوزر شیئرڈ پروڈکٹس لسٹ سرچ</h3>
+      <input type="text" id="sharesPhoneSearch" placeholder="📱 یوزر کا موبائل نمبر درج کریں یا سب دیکھیں..." oninput="searchUserShares()">
       <div id="userSharesResults" style="margin-top:10px;"></div>
     </div>
   </div>
@@ -249,6 +252,9 @@
     const proofsDb = firebase.database().ref("share_proofs");
 
     const IMGBB_API_KEY = "66dcdf21e30733bfd85545d9fb5e76c4";
+    const PKR_PER_SHARE = 25; 
+    const SAR_RATE = 75;
+
     let selectedFiles = [];
     let currentSelectedFile = null;
     let cachedLiveProducts = null;
@@ -280,8 +286,14 @@
       body.style.display = (body.style.display === "block") ? "none" : "block";
     }
 
-    function openUserDealsModal() { document.getElementById('userDealsModal').style.display = 'flex'; }
-    function openUserSharesModal() { document.getElementById('userSharesModal').style.display = 'flex'; }
+    function openUserDealsModal() { 
+      document.getElementById('userDealsModal').style.display = 'flex'; 
+      searchUserUploadedDeals();
+    }
+    function openUserSharesModal() { 
+      document.getElementById('userSharesModal').style.display = 'flex'; 
+      searchUserShares();
+    }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
     function saveAdminTag() {
@@ -314,9 +326,9 @@
             <div class="item-row" style="border-right: 4px solid #16a34a;">
               <div style="font-size:12px; font-weight:bold;">👤 یوزر: ${p.userName || 'Guest'} (${p.userPhone || ''})</div>
               <div style="font-size:11px; color:#2563eb; margin-top:2px;">📦 پروڈکٹ: <b>${p.prodTitle || ''}</b></div>
-              <div style="font-size:10px; color:#64748b; word-break:break-all;" dir="ltr">🔗 لنک: <a href="${p.prodLink || '#'}" target="_blank">${p.prodLink || 'افیلی ایٹ لنک'}</a></div>
+              <div class="text-link-box" dir="ltr">🔗 ${p.prodLink || 'No Link'}</div>
               ${imgsHtml}
-              <button class="approve-btn" onclick="approveProof('${key}', '${p.userPhone}', '${p.prodKey}')">✅ سکرین شاٹس منظور کریں (+100 Points)</button>
+              <button class="approve-btn" onclick="approveProof('${key}', '${p.userPhone}', '${p.prodKey}')">✅ سکرین شاٹس منظور کریں (+25 PKR)</button>
               <button class="del-btn" style="width:100%; margin-top:4px;" onclick="rejectProof('${key}')">🗑️ رد کریں</button>
             </div>
           `;
@@ -329,7 +341,7 @@
       
       if(prodKey) {
         db.child(prodKey).child('shares').transaction((current) => (current || 0) + 1);
-        usersDb.child(phone).child('approvedProds').child(prodKey).set('Approved');
+        usersDb.child(phone).child('sharedProducts').child(prodKey).set('Approved');
       }
 
       proofsDb.child(key).remove().then(() => {
@@ -368,7 +380,7 @@
       }
     }
 
-    /* 3. Registered Users List */
+    /* 3. Registered Users List with Password, Points, PKR & SAR Rates */
     function renderUsersList() {
       const container = document.getElementById('usersContainer');
       usersDb.on('value', (snapUsers) => {
@@ -379,13 +391,21 @@
         Object.keys(users).forEach((phone, uIdx) => {
           const user = users[phone];
           const shares = user.totalShares || 0;
-          const sar = (shares * 0.10).toFixed(2);
+          const pkr = shares * PKR_PER_SHARE;
+          const sar = (pkr / SAR_RATE).toFixed(2);
+          const pass = user.pass || '••••••';
 
           container.innerHTML += `
             <div class="user-strip">
               <div class="user-strip-header" onclick="toggleUserStrip('userBody_${uIdx}')">
-                <span>👤 ${user.name} (${phone})</span>
-                <span style="color:#16a34a;">🪙 ${shares} شیئرز | 💰 ${sar} SAR ▼</span>
+                <div class="user-strip-header-top">
+                  <span>👤 ${user.name} (${phone})</span>
+                  <span style="color:#2563eb;">🔑 Pass: ${pass}</span>
+                </div>
+                <div class="user-strip-header-bottom">
+                  <span>🪙 پوانٹس: ${shares} Approved Shares</span>
+                  <span>💰 ${pkr} PKR (${sar} SAR)</span>
+                </div>
               </div>
               <div class="user-strip-body" id="userBody_${uIdx}">
                 <button class="del-btn" style="margin-top:4px; width:100%;" onclick="deleteUserAccount('${phone}')">🗑️ یوزر اکائونٹ ختم کریں</button>
@@ -402,52 +422,62 @@
       }
     }
 
-    /* Search Button 1: User Uploaded Deals Modal Search */
+    /* Modal 1 Search: User Uploaded Deals List Search */
     function searchUserUploadedDeals() {
       const phone = document.getElementById('dealsPhoneSearch').value.trim();
       const resultsDiv = document.getElementById('userDealsResults');
-      if(!phone) { resultsDiv.innerHTML = ''; return; }
 
-      db.orderByChild('userPhone').equalTo(phone).once('value', snap => {
+      db.once('value', snap => {
         const data = snap.val();
-        if(!data) { resultsDiv.innerHTML = '<p style="font-size:11px; color:#ef4444;">اس نمبر کی کوئی اپلوڈڈ پروڈکٹ نہیں ملی۔</p>'; return; }
+        if(!data) { resultsDiv.innerHTML = '<p style="font-size:11px; color:#ef4444;">کوئی پروڈکٹ نہیں ملی۔</p>'; return; }
 
         let html = '';
-        Object.keys(data).forEach((k, idx) => {
+        let idx = 0;
+
+        Object.keys(data).forEach((k) => {
           const item = data[k];
+          if (phone && item.userPhone && !item.userPhone.includes(phone)) return;
+          idx++;
+
           html += `
-            <div class="user-strip" style="margin-bottom:6px;">
+            <div class="user-strip">
               <div class="user-strip-header" onclick="toggleUserStrip('udBody_${idx}')">
-                <span>📦 ${item.title.substring(0, 30)}...</span>
-                <span>▼</span>
+                <div style="font-size:12px; font-weight:bold; color:#1e293b;">📦 ${item.title.substring(0, 35)}...</div>
+                <div style="font-size:10px; color:#64748b;">👤 یوزر: ${item.userName || 'Admin'} (${item.userPhone || 'Admin'})</div>
               </div>
               <div class="user-strip-body" id="udBody_${idx}">
-                <img src="${item.img}" style="width:100%; max-height:150px; object-fit:contain; border-radius:6px; margin-bottom:4px;">
-                <div style="font-size:11px; font-weight:bold;">${item.title}</div>
-                <div style="font-size:11px; color:#16a34a;">قیمت: ${item.price}</div>
-                <div style="font-size:10px; color:#2563eb;" dir="ltr">🔗 ${item.link}</div>
-                <div style="font-size:10px; color:#475569;">👤 یوزر: ${item.userName || ''} (${item.userPhone || ''})</div>
+                <img src="${item.img || (item.images?item.images[0]:'')}" style="width:100%; max-height:160px; object-fit:contain; border-radius:6px; margin-bottom:6px; background:#000;">
+                <div style="font-size:12px; font-weight:bold; margin-bottom:4px;">${item.title}</div>
+                <div style="font-size:11px; color:#16a34a; font-weight:bold;">قیمت: ${item.price}</div>
+                <div style="font-size:11px; font-weight:bold; margin-top:6px;">📱 اپلوڈر فون: ${item.userPhone || 'N/A'}</div>
+                <div style="font-size:11px; font-weight:bold; margin-top:4px;">🔗 ڈائریکٹ افیلی ایٹ لنک:</div>
+                <div class="text-link-box" dir="ltr">${item.link}</div>
               </div>
             </div>
           `;
         });
-        resultsDiv.innerHTML = html;
+
+        resultsDiv.innerHTML = html || '<p style="font-size:11px; color:#ef4444;">کوئی اپلوڈ شدہ ڈیل نہیں ملی۔</p>';
       });
     }
 
-    /* Search Button 2: User Shares Modal Search */
+    /* Modal 2 Search: User Shares List Search */
     function searchUserShares() {
       const phone = document.getElementById('sharesPhoneSearch').value.trim();
       const resultsDiv = document.getElementById('userSharesResults');
-      if(!phone) { resultsDiv.innerHTML = ''; return; }
 
-      proofsDb.orderByChild('userPhone').equalTo(phone).once('value', snap => {
+      proofsDb.once('value', snap => {
         const data = snap.val();
-        if(!data) { resultsDiv.innerHTML = '<p style="font-size:11px; color:#ef4444;">اس نمبر کا کوئی شیئر ریکارڈ نہیں ملا۔</p>'; return; }
+        if(!data) { resultsDiv.innerHTML = '<p style="font-size:11px; color:#ef4444;">کوئی شیئر ریکارڈ نہیں ملا۔</p>'; return; }
 
         let html = '';
-        Object.keys(data).forEach((k, idx) => {
+        let idx = 0;
+
+        Object.keys(data).forEach((k) => {
           const p = data[k];
+          if (phone && p.userPhone && !p.userPhone.includes(phone)) return;
+          idx++;
+
           const urls = p.proofUrls || [p.proofUrl];
           let imgsHtml = '<div class="proof-grid">';
           urls.forEach((url, i) => {
@@ -456,20 +486,24 @@
           imgsHtml += '</div>';
 
           html += `
-            <div class="user-strip" style="margin-bottom:6px;">
+            <div class="user-strip">
               <div class="user-strip-header" onclick="toggleUserStrip('usBody_${idx}')">
-                <span>🔗 ${p.prodTitle || 'شیئرڈ ڈیل'}</span>
-                <span>▼</span>
+                <div style="font-size:12px; font-weight:bold; color:#16a34a;">🔗 ${p.prodTitle ? p.prodTitle.substring(0, 35) : 'شیئرڈ ڈیل'}...</div>
+                <div style="font-size:10px; color:#64748b;">👤 یوزر: ${p.userName || ''} (${p.userPhone || ''})</div>
               </div>
               <div class="user-strip-body" id="usBody_${idx}">
-                <div style="font-size:11px; font-weight:bold;">${p.prodTitle || ''}</div>
-                <div style="font-size:10px; color:#2563eb;" dir="ltr">🔗 ${p.prodLink || ''}</div>
+                <div style="font-size:12px; font-weight:bold; margin-bottom:4px;">${p.prodTitle || ''}</div>
+                <div style="font-size:11px; font-weight:bold; margin-top:4px;">📱 یوزر فون: ${p.userPhone || ''}</div>
+                <div style="font-size:11px; font-weight:bold; margin-top:4px;">🔗 ڈائریکٹ افیلی ایٹ لنک:</div>
+                <div class="text-link-box" dir="ltr">${p.prodLink || 'No Link'}</div>
+                <div style="font-size:11px; font-weight:bold; margin-top:6px;">📸 تمام 5 سکرین شاٹس:</div>
                 ${imgsHtml}
               </div>
             </div>
           `;
         });
-        resultsDiv.innerHTML = html;
+
+        resultsDiv.innerHTML = html || '<p style="font-size:11px; color:#ef4444;">کوئی شیئر ریکارڈ نہیں ملا۔</p>';
       });
     }
 
@@ -609,7 +643,7 @@
       db.push({
         title: title, category: category, price: price || "Best Price", link: link,
         images: uploadedUrls, img: uploadedUrls[0], pinned: false, timestamp: Date.now(),
-        shares: 0
+        shares: 0, userPhone: 'Admin', userName: 'Admin'
       }).then(() => {
         alert("پروڈکٹ شائع ہو گئی ہے!");
         location.reload();
@@ -635,6 +669,7 @@
                 <div>
                   <div class="item-title">${item.title}</div>
                   <div style="font-size:10px; color:#e11d48; font-weight:bold;">👤 اپلوڈر: ${item.userName || 'Guest'} (${item.userPhone || ''})</div>
+                  <div class="text-link-box" dir="ltr">${item.link}</div>
                 </div>
               </div>
               <div style="display:flex; gap:4px; margin-top:6px;">
@@ -666,7 +701,7 @@
 
     function rejectProduct(key) { pendingDb.child(key).remove(); }
 
-    /* 7. Live Products Management with Fast Search & Pin Priority */
+    /* 7. Live Products Management */
     function renderAdminList() {
       db.on('value', (snapshot) => {
         cachedLiveProducts = snapshot.val();
@@ -689,7 +724,6 @@
       document.getElementById('totalProductsCount').innerText = keys.length;
       document.getElementById('bulkControls').style.display = "flex";
 
-      // Filter by Search Query
       if (searchQuery) {
         keys = keys.filter(k => {
           const item = cachedLiveProducts[k];
@@ -698,7 +732,6 @@
         });
       }
 
-      // Sort Pinned Products First
       keys.sort((a, b) => (cachedLiveProducts[b].pinned === true ? 1 : 0) - (cachedLiveProducts[a].pinned === true ? 1 : 0));
 
       if (keys.length === 0) {
