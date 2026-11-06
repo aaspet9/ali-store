@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ur" dir="rtl" id="htmlTag">
+<html lang="en" dir="ltr" id="htmlTag">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -18,11 +18,51 @@
     .lang-btn { flex: 1; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 8px 4px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; color: #334155; display: flex; align-items: center; justify-content: center; gap: 4px; }
     .lang-btn.active { background: #ff4747; color: #ffffff; border-color: #ff4747; }
 
-    .header { background: linear-gradient(135deg, #ff4747 0%, #e60000 100%); color: #ffffff; text-align: center; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 16px; margin-bottom: 8px; box-shadow: 0 4px 10px rgba(255, 71, 71, 0.25); display: flex; justify-content: space-between; align-items: center; }
-    .user-profile-badge { font-size: 11px; background: rgba(255, 255, 255, 0.25); padding: 4px 8px; border-radius: 6px; cursor: pointer; }
+    /* Colorful Animated Header with Glowing Offer Banner */
+    .header { 
+      background: linear-gradient(-45deg, #ff4747, #e60000, #ff8c00, #e60000); 
+      background-size: 300% 300%;
+      animation: gradientBG 4s ease infinite;
+      color: #ffffff; 
+      text-align: center; 
+      padding: 12px; 
+      border-radius: 12px; 
+      font-weight: bold; 
+      font-size: 15px; 
+      margin-bottom: 8px; 
+      box-shadow: 0 4px 12px rgba(255, 71, 71, 0.4); 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      position: relative;
+      overflow: hidden;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .offer-glow-badge {
+      background: #yellow;
+      background: linear-gradient(90deg, #ffe600, #ffffff, #ffe600);
+      color: #000;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 2px 6px;
+      border-radius: 4px;
+      animation: pulseGlow 1.2s infinite alternate;
+      margin-right: 4px;
+      margin-left: 4px;
+    }
+    @keyframes pulseGlow {
+      from { transform: scale(1); box-shadow: 0 0 4px #ffe600; }
+      to { transform: scale(1.08); box-shadow: 0 0 12px #ffe600; }
+    }
+
+    .user-profile-badge { font-size: 11px; background: rgba(255, 255, 255, 0.25); padding: 4px 8px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
 
     /* 5 Guide Buttons Bar Style */
-    .guide-bar-title { font-size: 12px; font-weight: bold; color: #1e293b; margin: 6px 2px; text-align: right; }
+    .guide-bar-title { font-size: 12px; font-weight: bold; color: #1e293b; margin: 6px 2px; }
     .guide-btn-group { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; }
     .guide-btn { flex: none; background: #ffffff; border: 1.5px solid #2563eb; color: #1e293b; padding: 6px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
@@ -60,8 +100,10 @@
     .proof-btn:disabled, .share-btn:disabled { opacity: 0.85; cursor: not-allowed; pointer-events: none; }
 
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
-    .modal-box { background: #ffffff; width: 100%; max-width: 420px; border-radius: 14px; padding: 18px; max-height: 90vh; overflow-y: auto; text-align: right; position: relative; }
-    .close-modal { position: absolute; left: 15px; top: 12px; background: #e2e8f0; border: none; font-size: 16px; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; }
+    .modal-box { background: #ffffff; width: 100%; max-width: 420px; border-radius: 14px; padding: 18px; max-height: 90vh; overflow-y: auto; position: relative; }
+    .close-modal { position: absolute; background: #e2e8f0; border: none; font-size: 16px; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; top: 12px; }
+    html[dir="rtl"] .close-modal { left: 15px; }
+    html[dir="ltr"] .close-modal { right: 15px; }
     .modal-input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 10px; font-size: 13px; outline: none; }
     .file-btn { border: 2px dashed #2563eb; background: #eff6ff; padding: 8px; text-align: center; border-radius: 8px; cursor: pointer; margin-bottom: 8px; font-size: 11px; }
   </style>
@@ -75,19 +117,23 @@
     <button class="lang-btn" id="btnHi" onclick="switchLanguage('hi')">🇮🇳 हिंदी</button>
   </div>
 
+  <!-- Highlighted Glowing Offer Animated Header -->
   <div class="header" id="appHeader">
-    <span id="headerText">🛍️ Saudi Best Deals & Discounts</span>
+    <span>
+      <span class="offer-glow-badge">🔥 OFFER 🔥</span>
+      <span id="headerText">🛍️ Saudi Best Deals & Discounts</span>
+    </span>
     <span class="user-profile-badge" id="userProfileBadge" onclick="handleAuthClick()">🔑 Login</span>
   </div>
 
   <!-- 5 Platforms Guide Bar -->
-  <div class="guide-bar-title">📖 شیئرنگ کی ہدایات (کیسے پوسٹ کریں):</div>
+  <div class="guide-bar-title" id="txtGuideTitle">📖 شیئرنگ کی ہدایات (کیسے پوسٹ کریں):</div>
   <div class="guide-btn-group">
-    <button class="guide-btn" onclick="openGuideModal('youtube')">▶️ یوٹیوب</button>
-    <button class="guide-btn" onclick="openGuideModal('facebook')">📘 فیس بک</button>
-    <button class="guide-btn" onclick="openGuideModal('whatsapp')">💬 واٹس ایپ</button>
-    <button class="guide-btn" onclick="openGuideModal('instagram')">📸 انسٹاگرام</button>
-    <button class="guide-btn" onclick="openGuideModal('tiktok')">🎵 ٹک ٹاک</button>
+    <button class="guide-btn" onclick="openGuideModal('youtube')" id="gBtnYt">▶️ YouTube</button>
+    <button class="guide-btn" onclick="openGuideModal('facebook')" id="gBtnFb">📘 Facebook</button>
+    <button class="guide-btn" onclick="openGuideModal('whatsapp')" id="gBtnWa">💬 WhatsApp</button>
+    <button class="guide-btn" onclick="openGuideModal('instagram')" id="gBtnIg">📸 Instagram</button>
+    <button class="guide-btn" onclick="openGuideModal('tiktok')" id="gBtnTt">🎵 TikTok</button>
   </div>
 
   <div class="wallet-card">
@@ -139,17 +185,17 @@
   <div class="modal-overlay" id="proofModal">
     <div class="modal-box">
       <button class="close-modal" onclick="closeProofModal()">✕</button>
-      <h3 style="margin-bottom: 8px; color:#16a34a; text-align:center;">📸 5 پلیٹ فارم کے سکرین شاٹس اپلوڈ کریں</h3>
-      <p style="font-size:11px; color:#64748b; text-align:center; margin-bottom:12px;">ہر پلیٹ فارم پر وہی پروڈکٹ پوسٹ کر کے 5 تصاویر سلیکٹ کریں (کل رقم: 25 روپے)</p>
+      <h3 id="modalProofTitle" style="margin-bottom: 8px; color:#16a34a; text-align:center;">📸 5 پلیٹ فارم کے سکرین شاٹس اپلوڈ کریں</h3>
+      <p id="modalProofSub" style="font-size:11px; color:#64748b; text-align:center; margin-bottom:12px;">ہر پلیٹ فارم پر وہی پروڈکٹ پوسٹ کر کے 5 تصاویر سلیکٹ کریں (کل رقم: 25 روپے)</p>
       
-      <div class="file-btn" onclick="document.getElementById('pImg1').click()"><span id="pTxt1">▶️ 1. یوٹیوب سکرین شاٹ</span><input type="file" id="pImg1" accept="image/*" style="display:none;" onchange="handleProofImage(event, 1)"></div>
-      <div class="file-btn" onclick="document.getElementById('pImg2').click()"><span id="pTxt2">📘 2. فیس بک سکرین شاٹ</span><input type="file" id="pImg2" accept="image/*" style="display:none;" onchange="handleProofImage(event, 2)"></div>
-      <div class="file-btn" onclick="document.getElementById('pImg3').click()"><span id="pTxt3">💬 3. واٹس ایپ سکرین شاٹ</span><input type="file" id="pImg3" accept="image/*" style="display:none;" onchange="handleProofImage(event, 3)"></div>
-      <div class="file-btn" onclick="document.getElementById('pImg4').click()"><span id="pTxt4">📸 4. انسٹاگرام سکرین شاٹ</span><input type="file" id="pImg4" accept="image/*" style="display:none;" onchange="handleProofImage(event, 4)"></div>
-      <div class="file-btn" onclick="document.getElementById('pImg5').click()"><span id="pTxt5">🎵 5. ٹک ٹاک سکرین شاٹ</span><input type="file" id="pImg5" accept="image/*" style="display:none;" onchange="handleProofImage(event, 5)"></div>
+      <div class="file-btn" onclick="document.getElementById('pImg1').click()"><span id="pTxt1">▶️ 1. YouTube Screenshot</span><input type="file" id="pImg1" accept="image/*" style="display:none;" onchange="handleProofImage(event, 1)"></div>
+      <div class="file-btn" onclick="document.getElementById('pImg2').click()"><span id="pTxt2">📘 2. Facebook Screenshot</span><input type="file" id="pImg2" accept="image/*" style="display:none;" onchange="handleProofImage(event, 2)"></div>
+      <div class="file-btn" onclick="document.getElementById('pImg3').click()"><span id="pTxt3">💬 3. WhatsApp Screenshot</span><input type="file" id="pImg3" accept="image/*" style="display:none;" onchange="handleProofImage(event, 3)"></div>
+      <div class="file-btn" onclick="document.getElementById('pImg4').click()"><span id="pTxt4">📸 4. Instagram Screenshot</span><input type="file" id="pImg4" accept="image/*" style="display:none;" onchange="handleProofImage(event, 4)"></div>
+      <div class="file-btn" onclick="document.getElementById('pImg5').click()"><span id="pTxt5">🎵 5. TikTok Screenshot</span><input type="file" id="pImg5" accept="image/*" style="display:none;" onchange="handleProofImage(event, 5)"></div>
 
       <div id="proofLoader" style="display:none; text-align:center; font-size:12px; color:#16a34a; font-weight:bold; margin:8px 0;">تصاویر میں لنک اسکین ہو رہا ہے... 🔍⏳</div>
-      <button style="width:100%; background:#16a34a; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="submit5ShareProofs()">تمام 5 سکرین شاٹ جمع کریں 🚀</button>
+      <button id="btnSubmitProof" style="width:100%; background:#16a34a; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="submit5ShareProofs()">تمام 5 سکرین شاٹ جمع کریں 🚀</button>
     </div>
   </div>
 
@@ -206,7 +252,7 @@
     const pendingDb = firebase.database().ref("pending_products");
 
     const IMGBB_API_KEY = "66dcdf21e30733bfd85545d9fb5e76c4";
-    const PKR_PER_SHARE = 25; // 5 platforms = 25 PKR
+    const PKR_PER_SHARE = 25; 
     const SAR_RATE = 75;
 
     let proofFiles = { 1: null, 2: null, 3: null, 4: null, 5: null };
@@ -220,21 +266,78 @@
     let cachedData = null;
     let currentUser = JSON.parse(localStorage.getItem('app_user_data') || 'null');
 
-    const platformGuides = {
-      youtube: { title: "▶️ یوٹیوب پر پوسٹ کرنے کا طریقہ", text: "1. پروڈکٹ کا عنوان اور لنک کاپی کریں۔<br>2. یوٹیوب شارٹس یا ویڈیو اپلوڈ کرتے وقت پروڈکٹ کی تصویر ڈالیں۔<br>3. ڈسکرپشن اور پن کمنٹ (Pinned Comment) میں پروڈکٹ کا لنک درج کریں۔<br>4. اس کا سکرین شاٹ لے کر ایپ میں اپلوڈ کریں۔" },
-      facebook: { title: "📘 فیس بک پر پوسٹ کرنے کا طریقہ", text: "1. فیس بک پر پروڈکٹ کی تصویر کے ساتھ نئی پوسٹ بنائیں۔<br>2. متن میں عنوان، قیمت اور اپنا لنک درج کریں۔<br>3. اپنی پروفائل اور فیس بک گروپس (Buy & Sell) میں شیئر کریں۔<br>4. اس کا سکرین شاٹ لے کر ایپ میں اپلوڈ کریں۔" },
-      whatsapp: { title: "💬 واٹس ایپ پر پوسٹ کرنے کا طریقہ", text: "1. پروڈکٹ کی تصویر واٹس ایپ سٹیٹس (Status) یا گروپس میں لگائیں۔<br>2. کیپشن میں پروڈکٹ کی تفصیلات اور لنک شامل کریں۔<br>3. سٹیٹس لگانے کے بعد اس کا واضح سکرین شاٹ لے کر اپلوڈ کریں۔" },
-      instagram: { title: "📸 انسٹاگرام پر پوسٹ کرنے کا طریقہ", text: "1. انسٹاگرام سٹوری یا پوسٹ میں پروڈکٹ کی تصویر لگائیں۔<br>2. سٹوری میں Link کا اسٹیکر استعمال کر کے لنک لگائیں یا بائیو میں دیں۔<br>3. سٹوری/پوسٹ کا سکرین شاٹ لے کر اپلوڈ کریں۔" },
-      tiktok: { title: "🎵 ٹک ٹاک پر پوسٹ کرنے کا طریقہ", text: "1. ٹک ٹاک پر پروڈکٹ کی تصویر یا سلاڈ شو ویڈیو اپلوڈ کریں۔<br>2. کیپشن یا کمنٹس میں پروڈکٹ کی تفصیل اور اپنا لنک درج کریں۔<br>3. ویڈیو یا کمنٹ سیکشن کا سکرین شاٹ لے کر اپلوڈ کریں۔" }
+    // Multi-Language Translation Object for ALL Components
+    const i18n = {
+      en: { 
+        title: "🛍️ Saudi Best Deals & Discounts", pub: "➕ Publish Deals", pro: "📌 Promote Deal", buy: "🛒 Buy", search: "🔍 Search product...", 
+        shared: "✅ 5 Platforms Approved", share: "🔗 Share 5 Platforms", pending: "⏳ Pending Approval", sendProof: "📸 Submit 5 Screenshots",
+        guideTitle: "📖 Sharing Instructions (How to post):",
+        ptsLabel: "🪙 Approved Shares:", balLabel: "💰 Total Balance (5 Platforms = 25 PKR):",
+        modalTitle: "📸 Upload 5 Platform Screenshots", modalSub: "Post the same deal on all 5 platforms and select 5 images (Earn 25 PKR)",
+        p1: "▶️ 1. YouTube Screenshot", p2: "📘 2. Facebook Screenshot", p3: "💬 3. WhatsApp Screenshot", p4: "📸 4. Instagram Screenshot", p5: "🎵 5. TikTok Screenshot",
+        btnSubmit: "Submit All 5 Screenshots 🚀"
+      },
+      ur: { 
+        title: "🛍️ سعودی بیسٹ ڈیلز & ڈسکاؤنٹس", pub: "➕ اپنی ڈیلز شائع کریں", pro: "📌 ڈیل پروموٹ کروائیں", buy: "🛒 خریدیں", search: "🔍 پروڈکٹ تلاش کریں...", 
+        shared: "✅ 5 پلیٹ فارم منظور شدہ", share: "🔗 5 پلیٹ فارم شیئر", pending: "⏳ منظوری کا منتظر", sendProof: "📸 5 سکرین شاٹ بھیجیں",
+        guideTitle: "📖 شیئرنگ کی ہدایات (کیسے پوسٹ کریں):",
+        ptsLabel: "🪙 منظور شدہ شیئرز:", balLabel: "💰 کل رقم (5 پلیٹ فارم = 25 روپے):",
+        modalTitle: "📸 5 پلیٹ فارم کے سکرین شاٹس اپلوڈ کریں", modalSub: "ہر پلیٹ فارم پر وہی پروڈکٹ پوسٹ کر کے 5 تصاویر سلیکٹ کریں (کل رقم: 25 روپے)",
+        p1: "▶️ 1. یوٹیوب سکرین شاٹ", p2: "📘 2. فیس بک سکرین شاٹ", p3: "💬 3. واٹس ایپ سکرین شاٹ", p4: "📸 4. انسٹاگرام سکرین شاٹ", p5: "🎵 5. ٹک ٹاک سکرین شاٹ",
+        btnSubmit: "تمام 5 سکرین شاٹ جمع کریں 🚀"
+      },
+      ar: { 
+        title: "🛍️ أفضل العروض والخصومات في السعودية", pub: "➕ انشر عروضك", pro: "📌 روج لمنتجك", buy: "🛒 شراء", search: "🔍 ابحث عن منتج...", 
+        shared: "✅ تم القبول (5 منصات)", share: "🔗 مشاركة 5 منصات", pending: "⏳ قيد المراجعة", sendProof: "📸 إرسال 5 لقطات",
+        guideTitle: "📖 تعليمات المشاركة (كيف تنشر):",
+        ptsLabel: "🪙 المشاركات المقبولة:", balLabel: "💰 الرصيد الإجمالي (5 منصات = 25 بكر):",
+        modalTitle: "📸 تحميل 5 لقطات شاشة للمنصات", modalSub: "انشر نفس المنتج على 5 منصات وحدد 5 صور (احصل على 25 بكر)",
+        p1: "▶️ 1. لقطة شاشة يوتيوب", p2: "📘 2. لقطة شاشة فيسبوك", p3: "💬 3. لقطة شاشة واتساب", p4: "📸 4. لقطة شاشة انستغرام", p5: "🎵 5. لقطة شاشة تيك توك",
+        btnSubmit: "إرسال جميع لقطات الشاشة الـ 5 🚀"
+      },
+      hi: { 
+        title: "🛍️ सऊदी बेस्ट डील्स और डिस्काउंट्स", pub: "➕ डील पब्लिश करें", pro: "📌 डील प्रमोट करें", buy: "🛒 खरीदें", search: "🔍 प्रोडक्ट खोजें...", 
+        shared: "✅ 5 प्लेटफॉर्म स्वीकृत", share: "🔗 5 प्लेटफॉर्म शेयर", pending: "⏳ समीक्षाधीन", sendProof: "📸 5 स्क्रीनशॉट भेजें",
+        guideTitle: "📖 शेयरिंग निर्देश (कैसे पोस्ट करें):",
+        ptsLabel: "🪙 स्वीकृत शेयर:", balLabel: "💰 कुल बैलेंस (5 प्लेटफॉर्म = 25 रुपये):",
+        modalTitle: "📸 5 प्लेटफॉर्म स्क्रीनशॉट अपलोड करें", modalSub: "सभी 5 प्लेटफॉर्म पर वही डील पोस्ट करें और 5 इमेज चुनें (25 रुपये कमाएं)",
+        p1: "▶️ 1. यूट्यूब स्क्रीनशॉट", p2: "📘 2. फेसबुक स्क्रीनशॉट", p3: "💬 3. व्हाट्सएप स्क्रीनशॉट", p4: "📸 4. इंस्टाग्राम स्क्रीनशॉट", p5: "🎵 5. टिकटॉक स्क्रीनशॉट",
+        btnSubmit: "सभी 5 स्क्रीनशॉट जमा करें 🚀"
+      }
     };
 
-    const i18n = {
-      en: { title: "🛍️ Saudi Best Deals & Discounts", pub: "➕ Publish Deals", pro: "📌 Promote Deal", buy: "🛒 Buy", search: "🔍 Search product...", shared: "✅ 5 Platforms Approved", share: "🔗 Share 5 Platforms", pending: "⏳ Pending Approval", sendProof: "📸 Submit 5 Screenshots" },
-      ur: { title: "🛍️ سعودی بیسٹ ڈیلز & ڈسکاؤنٹس", pub: "➕ اپنی ڈیلز شائع کریں", pro: "📌 ڈیل پروموٹ کروائیں", buy: "🛒 خریدیں", search: "🔍 پروڈکٹ تلاش کریں...", shared: "✅ 5 پلیٹ فارم منظور شدہ", share: "🔗 5 پلیٹ فارم شیئر", pending: "⏳ منظوری کا منتظر", sendProof: "📸 5 سکرین شاٹ بھیجیں" },
-      ar: { title: "🛍️ أفضل العروض والخصومات في السعودية", pub: "➕ انشر عروضك", pro: "📌 روج لمنتجك", buy: "🛒 شراء", search: "🔍 ابحث عن منتج...", shared: "✅ تم القبول (5 منصات)", share: "🔗 مشاركة 5 منصات", pending: "⏳ قيد المراجعة", sendProof: "📸 إرسال 5 لقطات" },
-      hi: { title: "🛍️ सऊदी बेस्ट डील्स और डिस्काउंट्स", pub: "➕ डील पब्लिश करें", pro: "📌 डील प्रमोट करें", buy: "🛒 खरीदें", search: "🔍 प्रोडक्ट खोजें...", shared: "✅ 5 प्लेटफॉर्म स्वीकृत", share: "🔗 5 प्लेटफॉर्म शेयर", pending: "⏳ समीक्षाधीन", sendProof: "📸 5 स्क्रीनशॉट भेजें" }
+    const platformGuides = {
+      en: {
+        youtube: { title: "▶️ How to post on YouTube", text: "1. Copy product title and link.<br>2. Upload image on YouTube Shorts or Video.<br>3. Paste product link in description & pinned comment.<br>4. Take screenshot and upload in app." },
+        facebook: { title: "📘 How to post on Facebook", text: "1. Create post on Facebook with product image.<br>2. Include title, price and your link in description.<br>3. Share in Buy & Sell groups.<br>4. Take screenshot and upload in app." },
+        whatsapp: { title: "💬 How to post on WhatsApp", text: "1. Upload product image to WhatsApp Status or Groups.<br>2. Add product details and link in caption.<br>3. Take clear screenshot and upload in app." },
+        instagram: { title: "📸 How to post on Instagram", text: "1. Upload image on Instagram Story or Post.<br>2. Add Link sticker in story or Bio.<br>3. Take screenshot and upload in app." },
+        tiktok: { title: "🎵 How to post on TikTok", text: "1. Upload product image or slideshow on TikTok.<br>2. Put product details and link in caption/comments.<br>3. Take screenshot and upload in app." }
+      },
+      ur: {
+        youtube: { title: "▶️ یوٹیوب پر پوسٹ کرنے کا طریقہ", text: "1. پروڈکٹ کا عنوان اور لنک کاپی کریں۔<br>2. یوٹیوب شارٹس یا ویڈیو اپلوڈ کرتے وقت پروڈکٹ کی تصویر ڈالیں۔<br>3. ڈسکرپشن اور پن کمنٹ (Pinned Comment) میں پروڈکٹ کا لنک درج کریں۔<br>4. اس کا سکرین شاٹ لے کر ایپ میں اپلوڈ کریں۔" },
+        facebook: { title: "📘 فیس بک پر پوسٹ کرنے کا طریقہ", text: "1. فیس بک پر پروڈکٹ کی تصویر کے ساتھ نئی پوسٹ بنائیں۔<br>2. متن میں عنوان، قیمت اور اپنا لنک درج کریں۔<br>3. اپنی پروفائل اور فیس بک گروپس (Buy & Sell) میں شیئر کریں۔<br>4. اس کا سکرین شاٹ لے کر ایپ میں اپلوڈ کریں۔" },
+        whatsapp: { title: "💬 واٹس ایپ پر پوسٹ کرنے کا طریقہ", text: "1. پروڈکٹ کی تصویر واٹس ایپ سٹیٹس (Status) یا گروپس میں لگائیں۔<br>2. کیپشن میں پروڈکٹ کی تفصیلات اور لنک شامل کریں۔<br>3. سٹیٹس لگانے کے بعد اس کا واضح سکرین شاٹ لے کر اپلوڈ کریں۔" },
+        instagram: { title: "📸 انسٹاگرام پر پوسٹ کرنے کا طریقہ", text: "1. انسٹاگرام سٹوری یا پوسٹ میں پروڈکٹ کی تصویر لگائیں۔<br>2. سٹوری میں Link کا اسٹیکر استعمال کر کے لنک لگائیں یا بائیو میں دیں۔<br>3. سٹوری/پوسٹ کا سکرین شاٹ لے کر اپلوڈ کریں۔" },
+        tiktok: { title: "🎵 ٹک ٹاک پر پوسٹ کرنے کا طریقہ", text: "1. ٹک ٹاک پر پروڈکٹ کی تصویر یا سلاڈ شو ویڈیو اپلوڈ کریں۔<br>2. کیپشن یا کمنٹس میں پروڈکٹ کی تفصیل اور اپنا لنک درج کریں۔<br>3. ویڈیو یا کمنٹ سیکشن کا سکرین شاٹ لے کر اپلوڈ کریں۔" }
+      },
+      ar: {
+        youtube: { title: "▶️ كيفية النشر على يوتيوب", text: "1. انسخ عنوان المنتج والرابط.<br>2. ارفع الصورة على فيديوهات Shorts.<br>3. أضف الرابط في الوصف والتعليق المثبت.<br>4. التقط لقطة شاشة وارفعها." },
+        facebook: { title: "📘 كيفية النشر على فيسبوك", text: "1. أنشئ منشوراً بصورة المنتج.<br>2. أضف العنوان والسعر ورابطك.<br>3. شارك في مجموعات البيع والشراء.<br>4. التقط لقطة شاشة وارفعها." },
+        whatsapp: { title: "💬 كيفية النشر على واتساب", text: "1. ارفع صورة المنتج على حالة واتساب أو المجموعات.<br>2. أضف تفاصيل المنتج ورابطك.<br>3. التقط لقطة شاشة وارفعها." },
+        instagram: { title: "📸 كيفية النشر على انستغرام", text: "1. انشر الصورة في القصة (Story) أو منشور.<br>2. أضف ملصق الرابط في القصة.<br>3. التقط لقطة شاشة وارفعها." },
+        tiktok: { title: "🎵 كيفية النشر على تيك توك", text: "1. ارفع فيديو أو صور المنتج على تيك توك.<br>2. ضع التفاصيل والرابط في التعليقات.<br>3. التقط لقطة شاشة وارفعها." }
+      },
+      hi: {
+        youtube: { title: "▶️ यूट्यूब पर पोस्ट कैसे करें", text: "1. प्रोडक्ट शीर्षक और लिंक कॉपी करें।<br>2. यूट्यूब शॉर्ट्स पर इमेज अपलोड करें।<br>3. विवरण और पिन की गई टिप्पणी में लिंक डालें।<br>4. स्क्रीनशॉट लें और ऐप में अपलोड करें।" },
+        facebook: { title: "📘 फेसबुक पर पोस्ट कैसे करें", text: "1. प्रोडक्ट इमेज के साथ पोस्ट बनाएं।<br>2. विवरण में शीर्षक, कीमत और लिंक जोड़ें।<br>3. बाय एंड सेल ग्रुप्स में शेयर करें।<br>4. स्क्रीनशॉट लें और ऐप में अपलोड करें।" },
+        whatsapp: { title: "💬 व्हाट्सएप पर पोस्ट कैसे करें", text: "1. व्हाट्सएप स्टेटस या ग्रुप्स में इमेज लगाएं।<br>2. कैप्शन में डिटेल्स और लिंक जोड़ें।<br>3. स्क्रीनशॉट लें और ऐप में अपलोड करें।" },
+        instagram: { title: "📸 इंस्टाग्राम पर पोस्ट कैसे करें", text: "1. स्टोरी या पोस्ट पर इमेज शेयर करें।<br>2. स्टोरी में लिंक स्टिकर लगाएं।<br>3. स्क्रीनशॉट लें और ऐप में अपलोड करें।" },
+        tiktok: { title: "🎵 टिकटॉक पर पोस्ट कैसे करें", text: "1. टिकटॉक पर इमेज या वीडियो शेयर करें।<br>2. कमेंट्स में डिटेल्स और लिंक डालें।<br>3. स्क्रीनशॉट लें और ऐप में अपलोड करें।" }
+      }
     };
-    let activeLang = 'ur';
+
+    let activeLang = 'en';
 
     function checkUserSession() {
       const badge = document.getElementById('userProfileBadge');
@@ -263,7 +366,7 @@
     }
 
     function openGuideModal(platform) {
-      const g = platformGuides[platform];
+      const g = platformGuides[activeLang][platform];
       document.getElementById('guideTitle').innerHTML = g.title;
       document.getElementById('guideText').innerHTML = g.text;
       document.getElementById('guideModal').style.display = 'flex';
@@ -299,11 +402,11 @@
       if(!currentUser) return;
       usersDb.child(currentUser.phone).on('value', snap => {
         const uData = snap.val() || {};
-        const approvedCount = uData.totalShares || 0; // Each approved batch = 25 PKR
+        const approvedCount = uData.totalShares || 0; 
         const pkrEarnings = approvedCount * PKR_PER_SHARE;
         const sarEarnings = (pkrEarnings / SAR_RATE).toFixed(2);
 
-        document.getElementById('uPoints').innerText = `${approvedCount} Task Approved (${approvedCount * 5} Posts)`;
+        document.getElementById('uPoints').innerText = `${approvedCount} Approved (${approvedCount * 5} Posts)`;
         document.getElementById('uEarnings').innerText = `${pkrEarnings} PKR (${sarEarnings} SAR)`;
         document.getElementById('withdrawBtn').disabled = (parseFloat(sarEarnings) < 50);
       });
@@ -370,8 +473,8 @@
       if (!currentUser) { checkUserSession(); return; }
       const status = userSharedProducts[key];
       if (status) {
-        if(status === 'Approved') alert("🚨 آپ 5 پلیٹ فارم پر شیئر کر کے منظوری حاصل کر چکے ہیں!");
-        else alert("⏳ آپ کے سکرین شاٹس پہلے ہی بھیجے جا چکے ہیں، برائے مہربانی اپروول کا انتظار کریں!");
+        if(status === 'Approved') alert("🚨 Approved!");
+        else alert("⏳ Pending!");
         return;
       }
 
@@ -387,8 +490,8 @@
     function openProofModal(key, title, link) {
       const status = userSharedProducts[key];
       if (status) {
-        if(status === 'Approved') alert("🚨 آپ کی یہ پروڈکٹ منظور ہو چکی ہے!");
-        else alert("⏳ آپ کا پروف زیرِ جائزہ ہے!");
+        if(status === 'Approved') alert("🚨 Approved!");
+        else alert("⏳ Pending!");
         return;
       }
       selectedProdKey = key; 
@@ -416,9 +519,8 @@
     }
 
     async function submit5ShareProofs() {
-      // 5 تصاویر کی موجودگی چیک کریں
       for(let i=1; i<=5; i++) {
-        if (!proofFiles[i]) { alert(`لطفاً پلیٹ فارم نمبر ${i} کا سکرین شاٹ بھی منتخب کریں! تمام 5 سکرین شاٹس لازمی ہیں۔`); return; }
+        if (!proofFiles[i]) { alert(`Please select Screenshot #${i}! All 5 screenshots are required.`); return; }
       }
 
       const loader = document.getElementById('proofLoader');
@@ -427,19 +529,18 @@
       let uploadedUrls = [];
 
       try {
-        // Tesseract.js OCR اسکیننگ تمام 5 تصاویر کے لیے
         for(let i=1; i<=5; i++) {
-          loader.innerText = `تصویر نمبر ${i} اسکین ہو رہی ہے... 🔍⏳`;
+          loader.innerText = `Scanning Image #${i}... 🔍⏳`;
           const ocrResult = await Tesseract.recognize(proofFiles[i], 'eng');
           const scannedText = ocrResult.data.text.toLowerCase().replace(/\s+/g, '');
 
           if (targetKey.length > 3 && !scannedText.includes(targetKey)) {
             loader.style.display = "none";
-            alert(`❌ غلط اسکرین شاٹ (تصویر ${i})!\nاس تصویر میں اس پروڈکٹ کا صحیح لنک نظر نہیں آ رہا۔ تمام 5 تصاویر میں پروڈکٹ کا لنک ہونا لازمی ہے!`);
+            alert(`❌ Error in Screenshot #${i}!\nProduct link not found in image #${i}.`);
             return;
           }
 
-          loader.innerText = `تصویر نمبر ${i} اپلوڈ ہو رہی ہے... 🚀`;
+          loader.innerText = `Uploading Image #${i}... 🚀`;
           const formData = new FormData();
           formData.append("image", proofFiles[i]);
           const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
@@ -457,14 +558,14 @@
           usersDb.child(currentUser.phone).child('sharedProducts').child(selectedProdKey).set('Pending').then(() => {
             loader.style.display = "none";
             userSharedProducts[selectedProdKey] = 'Pending';
-            alert("کامیابی! 5 پلیٹ فارمز کی تمام تصاویر کی تصدیق ہو گئی ہے اور ایڈمن کو بھیج دی گئی ہیں۔ اپروول پر 25 روپے ملیں گے! 🚀");
+            alert("Success! 5 Platform screenshots submitted. Earn 25 PKR upon admin approval! 🚀");
             closeProofModal();
             if(cachedData) displayData(cachedData);
           });
         }
       } catch (e) { 
         loader.style.display = "none";
-        alert("تصاویر پروسیس کرتے وقت مسئلہ آیا، دوبارہ کوشش کریں۔");
+        alert("Error scanning images, please try again.");
       }
     }
 
@@ -477,7 +578,7 @@
       if(!account) return;
 
       withdrawalsDb.push({ userPhone: currentUser.phone, userName: currentUser.name, method: method, account: account, timestamp: Date.now(), status: 'Pending' }).then(() => {
-        alert("درخواست بھیج دی گئی ہے! 🚀"); closeWithdrawModal();
+        alert("Request Submitted! 🚀"); closeWithdrawModal();
       });
     }
 
@@ -582,6 +683,25 @@
       document.getElementById('btnUploadTxt').innerText = txt.pub;
       document.getElementById('btnPromoTxt').innerText = txt.pro;
       document.getElementById('searchInput').placeholder = txt.search;
+      document.getElementById('txtGuideTitle').innerText = txt.guideTitle;
+      document.getElementById('txtPointsLabel').innerText = txt.ptsLabel;
+      document.getElementById('txtBalanceLabel').innerText = txt.balLabel;
+      document.getElementById('modalProofTitle').innerText = txt.modalTitle;
+      document.getElementById('modalProofSub').innerText = txt.modalSub;
+      document.getElementById('pTxt1').innerText = txt.p1;
+      document.getElementById('pTxt2').innerText = txt.p2;
+      document.getElementById('pTxt3').innerText = txt.p3;
+      document.getElementById('pTxt4').innerText = txt.p4;
+      document.getElementById('pTxt5').innerText = txt.p5;
+      document.getElementById('btnSubmitProof').innerText = txt.btnSubmit;
+
+      // RTL / LTR Direction Handling for Languages
+      const htmlTag = document.getElementById('htmlTag');
+      if (lang === 'ur' || lang === 'ar') {
+        htmlTag.setAttribute('dir', 'rtl');
+      } else {
+        htmlTag.setAttribute('dir', 'ltr');
+      }
 
       document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
       if(lang === 'en') document.getElementById('btnEn').classList.add('active');
