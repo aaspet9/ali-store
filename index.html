@@ -73,7 +73,7 @@
 
   <div class="wallet-card">
     <div class="wallet-row">
-      <span>🪙 Approved Shares:</span>
+      <span>🪙 Approved Shares / منظور شدہ شیئرز:</span>
       <span class="wallet-val" id="uPoints">0 Points</span>
     </div>
     <div class="wallet-row">
@@ -88,8 +88,8 @@
   </div>
 
   <div class="action-btn-group">
-    <button class="user-upload-btn" onclick="openUploadModal()"><span>➕ Publish Deals</span></button>
-    <a href="mailto:aaspet2025@gmail.com" class="promo-btn">📌 Promote Deal</a>
+    <button class="user-upload-btn" onclick="openUploadModal()"><span id="btnUploadTxt">➕ Publish Deals</span></button>
+    <a href="mailto:aaspet2025@gmail.com" class="promo-btn" id="btnPromoTxt">📌 Promote Deal</a>
   </div>
 
   <div class="products-container" id="productsGrid">
@@ -99,7 +99,7 @@
   <!-- Mandatory Login Modal -->
   <div class="modal-overlay" id="authModal" style="display: flex;">
     <div class="modal-box">
-      <h3 style="margin-bottom: 12px; color:#2563eb; text-align:center;">🔐 Login</h3>
+      <h3 style="margin-bottom: 12px; color:#2563eb; text-align:center;">🔐 Login / لاگ ان</h3>
       <input type="text" id="authName" class="modal-input" placeholder="Your Name">
       <input type="text" id="authPhone" class="modal-input" placeholder="05XXXXXXXX" dir="ltr">
       <input type="password" id="authPassword" class="modal-input" placeholder="••••••••">
@@ -107,7 +107,7 @@
     </div>
   </div>
 
-  <!-- Proof Upload Modal -->
+  <!-- Screenshot Upload Modal -->
   <div class="modal-overlay" id="proofModal">
     <div class="modal-box">
       <button class="close-modal" onclick="closeProofModal()">✕</button>
@@ -118,6 +118,23 @@
       </div>
       <div id="proofLoader" style="display:none; text-align:center; font-size:12px; color:#16a34a; font-weight:bold; margin-bottom:8px;">Uploading... ⏳</div>
       <button style="width:100%; background:#16a34a; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="submitShareProof()">Submit Proof 🚀</button>
+    </div>
+  </div>
+
+  <!-- Publish Product Upload Modal -->
+  <div class="modal-overlay" id="uploadModal">
+    <div class="modal-box">
+      <button class="close-modal" onclick="closeUploadModal()">✕</button>
+      <h3 style="margin-bottom: 12px; color:#2563eb; text-align:center;">➕ Publish New Deal</h3>
+      <input type="text" id="uTitle" class="modal-input" placeholder="Product Title">
+      <input type="text" id="uPrice" class="modal-input" placeholder="Price (e.g. SAR 50)">
+      <input type="text" id="uLink" class="modal-input" placeholder="Affiliate Link" dir="ltr">
+      <div class="file-btn" onclick="document.getElementById('uImgInput').click()">
+        <span id="uFileText">📁 Select Image</span>
+        <input type="file" id="uImgInput" accept="image/*" style="display:none;" onchange="handleUserImgSelect(event)">
+      </div>
+      <div id="uLoader" style="display:none; text-align:center; font-size:12px; color:#2563eb; font-weight:bold; margin-bottom:8px;">Uploading... ⏳</div>
+      <button style="width:100%; background:#2563eb; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="submitUserDeal()">Submit Deal 🚀</button>
     </div>
   </div>
 
@@ -154,10 +171,12 @@
     const usersDb = firebase.database().ref("app_users");
     const withdrawalsDb = firebase.database().ref("withdrawals");
     const proofsDb = firebase.database().ref("share_proofs");
+    const pendingDb = firebase.database().ref("pending_products");
 
     const IMGBB_API_KEY = "66dcdf21e30733bfd85545d9fb5e76c4";
     const PKR_RATE = 75; 
     let currentProofFile = null;
+    let currentUserImg = null;
     let selectedProdKey = "";
     let selectedProdTitle = "";
     let searchQuery = '';
@@ -219,6 +238,45 @@
         localStorage.setItem('app_user_data', JSON.stringify(userObj));
         checkUserSession();
       });
+    }
+
+    function openUploadModal() { document.getElementById('uploadModal').style.display = 'flex'; }
+    function closeUploadModal() { document.getElementById('uploadModal').style.display = 'none'; }
+
+    function handleUserImgSelect(e) {
+      if (e.target.files.length > 0) {
+        currentUserImg = e.target.files[0];
+        document.getElementById('uFileText').innerText = `Selected: ${currentUserImg.name} ✅`;
+      }
+    }
+
+    async function submitUserDeal() {
+      const title = document.getElementById('uTitle').value.trim();
+      const price = document.getElementById('uPrice').value.trim();
+      const link = document.getElementById('uLink').value.trim();
+      if(!title || !link || !currentUserImg) { alert("تمام معلومات فراہم کریں!"); return; }
+
+      const loader = document.getElementById('uLoader');
+      loader.style.display = "block";
+
+      const formData = new FormData();
+      formData.append("image", currentUserImg);
+
+      try {
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
+        const imgData = await res.json();
+        if (imgData.success) {
+          pendingDb.push({
+            title: title, price: price || "Best Price", link: link,
+            img: imgData.data.url, images: [imgData.data.url],
+            userName: currentUser.name, userPhone: currentUser.phone, timestamp: Date.now()
+          }).then(() => {
+            loader.style.display = "none";
+            alert("آپ کی ڈیل بھیج دی گئی ہے! 🚀");
+            closeUploadModal();
+          });
+        }
+      } catch (e) { loader.style.display = "none"; }
     }
 
     function shareProduct(key, title, link) {
@@ -293,7 +351,7 @@
       searchTimeout = setTimeout(() => {
         searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
         if (cachedData) displayData(cachedData);
-      }, 250);
+      }, 200);
     }
 
     function displayData(data) {
