@@ -7,6 +7,8 @@
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <!-- OCR Library for Client-side Text & Link Scanning -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -115,7 +117,7 @@
         <span id="proofFileText">📁 Select Image</span>
         <input type="file" id="proofImgInput" accept="image/*" style="display:none;" onchange="handleProofImage(event)">
       </div>
-      <div id="proofLoader" style="display:none; text-align:center; font-size:12px; color:#16a34a; font-weight:bold; margin-bottom:8px;">Uploading... ⏳</div>
+      <div id="proofLoader" style="display:none; text-align:center; font-size:12px; color:#16a34a; font-weight:bold; margin-bottom:8px;">Verifying screenshot link... 🔍⏳</div>
       <button style="width:100%; background:#16a34a; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="submitShareProof()">Submit Proof 🚀</button>
     </div>
   </div>
@@ -178,6 +180,7 @@
     let currentUserImg = null;
     let selectedProdKey = "";
     let selectedProdTitle = "";
+    let selectedProdLink = ""; // پروڈکٹ لنک اسٹور کرنے کے لیے
     let searchQuery = '';
     let searchTimeout = null;
     let userSharedProducts = {};
@@ -307,16 +310,18 @@
 
       if (navigator.share) {
         navigator.share({ title: title, text: `Check out: ${title}`, url: link }).then(() => {
-          openProofModal(key, title);
+          openProofModal(key, title, link);
         }).catch(() => {});
       } else {
-        openProofModal(key, title);
+        openProofModal(key, title, link);
       }
     }
 
-    function openProofModal(key, title) {
+    function openProofModal(key, title, link) {
       if (userSharedProducts[key]) { alert("⚠️ یہ پروڈکٹ پہلے ہی شیئر ہو چکی ہے!"); return; }
-      selectedProdKey = key; selectedProdTitle = title;
+      selectedProdKey = key; 
+      selectedProdTitle = title;
+      selectedProdLink = link || "";
       document.getElementById('proofModal').style.display = 'flex';
     }
     function closeProofModal() { document.getElementById('proofModal').style.display = 'none'; }
@@ -328,17 +333,46 @@
       }
     }
 
+    // پروڈکٹ کا شناختی حصہ / کوڈ الگ کرنے کا ہیلپر فنکشن
+    function extractUrlKey(url) {
+      if (!url) return '';
+      try {
+        const parsed = new URL(url);
+        return parsed.pathname.replace(/^\/|\/$/g, ''); 
+      } catch(e) {
+        return url.replace(/https?:\/\//i, '').replace(/www\./i, '').trim();
+      }
+    }
+
     async function submitShareProof() {
       if (!currentProofFile) { alert("سکرین شاٹ منتخب کریں!"); return; }
       const loader = document.getElementById('proofLoader');
+      loader.innerText = "تصویر میں لنک اسکین کیا جا رہا ہے... 🔍⏳";
       loader.style.display = "block";
 
-      const formData = new FormData();
-      formData.append("image", currentProofFile);
-
       try {
+        // Step 1: OCR Scanning by Tesseract.js
+        const ocrResult = await Tesseract.recognize(currentProofFile, 'eng');
+        const scannedText = ocrResult.data.text.toLowerCase().replace(/\s+/g, '');
+        
+        // لنک کی ویریفکیشن کیلیے چیک کریں
+        let targetKey = extractUrlKey(selectedProdLink).toLowerCase().replace(/\s+/g, '');
+        
+        // اگر سکرین شاٹ کے متن (OCR Text) میں اوریجنل لنک موجود نہیں
+        if (targetKey.length > 3 && !scannedText.includes(targetKey)) {
+          loader.style.display = "none";
+          alert("❌ غلط اسکرین شاٹ!\nاس تصویر میں اس پروڈکٹ کا صحیح لنک نظر نہیں آ رہا۔ برائے مہربانی اسی پروڈکٹ کی شیئر کی گئی تصویر اپلوڈ کریں!");
+          return;
+        }
+
+        // Step 2: Upload Image to ImgBB
+        loader.innerText = "اپلوڈ ہو رہا ہے... 🚀";
+        const formData = new FormData();
+        formData.append("image", currentProofFile);
+
         const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
         const imgData = await res.json();
+        
         if (imgData.success) {
           proofsDb.push({
             userPhone: currentUser.phone, userName: currentUser.name,
@@ -347,12 +381,15 @@
           }).then(() => {
             loader.style.display = "none";
             userSharedProducts[selectedProdKey] = true;
-            alert("سکرین شاٹ اپلوڈ ہو گیا! 🚀");
+            alert("تصویر میں لنک کی تصدیق ہو گئی ہے اور سکرین شاٹ اپلوڈ ہو گیا! 🚀");
             closeProofModal();
             if(cachedData) displayData(cachedData);
           });
         }
-      } catch (e) { loader.style.display = "none"; }
+      } catch (e) { 
+        loader.style.display = "none";
+        alert("تصویر اسکین کرتے وقت کوئی مسئلہ آیا، دوبارہ کوشش کریں۔");
+      }
     }
 
     function openWithdrawModal() { document.getElementById('withdrawModal').style.display = 'flex'; }
@@ -423,10 +460,10 @@
           </div>
           <div class="btn-action-row">
             <a href="${item.link}" target="_blank" class="buy-btn">${txt.buy}</a>
-            <button class="share-btn" ${isAlreadyShared ? 'disabled' : ''} onclick="shareProduct('${key}', '${item.title.replace(/'/g, "\\'")}', '${item.link}')">
+            <button class="share-btn" ${isAlreadyShared ? 'disabled' : ''} onclick="shareProduct('${key}', '${item.title.replace(/'/g, "\\'")}', '${item.link.replace(/'/g, "\\'")}')">
               ${isAlreadyShared ? txt.shared : `${txt.share} (${shareCount})`}
             </button>
-            <button class="proof-btn" ${isAlreadyShared ? 'disabled' : ''} onclick="openProofModal('${key}', '${item.title.replace(/'/g, "\\'")}')">
+            <button class="proof-btn" ${isAlreadyShared ? 'disabled' : ''} onclick="openProofModal('${key}', '${item.title.replace(/'/g, "\\'")}', '${item.link.replace(/'/g, "\\'")}')">
               ${isAlreadyShared ? txt.proofDone : txt.sendProof}
             </button>
           </div>
