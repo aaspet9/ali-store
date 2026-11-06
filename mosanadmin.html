@@ -17,7 +17,6 @@
 
     .main-wrapper { max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
 
-    /* Collapsible Section Buttons */
     .section-toggle-btn { width: 100%; background: #ffffff; color: #1e293b; border: 2px solid #cbd5e1; padding: 12px 14px; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: all 0.2s ease; }
     .section-toggle-btn.active { border-color: #2563eb; background: #eff6ff; color: #2563eb; }
 
@@ -36,10 +35,6 @@
 
     .add-btn { width: 100%; background: #2563eb; color: #fff; border: none; padding: 12px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px; margin-top: 8px; }
 
-    /* Accordion and Item Card Styles */
-    .user-card-header { background: #0f172a; color: white; border-radius: 8px; padding: 10px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 12px; font-weight: bold; border-right: 4px solid #38bdf8; }
-    .user-card-body { background: #f8fafc; padding: 8px; border-radius: 0 0 8px 8px; display: none; border: 1px solid #cbd5e1; border-top: none; }
-    
     .item-row { background: #fff; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; margin-bottom: 8px; }
     .item-info-row { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
     .item-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; }
@@ -57,7 +52,6 @@
 </head>
 <body>
 
-  <!-- Total Live Products Stats Counter -->
   <div class="stats-card">
     <span style="font-size:12px; color:#94a3b8;">📊 ایپ پر کل اپلوڈ شدہ پروڈکٹس:</span>
     <h3 id="totalProductsCount">0</h3>
@@ -246,7 +240,7 @@
       });
     }
 
-    /* 1. Screenshot Proofs Verification (ImgBB) */
+    /* 1. Screenshot Proofs Verification (ImgBB & Lock Permanent Logic) */
     function renderProofsList() {
       const container = document.getElementById('proofsList');
       proofsDb.on('value', (snap) => {
@@ -273,10 +267,14 @@
 
     function approveProof(key, phone, prodKey) {
       usersDb.child(phone).child('totalShares').transaction((current) => (current || 0) + 1);
-      if(prodKey) db.child(prodKey).child('shares').transaction((current) => (current || 0) + 1);
       
+      if(prodKey) {
+        db.child(prodKey).child('shares').transaction((current) => (current || 0) + 1);
+        usersDb.child(phone).child('approvedProds').child(prodKey).set(true);
+      }
+
       proofsDb.child(key).remove().then(() => {
-        alert("سکرین شاٹ منظور ہو گیا! یوزر کے والیٹ میں پوائنٹس شامل کر دیے گئے ہیں۔ 🚀");
+        alert("سکرین شاٹ منظور ہو گیا! یوزر کی ایپ میں بٹن ہائی لائٹ اور مکمل لاک ہو گیا ہے۔ 🚀");
       });
     }
 
