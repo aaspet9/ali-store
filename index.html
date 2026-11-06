@@ -49,7 +49,11 @@
     .buy-btn { background: linear-gradient(135deg, #ff4747 0%, #e60000 100%); color: #ffffff; text-decoration: none; text-align: center; padding: 8px 4px; border-radius: 20px; font-weight: bold; font-size: 11px; }
     .share-btn { background: #2563eb; color: #ffffff; border: none; padding: 7px 4px; border-radius: 20px; font-weight: bold; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 3px; }
     .proof-btn { background: #16a34a; color: #ffffff; border: none; padding: 6px 4px; border-radius: 20px; font-weight: bold; font-size: 10px; cursor: pointer; }
-    .proof-btn:disabled, .share-btn:disabled { background: #94a3b8; cursor: not-allowed; opacity: 0.7; }
+    
+    /* Highlighted and Disabled styles */
+    .btn-approved { background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important; color: #ffffff !important; border: 2px solid #34d399 !important; font-weight: bold; cursor: default !important; opacity: 1 !important; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3); }
+    .btn-pending { background: #f59e0b !important; color: #ffffff !important; cursor: not-allowed !important; opacity: 0.9 !important; }
+    .proof-btn:disabled, .share-btn:disabled { opacity: 0.75; cursor: not-allowed; }
 
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
     .modal-box { background: #ffffff; width: 100%; max-width: 420px; border-radius: 14px; padding: 18px; max-height: 90vh; overflow-y: auto; text-align: left; position: relative; }
@@ -180,18 +184,18 @@
     let currentUserImg = null;
     let selectedProdKey = "";
     let selectedProdTitle = "";
-    let selectedProdLink = ""; // پروڈکٹ لنک اسٹور کرنے کے لیے
+    let selectedProdLink = "";
     let searchQuery = '';
     let searchTimeout = null;
-    let userSharedProducts = {};
+    let userSharedProducts = {}; // Object storing status per product key for active user
     let cachedData = null;
     let currentUser = JSON.parse(localStorage.getItem('app_user_data') || 'null');
 
     const i18n = {
-      en: { title: "🛍️ Saudi Best Deals & Discounts", pub: "➕ Publish Deals", pro: "📌 Promote Deal", buy: "🛒 Buy", search: "🔍 Search product...", shared: "✅ Shared", share: "🔗 Share Deal", proofDone: "✅ Proof Submitted", sendProof: "📸 Send Screenshot Proof" },
-      ur: { title: "🛍️ سعودی بیسٹ ڈیلز & ڈسکاؤنٹس", pub: "➕ اپنی ڈیلز شائع کریں", pro: "📌 ڈیل پروموٹ کروائیں", buy: "🛒 خریدیں", search: "🔍 پروڈکٹ تلاش کریں...", shared: "✅ شیئر ہو گیا", share: "🔗 شیئر ڈیل", proofDone: "✅ پروف بھیج دیا", sendProof: "📸 سکرین شاٹ بھیجیں" },
-      ar: { title: "🛍️ أفضل العروض والخصومات في السعودية", pub: "➕ انشر عروضك", pro: "📌 روج لمنتجك", buy: "🛒 شراء", search: "🔍 ابحث عن منتج...", shared: "✅ تم المشاركة", share: "🔗 مشاركة العرض", proofDone: "✅ تم إرسال الإثبات", sendProof: "📸 إرسال لقطة الشاشة" },
-      hi: { title: "🛍️ सऊदी बेस्ट डील्स और डिस्काउंट्स", pub: "➕ डील पब्लिश करें", pro: "📌 डील प्रमोट करें", buy: "🛒 खरीदें", search: "🔍 प्रोडक्ट खोजें...", shared: "✅ शेयर किया गया", share: "🔗 शेयर डील", proofDone: "✅ प्रूफ जमा किया", sendProof: "📸 स्क्रीनशॉट भेजें" }
+      en: { title: "🛍️ Saudi Best Deals & Discounts", pub: "➕ Publish Deals", pro: "📌 Promote Deal", buy: "🛒 Buy", search: "🔍 Search product...", shared: "✅ Shared & Approved", share: "🔗 Share Deal", pending: "⏳ Pending Approval", sendProof: "📸 Send Screenshot Proof" },
+      ur: { title: "🛍️ سعودی بیسٹ ڈیلز & ڈسکاؤنٹس", pub: "➕ اپنی ڈیلز شائع کریں", pro: "📌 ڈیل پروموٹ کروائیں", buy: "🛒 خریدیں", search: "🔍 پروڈکٹ تلاش کریں...", shared: "✅ منظور شدہ (Approved)", share: "🔗 شیئر ڈیل", pending: "⏳ منظوری کا منتظر", sendProof: "📸 سکرین شاٹ بھیجیں" },
+      ar: { title: "🛍️ أفضل العروض والخصومات في السعودية", pub: "➕ انشر عروضك", pro: "📌 روج لمنتجك", buy: "🛒 شراء", search: "🔍 ابحث عن منتج...", shared: "✅ تم القبول والمشاركة", share: "🔗 مشاركة العرض", pending: "⏳ قيد المراجعة", sendProof: "📸 إرسال لقطة الشاشة" },
+      hi: { title: "🛍️ सऊदी बेस्ट डील्स और डिस्काउंट्स", pub: "➕ डील पब्लिश करें", pro: "📌 डील प्रमोट करें", buy: "🛒 खरीदें", search: "🔍 प्रोडक्ट खोजें...", shared: "✅ स्वीकृत (Approved)", share: "🔗 शेयर डील", pending: "⏳ समीक्षाधीन", sendProof: "📸 स्क्रीनशॉट भेजें" }
     };
     let activeLang = 'en';
 
@@ -221,15 +225,30 @@
       }
     }
 
+    // لوڈ یوزر ہسٹری: چیک کریں کہ پروڈکٹ Pending ہے یا Approved
     function loadUserSharedHistory() {
       if(!currentUser) return;
+
+      // 1. Check database of active proofs to know status (Pending vs Approved)
       proofsDb.orderByChild('userPhone').equalTo(currentUser.phone).on('value', snap => {
         userSharedProducts = {};
         const data = snap.val();
         if(data) {
-          Object.keys(data).forEach(k => { userSharedProducts[data[k].prodKey] = true; });
+          Object.keys(data).forEach(k => { 
+            const p = data[k];
+            userSharedProducts[p.prodKey] = p.status || 'Pending';
+          });
         }
-        if(cachedData) displayData(cachedData);
+        
+        // 2. Also fetch user wallet/shares to cross check approved items
+        usersDb.child(currentUser.phone).once('value', uSnap => {
+          const uData = uSnap.val() || {};
+          const approvedKeys = uData.approvedProds || {};
+          Object.keys(approvedKeys).forEach(pKey => {
+            userSharedProducts[pKey] = 'Approved';
+          });
+          if(cachedData) displayData(cachedData);
+        });
       });
     }
 
@@ -306,7 +325,14 @@
 
     function shareProduct(key, title, link) {
       if (!currentUser) { checkUserSession(); return; }
-      if (userSharedProducts[key]) { alert("⚠️ یہ پروڈکٹ پہلے ہی شیئر ہو چکی ہے!"); return; }
+      if (userSharedProducts[key]) {
+        if(userSharedProducts[key] === 'Approved') {
+          alert("✅ آپ کی یہ پروڈکٹ ایڈمن سے منظور ہو چکی ہے!");
+        } else {
+          alert("⏳ آپ کا سکرین شاٹ زیرِ جائزہ (Pending) ہے۔ ایڈمن کی منظوری کا انتظار کریں!");
+        }
+        return;
+      }
 
       if (navigator.share) {
         navigator.share({ title: title, text: `Check out: ${title}`, url: link }).then(() => {
@@ -318,7 +344,11 @@
     }
 
     function openProofModal(key, title, link) {
-      if (userSharedProducts[key]) { alert("⚠️ یہ پروڈکٹ پہلے ہی شیئر ہو چکی ہے!"); return; }
+      if (userSharedProducts[key]) {
+        if(userSharedProducts[key] === 'Approved') alert("✅ آپ کی یہ پروڈکٹ پہلے ہی ایڈمن سے منظور ہو چکی ہے!");
+        else alert("⏳ آپ کا پروف پہلے سے اپلوڈ ہے، برائے مہربانی ایڈمن اپروول کا انتظار کریں!");
+        return;
+      }
       selectedProdKey = key; 
       selectedProdTitle = title;
       selectedProdLink = link || "";
@@ -333,7 +363,6 @@
       }
     }
 
-    // پروڈکٹ کا شناختی حصہ / کوڈ الگ کرنے کا ہیلپر فنکشن
     function extractUrlKey(url) {
       if (!url) return '';
       try {
@@ -351,21 +380,17 @@
       loader.style.display = "block";
 
       try {
-        // Step 1: OCR Scanning by Tesseract.js
         const ocrResult = await Tesseract.recognize(currentProofFile, 'eng');
         const scannedText = ocrResult.data.text.toLowerCase().replace(/\s+/g, '');
         
-        // لنک کی ویریفکیشن کیلیے چیک کریں
         let targetKey = extractUrlKey(selectedProdLink).toLowerCase().replace(/\s+/g, '');
         
-        // اگر سکرین شاٹ کے متن (OCR Text) میں اوریجنل لنک موجود نہیں
         if (targetKey.length > 3 && !scannedText.includes(targetKey)) {
           loader.style.display = "none";
           alert("❌ غلط اسکرین شاٹ!\nاس تصویر میں اس پروڈکٹ کا صحیح لنک نظر نہیں آ رہا۔ برائے مہربانی اسی پروڈکٹ کی شیئر کی گئی تصویر اپلوڈ کریں!");
           return;
         }
 
-        // Step 2: Upload Image to ImgBB
         loader.innerText = "اپلوڈ ہو رہا ہے... 🚀";
         const formData = new FormData();
         formData.append("image", currentProofFile);
@@ -380,8 +405,8 @@
             proofUrl: imgData.data.url, timestamp: Date.now(), status: 'Pending'
           }).then(() => {
             loader.style.display = "none";
-            userSharedProducts[selectedProdKey] = true;
-            alert("تصویر میں لنک کی تصدیق ہو گئی ہے اور سکرین شاٹ اپلوڈ ہو گیا! 🚀");
+            userSharedProducts[selectedProdKey] = 'Pending';
+            alert("تصویر اسکین اور اپلوڈ ہو گئی ہے! ایڈمن کے اپروول کے بعد پوائنٹس ملیں گے۔ 🚀");
             closeProofModal();
             if(cachedData) displayData(cachedData);
           });
@@ -413,7 +438,6 @@
       }, 150);
     }
 
-    /* Adsterra In-Grid Banner Every 6 Products */
     function createAdBannerElement() {
       const adDiv = document.createElement('div');
       adDiv.className = 'adsterra-in-grid-banner';
@@ -447,8 +471,28 @@
         count++;
 
         const imgList = item.images && item.images.length > 0 ? item.images : [item.img || 'https://via.placeholder.com/150'];
-        const shareCount = item.shares || 0;
-        const isAlreadyShared = userSharedProducts[key] || false;
+        const totalSharesCount = item.shares || 0; // تمام یوزرز کی کل تعداد
+        const userStatus = userSharedProducts[key] || null; // پینڈنگ، منظور، یا نل
+
+        let shareBtnText = `${txt.share} (${totalSharesCount})`;
+        let proofBtnText = txt.sendProof;
+        let isShareDisabled = false;
+        let isProofDisabled = false;
+        let extraBtnClass = '';
+
+        if (userStatus === 'Approved') {
+          shareBtnText = txt.shared;
+          proofBtnText = txt.shared;
+          isShareDisabled = true;
+          isProofDisabled = true;
+          extraBtnClass = 'btn-approved'; // ہائی لائٹ سبز رنگ
+        } else if (userStatus === 'Pending') {
+          shareBtnText = txt.pending;
+          proofBtnText = txt.pending;
+          isShareDisabled = true;
+          isProofDisabled = true;
+          extraBtnClass = 'btn-pending'; // پینڈنگ اورنج رنگ
+        }
 
         const cardDiv = document.createElement('div');
         cardDiv.className = `product-card`;
@@ -460,17 +504,16 @@
           </div>
           <div class="btn-action-row">
             <a href="${item.link}" target="_blank" class="buy-btn">${txt.buy}</a>
-            <button class="share-btn" ${isAlreadyShared ? 'disabled' : ''} onclick="shareProduct('${key}', '${item.title.replace(/'/g, "\\'")}', '${item.link.replace(/'/g, "\\'")}')">
-              ${isAlreadyShared ? txt.shared : `${txt.share} (${shareCount})`}
+            <button class="share-btn ${extraBtnClass}" ${isShareDisabled ? 'disabled' : ''} onclick="shareProduct('${key}', '${item.title.replace(/'/g, "\\'")}', '${item.link.replace(/'/g, "\\'")}')">
+              ${shareBtnText}
             </button>
-            <button class="proof-btn" ${isAlreadyShared ? 'disabled' : ''} onclick="openProofModal('${key}', '${item.title.replace(/'/g, "\\'")}', '${item.link.replace(/'/g, "\\'")}')">
-              ${isAlreadyShared ? txt.proofDone : txt.sendProof}
+            <button class="proof-btn ${extraBtnClass}" ${isProofDisabled ? 'disabled' : ''} onclick="openProofModal('${key}', '${item.title.replace(/'/g, "\\'")}', '${item.link.replace(/'/g, "\\'")}')">
+              ${proofBtnText}
             </button>
           </div>
         `;
         fragment.appendChild(cardDiv);
 
-        /* Adsterra Banner Every 6 Items */
         if (count % 6 === 0) {
           fragment.appendChild(createAdBannerElement());
         }
