@@ -34,7 +34,7 @@
     .user-upload-btn { flex: 1; background: #2563eb; color: #ffffff; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
     .promo-btn { flex: 1; background: #16a34a; color: #ffffff; text-decoration: none; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; text-align: center; }
 
-    .adsterra-in-grid-banner { grid-column: span 2; background: #ffffff; border-radius: 8px; padding: 6px; text-align: center; margin: 8px 0; display: flex; justify-content: center; align-items: center; min-height: 60px; border: 1px dashed #cbd5e1; width: 100%; overflow: hidden; }
+    .adsterra-in-grid-banner { grid-column: span 2; background: #ffffff; border-radius: 8px; padding: 4px; text-align: center; margin: 8px 0; display: flex; justify-content: center; align-items: center; min-height: 60px; border: 1px dashed #cbd5e1; width: 100%; overflow: hidden; }
 
     .products-container { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
     .product-card { background: #ffffff; border-radius: 12px; padding: 8px; border: 1px solid #f0f0f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; width: 100%; overflow: hidden; position: relative; }
@@ -225,7 +225,6 @@
       }
     }
 
-    // لائیو یوزر ڈیٹا فائر بیس سے پکا کنیکٹ کریں
     function loadUserSharedHistory() {
       if(!currentUser) return;
 
@@ -233,13 +232,11 @@
         userSharedProducts = {};
         const uData = uSnap.val() || {};
         
-        // 1. فائر بیس میں یوزر کے اکائونٹ میں منظور شدہ پروڈکٹس
         const sharedProds = uData.sharedProducts || {};
         Object.keys(sharedProds).forEach(pKey => {
-          userSharedProducts[pKey] = sharedProds[pKey]; // 'Approved' یا 'Pending'
+          userSharedProducts[pKey] = sharedProds[pKey]; 
         });
 
-        // 2. کرنٹ پینڈنگ پروڈکٹس پروفز ٹیبل سے بھی کراس چیک کریں
         proofsDb.orderByChild('userPhone').equalTo(currentUser.phone).on('value', snap => {
           const data = snap.val();
           if(data) {
@@ -405,14 +402,12 @@
         const imgData = await res.json();
         
         if (imgData.success) {
-          // 1. پروف لسٹ میں بھیجیں
           proofsDb.push({
             userPhone: currentUser.phone, userName: currentUser.name,
             prodKey: selectedProdKey, prodTitle: selectedProdTitle,
             proofUrl: imgData.data.url, timestamp: Date.now(), status: 'Pending'
           });
 
-          // 2. یوزر اکائونٹ میں اسٹیٹس پینڈنگ سیٹ کریں
           usersDb.child(currentUser.phone).child('sharedProducts').child(selectedProdKey).set('Pending').then(() => {
             loader.style.display = "none";
             userSharedProducts[selectedProdKey] = 'Pending';
@@ -448,47 +443,42 @@
       }, 150);
     }
 
-    /* Adsterra New Banner Script Loader (key: b56241b7779e2ce343e13c97202a3e26) */
+    /* Adsterra Banner (b56241b7779e2ce343e13c97202a3e26) using Safe srcdoc */
     function createAdBannerElement() {
       const adDiv = document.createElement('div');
       adDiv.className = 'adsterra-in-grid-banner';
       
       const iframe = document.createElement('iframe');
-      iframe.setAttribute('width', '320');
-      iframe.setAttribute('height', '50');
-      iframe.setAttribute('frameborder', '0');
-      iframe.setAttribute('scrolling', 'no');
-      iframe.style.border = 'none';
-      iframe.style.overflow = 'hidden';
+      iframe.width = "320";
+      iframe.height = "50";
+      iframe.style.border = "none";
+      iframe.style.overflow = "hidden";
+      iframe.scrolling = "no";
+      
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:50px;background:#fff;}</style>
+        </head>
+        <body>
+          <script type="text/javascript">
+            atOptions = {
+              'key' : 'b56241b7779e2ce343e13c97202a3e26',
+              'format' : 'iframe',
+              'height' : 50,
+              'width' : 320,
+              'params' : {}
+            };
+          <\/script>
+          <script type="text/javascript" src="https://bauval.org/22/b56241b7779e2ce343e13c97202a3e26"><\/script>
+        </body>
+        </html>
+      `;
 
+      iframe.srcdoc = htmlContent;
       adDiv.appendChild(iframe);
-
-      setTimeout(() => {
-        try {
-          const doc = iframe.contentWindow.document;
-          doc.open();
-          doc.write(`
-            <!DOCTYPE html>
-            <html>
-            <head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:50px;background:#fff;}</style></head>
-            <body>
-              <script type="text/javascript">
-                atOptions = {
-                  'key' : 'b56241b7779e2ce343e13c97202a3e26',
-                  'format' : 'iframe',
-                  'height' : 50,
-                  'width' : 320,
-                  'params' : {}
-                };
-              <\/script>
-              <script type="text/javascript" src="https://bauval.org/22/b56241b7779e2ce343e13c97202a3e26"><\/script>
-            </body>
-            </html>
-          `);
-          doc.close();
-        } catch(e){}
-      }, 50);
-
       return adDiv;
     }
 
@@ -549,7 +539,6 @@
         `;
         fragment.appendChild(cardDiv);
 
-        /* Adsterra Banner Every 6 Items */
         if (count % 6 === 0) {
           fragment.appendChild(createAdBannerElement());
         }
