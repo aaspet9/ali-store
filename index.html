@@ -291,6 +291,17 @@
     let cachedData = null;
     let currentUser = JSON.parse(localStorage.getItem('app_user_data') || 'null');
 
+    // Platforms OCR Match Criteria
+    const platformKeywords = {
+      1: ["youtube", "shorts", "subscribe", "comments", "videos", "yt"],
+      2: ["facebook", "share", "like", "comment", "public", "fb"],
+      3: ["whatsapp", "status", "message", "write an update", "type a message", "wa"],
+      4: ["instagram", "boost post", "view insights", "your story", "insta", "ig"],
+      5: ["tiktok", "following", "for you", "add comment", "tt"]
+    };
+
+    const platformNames = { 1: "YouTube", 2: "Facebook", 3: "WhatsApp", 4: "Instagram", 5: "TikTok" };
+
     const i18n = {
       en: { 
         title: "🛍️ Saudi Best Deals & Discounts", pub: "➕ Publish Deals", pro: "📌 Promote Deal", buy: "🛒 Buy", search: "🔍 Search product...", 
@@ -593,7 +604,7 @@
       }
     }
 
-    function getKeywordsFromProd(title, url) {
+    function getKeywordsFromProd(title) {
       let keywords = [];
       if (title) {
         let words = title.split(/\s+/);
@@ -607,7 +618,7 @@
       return keywords;
     }
 
-    // Direct Primary Focus on Affiliate Link Verification
+    // Tri-Check Verification: 1. Platform Name 2. Link Key 3. Title Keywords
     async function verifySingleImage(index) {
       if (!proofFiles[index]) return;
       const loader = document.getElementById('proofLoader');
@@ -615,20 +626,38 @@
       const badge = document.getElementById(`badge${index}`);
 
       loader.style.display = 'block';
-      loader.innerText = `Scanning Screenshot #${index}... 🔍⏳`;
+      loader.innerText = `Scanning ${platformNames[index]} Screenshot #${index}... 🔍⏳`;
       verifyBtn.disabled = true;
 
       let targetLinkKey = extractUrlKey(selectedProdLink).toLowerCase().replace(/[^a-z0-9]/g, '');
 
       try {
         const ocrResult = await Tesseract.recognize(proofFiles[index], 'eng');
-        const scannedText = ocrResult.data.text.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const scannedText = ocrResult.data.text.toLowerCase();
+        const cleanScannedText = scannedText.replace(/[^a-z0-9]/g, '');
 
-        let isLinkMatch = (targetLinkKey.length > 3 && scannedText.includes(targetLinkKey));
+        // Check 1: Verify Social Media Platform App/UI Keywords
+        const requiredPlatformKw = platformKeywords[index];
+        let isPlatformMatch = requiredPlatformKw.some(kw => scannedText.includes(kw));
+
+        if (!isPlatformMatch) {
+          loader.style.display = "none";
+          badge.style.display = 'inline-block';
+          badge.className = 'status-badge not-verified';
+          badge.innerText = "Wrong App ❌";
+          verifyBtn.disabled = false;
+          verifiedStates[index] = false;
+          checkAllVerificationStatuses();
+          alert(`❌ غلط اسکرین شاٹ!\nیہ تصویر ${platformNames[index]} کی نہیں ہے۔ برائے مہربانی صرف ${platformNames[index]} کی اپلوڈ کریں!`);
+          return;
+        }
+
+        // Check 2: Link Match & Title Fallback
+        let isLinkMatch = (targetLinkKey.length > 3 && cleanScannedText.includes(targetLinkKey));
 
         if (!isLinkMatch) {
-          const targetKeywords = getKeywordsFromProd(selectedProdTitle, "");
-          let isTitleMatch = targetKeywords.some(kw => scannedText.includes(kw));
+          const targetKeywords = getKeywordsFromProd(selectedProdTitle);
+          let isTitleMatch = targetKeywords.some(kw => cleanScannedText.includes(kw));
 
           if (!isTitleMatch) {
             loader.style.display = "none";
@@ -638,12 +667,13 @@
             verifyBtn.disabled = false;
             verifiedStates[index] = false;
             checkAllVerificationStatuses();
-            alert(`❌ اسکرین شاٹ #${index} میں افیلی ایٹ لنک موجود نہیں ہے۔ برائے مہربانی صحیح لنک والا اسکرین شاٹ اپلوڈ کریں!`);
+            alert(`❌ اسکرین شاٹ #${index} میں افیلی ایٹ لنک یا پروڈکٹ موجود نہیں ہے۔ برائے مہربانی صحیح پوسٹ کا اسکرین شاٹ اپلوڈ کریں!`);
             return;
           }
         }
 
-        loader.innerText = `Uploading Verified Screenshot #${index}... 🚀`;
+        // Check 3: ImageBB Cloud Upload
+        loader.innerText = `Uploading Verified ${platformNames[index]} Screenshot... 🚀`;
         const formData = new FormData();
         formData.append("image", proofFiles[index]);
         const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
