@@ -50,10 +50,10 @@
     .share-btn { background: #2563eb; color: #ffffff; border: none; padding: 7px 4px; border-radius: 20px; font-weight: bold; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 3px; }
     .proof-btn { background: #16a34a; color: #ffffff; border: none; padding: 6px 4px; border-radius: 20px; font-weight: bold; font-size: 10px; cursor: pointer; }
     
-    /* Highlighted and Disabled styles */
-    .btn-approved { background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important; color: #ffffff !important; border: 2px solid #34d399 !important; font-weight: bold !important; cursor: default !important; opacity: 1 !important; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4); pointer-events: none; }
+    /* Strict Lock & Highlight Styles */
+    .btn-approved { background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important; color: #ffffff !important; border: 2px solid #34d399 !important; font-weight: bold !important; cursor: not-allowed !important; opacity: 1 !important; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4); pointer-events: none; }
     .btn-pending { background: #f59e0b !important; color: #ffffff !important; cursor: not-allowed !important; opacity: 0.9 !important; pointer-events: none; }
-    .proof-btn:disabled, .share-btn:disabled { opacity: 0.85; cursor: not-allowed; }
+    .proof-btn:disabled, .share-btn:disabled { opacity: 0.85; cursor: not-allowed; pointer-events: none; }
 
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
     .modal-box { background: #ffffff; width: 100%; max-width: 420px; border-radius: 14px; padding: 18px; max-height: 90vh; overflow-y: auto; text-align: left; position: relative; }
@@ -225,7 +225,7 @@
       }
     }
 
-    // لوڈ ہسٹری: منظور اور پینڈنگ ریکویسٹ کا ریکارڈ حاصل کریں
+    // لائیو یوزر ڈیٹا فائر بیس سے پکا کنیکٹ کریں
     function loadUserSharedHistory() {
       if(!currentUser) return;
 
@@ -233,19 +233,19 @@
         userSharedProducts = {};
         const uData = uSnap.val() || {};
         
-        // ایڈمن کی طرف سے اپرووڈ کی گئی پروڈکٹس
-        const approved = uData.approvedProds || {};
-        Object.keys(approved).forEach(pKey => {
-          userSharedProducts[pKey] = 'Approved';
+        // 1. فائر بیس میں یوزر کے اکائونٹ میں منظور شدہ پروڈکٹس
+        const sharedProds = uData.sharedProducts || {};
+        Object.keys(sharedProds).forEach(pKey => {
+          userSharedProducts[pKey] = sharedProds[pKey]; // 'Approved' یا 'Pending'
         });
 
-        // پینڈنگ (Pending) سکرین شاٹس
-        proofsDb.orderByChild('userPhone').equalTo(currentUser.phone).once('value', snap => {
+        // 2. کرنٹ پینڈنگ پروڈکٹس پروفز ٹیبل سے بھی کراس چیک کریں
+        proofsDb.orderByChild('userPhone').equalTo(currentUser.phone).on('value', snap => {
           const data = snap.val();
           if(data) {
             Object.keys(data).forEach(k => { 
               const p = data[k];
-              if (!userSharedProducts[p.prodKey]) {
+              if (!userSharedProducts[p.prodKey] || userSharedProducts[p.prodKey] !== 'Approved') {
                 userSharedProducts[p.prodKey] = 'Pending';
               }
             });
@@ -328,9 +328,11 @@
 
     function shareProduct(key, title, link) {
       if (!currentUser) { checkUserSession(); return; }
-      if (userSharedProducts[key]) {
-        if(userSharedProducts[key] === 'Approved') {
-          alert("🚨 آپ کی یہ پروڈکٹ پہلے ہی ایڈمن سے منظور ہو چکی ہے اور پوائنٹس مل چکے ہیں!");
+      
+      const status = userSharedProducts[key];
+      if (status) {
+        if(status === 'Approved') {
+          alert("🚨 آپ اس پروڈکٹ کو پہلے ہی شیئر کر چکے ہیں اور ایڈمن سے منظوری مل چکی ہے! (ہر یوزر صرف 1 بار شیئر کر سکتا ہے)");
         } else {
           alert("⏳ آپ کا سکرین شاٹ زیرِ جائزہ (Pending) ہے۔ ایڈمن کی منظوری کا انتظار کریں!");
         }
@@ -347,9 +349,10 @@
     }
 
     function openProofModal(key, title, link) {
-      if (userSharedProducts[key]) {
-        if(userSharedProducts[key] === 'Approved') alert("🚨 آپ کی یہ پروڈکٹ پہلے ہی ایڈمن سے منظور ہو چکی ہے!");
-        else alert("⏳ آپ کا پروف پہلے سے اپلوڈ ہے، برائے مہربانی ایڈمن اپروول کا انتظار کریں!");
+      const status = userSharedProducts[key];
+      if (status) {
+        if(status === 'Approved') alert("🚨 آپ کی یہ پروڈکٹ پہلے ہی ایڈمن سے منظور ہو چکی ہے!");
+        else alert("⏳ آپ کا سکرین شاٹ پہلے سے بھیجا جا چکا ہے، برائے مہربانی اپروول کا انتظار کریں!");
         return;
       }
       selectedProdKey = key; 
@@ -402,11 +405,15 @@
         const imgData = await res.json();
         
         if (imgData.success) {
+          // 1. پروف لسٹ میں بھیجیں
           proofsDb.push({
             userPhone: currentUser.phone, userName: currentUser.name,
             prodKey: selectedProdKey, prodTitle: selectedProdTitle,
             proofUrl: imgData.data.url, timestamp: Date.now(), status: 'Pending'
-          }).then(() => {
+          });
+
+          // 2. یوزر اکائونٹ میں اسٹیٹس پینڈنگ سیٹ کریں
+          usersDb.child(currentUser.phone).child('sharedProducts').child(selectedProdKey).set('Pending').then(() => {
             loader.style.display = "none";
             userSharedProducts[selectedProdKey] = 'Pending';
             alert("تصویر اسکین اور اپلوڈ ہو گئی ہے! ایڈمن کے اپروول کے بعد پوائنٹس ملیں گے۔ 🚀");
@@ -441,7 +448,7 @@
       }, 150);
     }
 
-    /* Adsterra Banner Ad Loader (Direct Iframe Rendering) */
+    /* Adsterra New Banner Script Loader (key: b56241b7779e2ce343e13c97202a3e26) */
     function createAdBannerElement() {
       const adDiv = document.createElement('div');
       adDiv.className = 'adsterra-in-grid-banner';
@@ -466,15 +473,21 @@
             <head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:50px;background:#fff;}</style></head>
             <body>
               <script type="text/javascript">
-                atOptions = { 'key' : 'cf3494f4a6b7bb56bec2bab7b59f7f36', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                atOptions = {
+                  'key' : 'b56241b7779e2ce343e13c97202a3e26',
+                  'format' : 'iframe',
+                  'height' : 50,
+                  'width' : 320,
+                  'params' : {}
+                };
               <\/script>
-              <script type="text/javascript" src="https://www.highperformanceformat.com/cf3494f4a6b7bb56bec2bab7b59f7f36/invoke.js"><\/script>
+              <script type="text/javascript" src="https://bauval.org/22/b56241b7779e2ce343e13c97202a3e26"><\/script>
             </body>
             </html>
           `);
           doc.close();
         } catch(e){}
-      }, 100);
+      }, 50);
 
       return adDiv;
     }
@@ -536,7 +549,7 @@
         `;
         fragment.appendChild(cardDiv);
 
-        /* Display Adsterra Banner Every 6 Items */
+        /* Adsterra Banner Every 6 Items */
         if (count % 6 === 0) {
           fragment.appendChild(createAdBannerElement());
         }
