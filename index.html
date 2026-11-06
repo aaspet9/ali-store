@@ -4,9 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title id="pageTitle">Saudi Best Deals & Discounts</title>
-  
-  <!-- Google AdSense Official Script -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1423751221773017" crossorigin="anonymous"></script>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -34,6 +31,8 @@
     .action-btn-group { display: flex; gap: 8px; margin-bottom: 10px; }
     .user-upload-btn { flex: 1; background: #2563eb; color: #ffffff; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
     .promo-btn { flex: 1; background: #16a34a; color: #ffffff; text-decoration: none; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; text-align: center; }
+
+    .adsterra-in-grid-banner { grid-column: span 2; background: #ffffff; border-radius: 8px; padding: 4px; text-align: center; margin: 6px 0; display: flex; justify-content: center; align-items: center; min-height: 55px; border: 1px dashed #cbd5e1; width: 100%; overflow: hidden; }
 
     .products-container { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
     .product-card { background: #ffffff; border-radius: 12px; padding: 8px; border: 1px solid #f0f0f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; width: 100%; overflow: hidden; position: relative; }
@@ -73,11 +72,11 @@
 
   <div class="wallet-card">
     <div class="wallet-row">
-      <span>🪙 Approved Shares / منظور شدہ شیئرز:</span>
+      <span id="txtPointsLabel">🪙 Approved Shares / منظور شدہ شیئرز:</span>
       <span class="wallet-val" id="uPoints">0 Points</span>
     </div>
     <div class="wallet-row">
-      <span>💰 Total Balance (100 Shares = 10 SAR):</span>
+      <span id="txtBalanceLabel">💰 Total Balance (100 Shares = 10 SAR):</span>
       <span class="wallet-val" id="uEarnings">0 SAR (0 PKR)</span>
     </div>
     <button class="withdraw-btn" id="withdrawBtn" disabled onclick="openWithdrawModal()">💸 Withdraw Money (Min 50 SAR)</button>
@@ -185,6 +184,14 @@
     let cachedData = null;
     let currentUser = JSON.parse(localStorage.getItem('app_user_data') || 'null');
 
+    const i18n = {
+      en: { title: "🛍️ Saudi Best Deals & Discounts", pub: "➕ Publish Deals", pro: "📌 Promote Deal", buy: "🛒 Buy", search: "🔍 Search product...", shared: "✅ Shared", share: "🔗 Share Deal", proofDone: "✅ Proof Submitted", sendProof: "📸 Send Screenshot Proof" },
+      ur: { title: "🛍️ سعودی بیسٹ ڈیلز & ڈسکاؤنٹس", pub: "➕ اپنی ڈیلز شائع کریں", pro: "📌 ڈیل پروموٹ کروائیں", buy: "🛒 خریدیں", search: "🔍 پروڈکٹ تلاش کریں...", shared: "✅ شیئر ہو گیا", share: "🔗 شیئر ڈیل", proofDone: "✅ پروف بھیج دیا", sendProof: "📸 سکرین شاٹ بھیجیں" },
+      ar: { title: "🛍️ أفضل العروض والخصومات في السعودية", pub: "➕ انشر عروضك", pro: "📌 روج لمنتجك", buy: "🛒 شراء", search: "🔍 ابحث عن منتج...", shared: "✅ تم المشاركة", share: "🔗 مشاركة العرض", proofDone: "✅ تم إرسال الإثبات", sendProof: "📸 إرسال لقطة الشاشة" },
+      hi: { title: "🛍️ सऊदी बेस्ट डील्स और डिस्काउंट्स", pub: "➕ डील पब्लिश करें", pro: "📌 डील प्रमोट करें", buy: "🛒 खरीदें", search: "🔍 प्रोडक्ट खोजें...", shared: "✅ शेयर किया गया", share: "🔗 शेयर डील", proofDone: "✅ प्रूफ जमा किया", sendProof: "📸 स्क्रीनशॉट भेजें" }
+    };
+    let activeLang = 'en';
+
     function checkUserSession() {
       const badge = document.getElementById('userProfileBadge');
       const authModal = document.getElementById('authModal');
@@ -196,6 +203,18 @@
       } else {
         badge.innerText = `🔑 Login`;
         authModal.style.display = 'flex';
+      }
+    }
+
+    function handleAuthClick() {
+      if(!currentUser) {
+        document.getElementById('authModal').style.display = 'flex';
+      } else {
+        if(confirm(`Logged in as ${currentUser.name}. Do you want to logout?`)) {
+          localStorage.removeItem('app_user_data');
+          currentUser = null;
+          checkUserSession();
+        }
       }
     }
 
@@ -240,7 +259,10 @@
       });
     }
 
-    function openUploadModal() { document.getElementById('uploadModal').style.display = 'flex'; }
+    function openUploadModal() { 
+      if(!currentUser) { checkUserSession(); return; }
+      document.getElementById('uploadModal').style.display = 'flex'; 
+    }
     function closeUploadModal() { document.getElementById('uploadModal').style.display = 'none'; }
 
     function handleUserImgSelect(e) {
@@ -272,7 +294,7 @@
             userName: currentUser.name, userPhone: currentUser.phone, timestamp: Date.now()
           }).then(() => {
             loader.style.display = "none";
-            alert("آپ کی ڈیل بھیج دی گئی ہے! 🚀");
+            alert("آپ کی ڈیل ایڈمن کو بھیج دی گئی ہے! 🚀");
             closeUploadModal();
           });
         }
@@ -351,7 +373,27 @@
       searchTimeout = setTimeout(() => {
         searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
         if (cachedData) displayData(cachedData);
-      }, 200);
+      }, 150);
+    }
+
+    /* Adsterra In-Grid Banner Every 6 Products */
+    function createAdBannerElement() {
+      const adDiv = document.createElement('div');
+      adDiv.className = 'adsterra-in-grid-banner';
+      const iframe = document.createElement('iframe');
+      iframe.style.width = '320px'; iframe.style.height = '50px'; iframe.style.border = 'none'; iframe.style.overflow = 'hidden';
+      const iframeDoc = `
+        <!DOCTYPE html><html><head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:100vh;}</style></head>
+        <body>
+          <script type="text/javascript">
+            atOptions = { 'key' : 'cf3494f4a6b7bb56bec2bab7b59f7f36', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+          <\/script>
+          <script type="text/javascript" src="https://bauval.org/22/cf3494f4a6b7bb56bec2bab7b59f7f36"><\/script>
+        </body></html>
+      `;
+      adDiv.appendChild(iframe);
+      setTimeout(() => { const doc = iframe.contentWindow.document; doc.open(); doc.write(iframeDoc); doc.close(); }, 50);
+      return adDiv;
     }
 
     function displayData(data) {
@@ -359,9 +401,13 @@
       if (!data) { grid.innerHTML = `<p style="text-align: center; grid-column: span 2;">No products.</p>`; return; }
 
       const fragment = document.createDocumentFragment();
+      const txt = i18n[activeLang];
+      let count = 0;
+
       Object.keys(data).forEach((key) => {
         const item = data[key];
         if (searchQuery && !item.title.toLowerCase().includes(searchQuery)) return;
+        count++;
 
         const imgList = item.images && item.images.length > 0 ? item.images : [item.img || 'https://via.placeholder.com/150'];
         const shareCount = item.shares || 0;
@@ -376,16 +422,21 @@
             <div class="product-price">${item.price}</div>
           </div>
           <div class="btn-action-row">
-            <a href="${item.link}" target="_blank" class="buy-btn">🛒 Buy</a>
+            <a href="${item.link}" target="_blank" class="buy-btn">${txt.buy}</a>
             <button class="share-btn" ${isAlreadyShared ? 'disabled' : ''} onclick="shareProduct('${key}', '${item.title.replace(/'/g, "\\'")}', '${item.link}')">
-              ${isAlreadyShared ? '✅ Shared' : `🔗 Share Deal (${shareCount})`}
+              ${isAlreadyShared ? txt.shared : `${txt.share} (${shareCount})`}
             </button>
             <button class="proof-btn" ${isAlreadyShared ? 'disabled' : ''} onclick="openProofModal('${key}', '${item.title.replace(/'/g, "\\'")}')">
-              ${isAlreadyShared ? '✅ Proof Submitted' : '📸 Send Screenshot Proof'}
+              ${isAlreadyShared ? txt.proofDone : txt.sendProof}
             </button>
           </div>
         `;
         fragment.appendChild(cardDiv);
+
+        /* Adsterra Banner Every 6 Items */
+        if (count % 6 === 0) {
+          fragment.appendChild(createAdBannerElement());
+        }
       });
 
       grid.innerHTML = '';
@@ -393,8 +444,20 @@
     }
 
     function switchLanguage(lang) {
+      activeLang = lang;
+      const txt = i18n[lang];
+      document.getElementById('headerText').innerText = txt.title;
+      document.getElementById('btnUploadTxt').innerText = txt.pub;
+      document.getElementById('btnPromoTxt').innerText = txt.pro;
+      document.getElementById('searchInput').placeholder = txt.search;
+
       document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById(`btn${lang.charAt(0).toUpperCase() + lang.slice(1)}`).classList.add('active');
+      if(lang === 'en') document.getElementById('btnEn').classList.add('active');
+      if(lang === 'ur') document.getElementById('btnUr').classList.add('active');
+      if(lang === 'ar') document.getElementById('btnAr').classList.add('active');
+      if(lang === 'hi') document.getElementById('btnHi').classList.add('active');
+
+      if (cachedData) displayData(cachedData);
     }
 
     window.onload = function() {
