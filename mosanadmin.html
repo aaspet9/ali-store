@@ -212,7 +212,7 @@
 
   </div>
 
-  <!-- Modal 1: User Uploaded Deals Search -->
+  <!-- Modal 1: User Uploaded Deals Search (Only Real Users, No Admin Deals) -->
   <div class="modal-overlay" id="userDealsModal">
     <div class="modal-box">
       <button class="close-modal-btn" onclick="closeModal('userDealsModal')">✕</button>
@@ -422,7 +422,7 @@
       }
     }
 
-    /* Modal 1 Search: User Uploaded Deals List Search */
+    /* Modal 1 Search: User Uploaded Deals List Search (EXCLUDING Admin Products) */
     function searchUserUploadedDeals() {
       const phone = document.getElementById('dealsPhoneSearch').value.trim();
       const resultsDiv = document.getElementById('userDealsResults');
@@ -436,20 +436,25 @@
 
         Object.keys(data).forEach((k) => {
           const item = data[k];
-          if (phone && item.userPhone && !item.userPhone.includes(phone)) return;
+
+          // STRICT FILTER: Exclude Admin Products completely
+          if (!item.userPhone || item.userPhone === 'Admin' || item.userPhone === 'admin') return;
+
+          // Filter by searched phone number
+          if (phone && !item.userPhone.includes(phone)) return;
           idx++;
 
           html += `
             <div class="user-strip">
               <div class="user-strip-header" onclick="toggleUserStrip('udBody_${idx}')">
                 <div style="font-size:12px; font-weight:bold; color:#1e293b;">📦 ${item.title.substring(0, 35)}...</div>
-                <div style="font-size:10px; color:#64748b;">👤 یوزر: ${item.userName || 'Admin'} (${item.userPhone || 'Admin'})</div>
+                <div style="font-size:10px; color:#64748b;">👤 یوزر: ${item.userName || 'User'} (${item.userPhone})</div>
               </div>
               <div class="user-strip-body" id="udBody_${idx}">
                 <img src="${item.img || (item.images?item.images[0]:'')}" style="width:100%; max-height:160px; object-fit:contain; border-radius:6px; margin-bottom:6px; background:#000;">
                 <div style="font-size:12px; font-weight:bold; margin-bottom:4px;">${item.title}</div>
                 <div style="font-size:11px; color:#16a34a; font-weight:bold;">قیمت: ${item.price}</div>
-                <div style="font-size:11px; font-weight:bold; margin-top:6px;">📱 اپلوڈر فون: ${item.userPhone || 'N/A'}</div>
+                <div style="font-size:11px; font-weight:bold; margin-top:6px;">📱 اپلوڈر فون: ${item.userPhone}</div>
                 <div style="font-size:11px; font-weight:bold; margin-top:4px;">🔗 ڈائریکٹ افیلی ایٹ لنک:</div>
                 <div class="text-link-box" dir="ltr">${item.link}</div>
               </div>
@@ -457,7 +462,7 @@
           `;
         });
 
-        resultsDiv.innerHTML = html || '<p style="font-size:11px; color:#ef4444;">کوئی اپلوڈ شدہ ڈیل نہیں ملی۔</p>';
+        resultsDiv.innerHTML = html || '<p style="font-size:11px; color:#ef4444;">کوئی یوزر اپلوڈ شدہ ڈیل نہیں ملی۔</p>';
       });
     }
 
@@ -583,7 +588,9 @@
             img: img || "https://via.placeholder.com/150",
             pinned: false,
             timestamp: Date.now(),
-            shares: 0
+            shares: 0,
+            userPhone: 'Admin',
+            userName: 'Admin'
           };
           count++;
         }
