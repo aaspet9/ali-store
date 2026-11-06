@@ -21,6 +21,15 @@
     /* Social Bar Ad Container under header */
     .social-bar-container { background: #ffffff; border: 1px dashed #2563eb; border-radius: 10px; padding: 4px; margin-bottom: 10px; text-align: center; min-height: 50px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
 
+    /* Search Bar Container */
+    .search-box-wrapper { margin-bottom: 10px; position: relative; }
+    .search-input { width: 100%; padding: 12px 16px; border: 2px solid #2563eb; border-radius: 25px; font-size: 13px; outline: none; background: #ffffff; box-shadow: 0 3px 8px rgba(37, 99, 235, 0.12); font-weight: 500; }
+    .search-input::placeholder { color: #94a3b8; }
+
+    /* Single All Products Button Bar */
+    .category-scroll { display: flex; gap: 8px; padding-bottom: 4px; margin-bottom: 10px; }
+    .cat-btn { background: #ff4747; color: #ffffff; border: 1px solid #ff4747; padding: 8px 18px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 6px rgba(255,71,71,0.2); }
+
     /* Total Shares Counter Box */
     .total-shares-box { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #ffffff; padding: 8px 12px; border-radius: 10px; text-align: center; margin-bottom: 10px; font-size: 12px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 8px rgba(15, 23, 42, 0.15); }
     .total-shares-count { font-size: 16px; color: #38bdf8; font-weight: 800; background: rgba(56, 189, 248, 0.15); padding: 2px 8px; border-radius: 6px; }
@@ -28,11 +37,6 @@
     .action-btn-group { display: flex; gap: 8px; margin-bottom: 10px; }
     .user-upload-btn { flex: 1; background: #2563eb; color: #ffffff; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25); }
     .promo-btn { flex: 1; background: #16a34a; color: #ffffff; text-decoration: none; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 3px 8px rgba(22, 163, 74, 0.25); text-align: center; }
-
-    .category-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 10px; scrollbar-width: none; }
-    .category-scroll::-webkit-scrollbar { display: none; }
-    .cat-btn { white-space: nowrap; background: #ffffff; border: 1px solid #e2e8f0; padding: 7px 14px; border-radius: 20px; font-size: 11px; font-weight: bold; color: #475569; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
-    .cat-btn.active { background: #ff4747; color: #ffffff; border-color: #ff4747; }
 
     .adsterra-slim-banner { background: #ffffff; border-radius: 8px; padding: 4px; text-align: center; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; min-height: 55px; overflow: hidden; border: 1px dashed #cbd5e1; }
     .adsterra-in-grid-banner { grid-column: span 2; background: #ffffff; border-radius: 8px; padding: 4px; text-align: center; margin: 6px 0; display: flex; justify-content: center; align-items: center; min-height: 55px; border: 1px dashed #cbd5e1; overflow: hidden; }
@@ -82,9 +86,17 @@
     <span class="user-profile-badge" id="userProfileBadge" onclick="handleAuthClick()">🔑 Login</span>
   </div>
 
-  <!-- Social Bar Ad Container with Updated Code -->
-  <div class="social-bar-container">
-    <script data-cfasync="false" src="https://bauval.org/14/e361984475f2ca7f086c70fada052d75"></script>
+  <!-- Social Bar Ad Container -->
+  <div class="social-bar-container" id="socialBarAdBox"></div>
+
+  <!-- High-Level Realtime Search Bar -->
+  <div class="search-box-wrapper">
+    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search product (e.g. Watch, Cream, Mobile, Laptop)..." oninput="onSearchChange()">
+  </div>
+
+  <!-- Only All Products Button -->
+  <div class="category-scroll">
+    <button class="cat-btn active" id="btnAllProducts" onclick="resetSearch()">🛍️ All Products</button>
   </div>
 
   <!-- Total Products Share Counter Box -->
@@ -102,15 +114,8 @@
     </a>
   </div>
 
-  <div class="category-scroll" id="categoryBar"></div>
-
-  <!-- Top Banner Ad -->
-  <div class="adsterra-slim-banner">
-    <script>
-      atOptions = { 'key' : 'cf3494f4a6b7bb56bec2bab7b59f7f36', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-    </script>
-    <script src="https://bauval.org/22/cf3494f4a6b7bb56bec2bab7b59f7f36"></script>
-  </div>
+  <!-- Top Banner Ad Container -->
+  <div class="adsterra-slim-banner" id="topBannerAd"></div>
 
   <div class="products-container" id="productsGrid">
     <p style="text-align: center; grid-column: span 2; padding: 20px; color: #2563eb; font-weight:bold;">Loading deals... ⏳</p>
@@ -185,7 +190,7 @@
     const IMGBB_API_KEY = "66dcdf21e30733bfd85545d9fb5e76c4";
     let userFiles = [];
     let currentLang = 'en'; 
-    let currentCategory = 'all';
+    let searchQuery = '';
     let adminTrackingTag = ""; 
     const sliderIndices = {};
     let cachedProducts = null;
@@ -198,7 +203,7 @@
 
     const translations = {
       en: { 
-        title: "🛍️ Saudi Best Deals & Discounts", buyBtn: "🛒 Buy", emptyMsg: "No products available in this category.", dir: "ltr",
+        title: "🛍️ Saudi Best Deals & Discounts", buyBtn: "🛒 Buy", emptyMsg: "No matching products found.", dir: "ltr",
         btnUploadMain: "➕ Publish Deals", btnPromoMain: "📌 Promote Deal", featuredBadge: "⭐ Featured",
         modalHeading: "🚀 Add Your Product", lblTitle: "Product Title:", phTitle: "Enter product title...",
         lblCategory: "Category:", lblPrice: "Price:", lblLink: "Affiliate Link:", lblImages: "Images (Select from Gallery):",
@@ -206,10 +211,12 @@
         msgAlertNeedTitle: "Please enter title and affiliate link!", msgAlertNeedImg: "Please upload at least one product image!",
         msgAlertImgErr: "Error uploading image, please select a valid image file!",
         msgAlertSuccess: "Your product has been sent to admin. It will be live after approval! 🚀",
-        cats: { all: "All", kids: "Kids Clothes", watch: "Watches", mobile: "Mobiles", laptop: "Laptops", electronics: "Electronics", keyboard: "Keyboards", shoes: "Shoes", kitchen: "Kitchenware", medical: "Medical Items", beauty: "Beauty Creams", jewelry: "Jewelry" }
+        phSearch: "🔍 Search product (e.g. Watch, Cream, Mobile, Laptop)...",
+        btnAll: "🛍️ All Products",
+        cats: { kids: "Kids Clothes", watch: "Watches", mobile: "Mobiles", laptop: "Laptops", electronics: "Electronics", keyboard: "Keyboards", shoes: "Shoes", kitchen: "Kitchenware", medical: "Medical Items", beauty: "Beauty Creams", jewelry: "Jewelry" }
       },
       ur: { 
-        title: "🛍️ سعودی بیسٹ ڈیلز & ڈسکاؤنٹس", buyBtn: "🛒 خریدیں", emptyMsg: "اس کیٹیگری میں کوئی پروڈکٹ موجود نہیں ہے۔", dir: "rtl",
+        title: "🛍️ سعودی بیسٹ ڈیلز & ڈسکاؤنٹس", buyBtn: "🛒 خریدیں", emptyMsg: "تلاش کے مطابق کوئی پروڈکٹ نہیں ملی۔", dir: "rtl",
         btnUploadMain: "➕ اپنی ڈیلز شائع کریں", btnPromoMain: "📌 پروڈکٹ پروموٹر کروائیں", featuredBadge: "⭐ اسپانسرڈ",
         modalHeading: "🚀 اپنی پروڈکٹ شامل کریں", lblTitle: "پروڈکٹ کا عنوان:", phTitle: "عنوان درج کریں...",
         lblCategory: "کیٹیگری:", lblPrice: "قیمت:", lblLink: "افیلی ایٹ لنک:", lblImages: "تصاویر (گیلری سے منتخب کریں):",
@@ -217,10 +224,12 @@
         msgAlertNeedTitle: "براہ کرم عنوان اور افیلی ایٹ لنک درج کریں!", msgAlertNeedImg: "براہ کرم کم از کم ایک پروڈکٹ کی تصویر اپلوڈ کریں!",
         msgAlertImgErr: "تصویر اپلوڈ کرنے میں مسئلہ آیا ہے، صحیح تصویری فائل منتخب کریں!",
         msgAlertSuccess: "آپ کی پروڈکٹ ایڈمن کو بھیج دی گئی ہے۔ ایڈمن کی منظوری کے بعد یہ لائیو شو ہو جائے گی! 🚀",
-        cats: { all: "سب", kids: "بچوں کے کپڑے", watch: "گھڑی", mobile: "موبائل فون", laptop: "لیپ ٹاپ", electronics: "الیکٹرانکس", keyboard: "کی بورڈ", shoes: "شوز", kitchen: "کچن کا سامان", medical: "میڈیکل سامان", beauty: "بیوٹی کریم", jewelry: "جیولری سامان" }
+        phSearch: "🔍 پروڈکٹ تلاش کریں (مثال: گھڑی، بیوٹی کریم، موبائل)...",
+        btnAll: "🛍️ تمام پروڈکٹس",
+        cats: { kids: "بچوں کے کپڑے", watch: "گھڑی", mobile: "موبائل فون", laptop: "لیپ ٹاپ", electronics: "الیکٹرانکس", keyboard: "کی بورڈ", shoes: "شوز", kitchen: "کچن کا سامان", medical: "میڈیکل سامان", beauty: "بیوٹی کریم", jewelry: "جیولری سامان" }
       },
       ar: { 
-        title: "🛍️ أفضل العروض والخصومات في السعودية", buyBtn: "🛒 شراء", emptyMsg: "لا توجد منتجات متاحة في هذه الفئة.", dir: "rtl",
+        title: "🛍️ أفضل العروض والخصومات في السعودية", buyBtn: "🛒 شراء", emptyMsg: "لم يتم العثور على منتجات مطابقة.", dir: "rtl",
         btnUploadMain: "➕ انشر عروضك", btnPromoMain: "📌 روج لمنتجك", featuredBadge: "⭐ مميز",
         modalHeading: "🚀 أضف منتجك", lblTitle: "عنوان المنتج:", phTitle: "أدخل عنوان المنتج...",
         lblCategory: "الفئة:", lblPrice: "السعر:", lblLink: "رابط التتبع:", lblImages: "الصور (اختر من المعرض):",
@@ -228,10 +237,12 @@
         msgAlertNeedTitle: "يرجى إدخال العنوان ورابط التتبع!", msgAlertNeedImg: "يرجى تحميل صورة منتج واحدة على الأقل!",
         msgAlertImgErr: "حدث خطأ أثناء تحميل الصورة، يرجى اختيار ملف صورة صالحة!",
         msgAlertSuccess: "تم إرسال منتجك إلى المسؤول. سيكون متاحاً بعد الموافقة! 🚀",
-        cats: { all: "الكل", kids: "ملابس الأطفال", watch: "ساعات", mobile: "جوالات", laptop: "لابتوب", electronics: "إلكترونيات", keyboard: "لوحة مفاتيح", shoes: "أحذية", kitchen: "أدوات المطبخ", medical: "مستلزمات طبية", beauty: "كريمات التجميل", jewelry: "مجوهرات" }
+        phSearch: "🔍 ابحث عن منتج (مثل ساعة ، كريم ، جوال)...",
+        btnAll: "🛍️ جميع المنتجات",
+        cats: { kids: "ملابس الأطفال", watch: "ساعات", mobile: "جوالات", laptop: "لابتوب", electronics: "إلكترونيات", keyboard: "لوحة مفاتيح", shoes: "أحذية", kitchen: "أدوات المطبخ", medical: "مستلزمات طبية", beauty: "كريمات التجميل", jewelry: "مجوهرات" }
       },
       hi: { 
-        title: "🛍️ सऊदी बेस्ट डील्स और डिस्काउंट्स", buyBtn: "🛒 खरीदें", emptyMsg: "इस कैटेगरी में कोई प्रोडक्ट उपलब्ध नहीं है।", dir: "ltr",
+        title: "🛍️ सऊदी बेस्ट डील्स और डिस्काउंट्स", buyBtn: "🛒 खरीदें", emptyMsg: "कोई मैचिंग प्रोडक्ट नहीं मिला।", dir: "ltr",
         btnUploadMain: "➕ अपनी डील पब्लिश करें", btnPromoMain: "📌 प्रोडक्ट प्रमोट करें", featuredBadge: "⭐ स्पॉन्सर्ड",
         modalHeading: "🚀 अपना प्रोडक्ट जोड़ें", lblTitle: "प्रोडक्ट का नाम:", phTitle: "प्रोडक्ट का नाम दर्ज करें...",
         lblCategory: "कैटेगरी:", lblPrice: "कीमत:", lblLink: "एफिलिएट लिंक:", lblImages: "इमेजेस (गैलरी से चुनें):",
@@ -239,9 +250,44 @@
         msgAlertNeedTitle: "कृपया नाम और एफिलिएट लिंक दर्ज करें!", msgAlertNeedImg: "कृपया कम से कम एक प्रोडक्ट इमेज अपलोड करें!",
         msgAlertImgErr: "इमेज अपलोड करने में त्रुटि, कृपया सही इमेज फाइल चुनें!",
         msgAlertSuccess: "आपका प्रोडक्ट एडमिन को भेज दिया गया है। अप्रूवल के बाद यह लाइव हो जाएगा! 🚀",
-        cats: { all: "सब", kids: "बच्चों के कपड़े", watch: "घड़ी", mobile: "मोबाइल", laptop: "लैपटॉप", electronics: "इलेक्ट्रॉनिक्स", keyboard: "कीबोर्ड", shoes: "जूते", kitchen: "रसोई का सामान", medical: "मेडिकल सामान", beauty: "ब्यूटी क्रीम", jewelry: "ज्वेलरी सामान" }
+        phSearch: "🔍 प्रोडक्ट खोजें (उदा. घड़ी, क्रीम, मोबाइल)...",
+        btnAll: "🛍️ सभी प्रोडक्ट्स",
+        cats: { kids: "बच्चों के कपड़े", watch: "घड़ी", mobile: "मोबाइल", laptop: "लैपटॉप", electronics: "इलेक्ट्रॉनिक्स", keyboard: "कीबोर्ड", shoes: "जूते", kitchen: "रसोई का सामान", medical: "मेडिकल सामान", beauty: "ब्यूटी क्रीम", jewelry: "ज्वेलरी सामान" }
       }
     };
+
+    /* Dynamic Ads Injection Fix */
+    function loadSocialBarAd() {
+      const box = document.getElementById('socialBarAdBox');
+      if(!box) return;
+      box.innerHTML = '';
+      const script = document.createElement('script');
+      script.setAttribute('data-cfasync', 'false');
+      script.src = 'https://bauval.org/14/e361984475f2ca7f086c70fada052d75';
+      box.appendChild(script);
+    }
+
+    function loadTopBannerAd() {
+      const box = document.getElementById('topBannerAd');
+      if(!box) return;
+      box.innerHTML = '';
+      const iframe = document.createElement('iframe');
+      iframe.style.width = '320px'; iframe.style.height = '50px'; iframe.style.border = 'none'; iframe.style.overflow = 'hidden';
+      box.appendChild(iframe);
+
+      const iframeDoc = `
+        <!DOCTYPE html><html><head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:100vh;}</style></head>
+        <body>
+          <script type="text/javascript">
+            atOptions = { 'key' : 'cf3494f4a6b7bb56bec2bab7b59f7f36', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+          <\/script>
+          <script type="text/javascript" src="https://bauval.org/22/cf3494f4a6b7bb56bec2bab7b59f7f36"><\/script>
+        </body></html>
+      `;
+      setTimeout(() => {
+        const doc = iframe.contentWindow.document; doc.open(); doc.write(iframeDoc); doc.close();
+      }, 50);
+    }
 
     /* Mandatory Auth Check */
     function checkUserSession() {
@@ -280,8 +326,20 @@
         currentUser = userObj;
         localStorage.setItem('app_user_data', JSON.stringify(userObj));
         checkUserSession();
-        alert("لاگ ان کامیا ہو گیا ہے! 🚀");
+        alert("لاگ ان کامیاب ہو گیا ہے! 🚀");
       });
+    }
+
+    /* Realtime High-Level Search Filter */
+    function onSearchChange() {
+      searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+      renderProducts();
+    }
+
+    function resetSearch() {
+      document.getElementById('searchInput').value = '';
+      searchQuery = '';
+      renderProducts();
     }
 
     /* Secure Share Functionality */
@@ -408,6 +466,8 @@
       document.getElementById('lblImages').innerText = langObj.lblImages;
       document.getElementById('uFileText').innerText = langObj.uFileText;
       document.getElementById('btnSubmitModal').innerText = langObj.btnSubmitModal;
+      document.getElementById('searchInput').placeholder = langObj.phSearch;
+      document.getElementById('btnAllProducts').innerText = langObj.btnAll;
 
       const modalBox = document.querySelector('.modal-box');
       if (modalBox) modalBox.style.textAlign = langObj.dir === 'rtl' ? 'right' : 'left';
@@ -418,7 +478,6 @@
       if (lang === 'ar') document.getElementById('btnAr').classList.add('active');
       if (lang === 'hi') document.getElementById('btnHi').classList.add('active');
 
-      renderCategories();
       renderModalCategories();
       renderProducts();
     }
@@ -428,25 +487,8 @@
       select.innerHTML = '';
       const catObj = translations[currentLang].cats;
       Object.keys(catObj).forEach(key => {
-        if(key !== 'all') {
-          select.innerHTML += `<option value="${key}">${catObj[key]}</option>`;
-        }
+        select.innerHTML += `<option value="${key}">${catObj[key]}</option>`;
       });
-    }
-
-    function renderCategories() {
-      const catBar = document.getElementById('categoryBar');
-      catBar.innerHTML = '';
-      Object.keys(translations[currentLang].cats).forEach(key => {
-        const activeClass = key === currentCategory ? 'active' : '';
-        catBar.innerHTML += `<button class="cat-btn ${activeClass}" onclick="filterCategory('${key}')">${translations[currentLang].cats[key]}</button>`;
-      });
-    }
-
-    function filterCategory(catKey) {
-      currentCategory = catKey;
-      renderCategories();
-      renderProducts();
     }
 
     function moveSlide(cardKey, direction, totalImages) {
@@ -491,21 +533,14 @@
       return adDiv;
     }
 
-    /* Fixed Category Matching Logic */
-    function isItemInCategory(item, catKey) {
-      if (catKey === 'all') return true;
-      if (item.category && item.category.toLowerCase().trim() === catKey.toLowerCase().trim()) return true;
-
-      // Title Fallback Search for imported products
+    /* High-Level Search Matching Logic */
+    function matchesSearch(item, query) {
+      if (!query) return true;
       const titleLower = (item.title || "").toLowerCase();
-      if (catKey === 'watch' && titleLower.includes('watch')) return true;
-      if (catKey === 'mobile' && (titleLower.includes('mobile') || titleLower.includes('phone'))) return true;
-      if (catKey === 'laptop' && titleLower.includes('laptop')) return true;
-      if (catKey === 'kids' && (titleLower.includes('kid') || titleLower.includes('baby'))) return true;
-      if (catKey === 'shoes' && (titleLower.includes('shoe') || titleLower.includes('sneaker'))) return true;
-      if (catKey === 'kitchen' && titleLower.includes('kitchen')) return true;
+      const categoryLower = (item.category || "").toLowerCase();
+      const descLower = (item.desc || "").toLowerCase();
 
-      return false;
+      return titleLower.includes(query) || categoryLower.includes(query) || descLower.includes(query);
     }
 
     function displayData(data) {
@@ -522,7 +557,7 @@
 
       const keysList = Object.keys(data);
       
-      // Grand Total Shares Calculator
+      // Calculate Total Shares
       keysList.forEach(k => {
         grandTotalShares += (data[k].shares || 0);
       });
@@ -538,8 +573,8 @@
       keysList.forEach((key) => {
         const item = data[key];
 
-        // Strict category filtering check
-        if (!isItemInCategory(item, currentCategory)) return;
+        // Realtime Search Matching Check
+        if (!matchesSearch(item, searchQuery)) return;
         count++;
 
         const finalBuyLink = getFinalLink(item.link, count - 1);
@@ -589,15 +624,21 @@
     }
 
     function renderProducts() {
-      db.on('value', (snapshot) => {
-        cachedProducts = snapshot.val();
+      if (cachedProducts) {
         displayData(cachedProducts);
-      });
+      } else {
+        db.on('value', (snapshot) => {
+          cachedProducts = snapshot.val();
+          displayData(cachedProducts);
+        });
+      }
     }
 
     window.onload = function() { 
       switchLanguage('en'); 
       checkUserSession();
+      loadSocialBarAd();
+      loadTopBannerAd();
     };
   </script>
 </body>
