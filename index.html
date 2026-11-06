@@ -7,7 +7,6 @@
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  <!-- OCR Library for Client-side Text & Link Scanning -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
   <style>
@@ -22,40 +21,11 @@
       background: linear-gradient(-45deg, #ff4747, #e60000, #ff8c00, #e60000); 
       background-size: 300% 300%;
       animation: gradientBG 4s ease infinite;
-      color: #ffffff; 
-      text-align: center; 
-      padding: 12px; 
-      border-radius: 12px; 
-      font-weight: bold; 
-      font-size: 15px; 
-      margin-bottom: 8px; 
-      box-shadow: 0 4px 12px rgba(255, 71, 71, 0.4); 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      position: relative;
-      overflow: hidden;
+      color: #ffffff; text-align: center; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 15px; margin-bottom: 8px; box-shadow: 0 4px 12px rgba(255, 71, 71, 0.4); display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden;
     }
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    .offer-glow-badge {
-      background: linear-gradient(90deg, #ffe600, #ffffff, #ffe600);
-      color: #000;
-      font-size: 10px;
-      font-weight: 900;
-      padding: 2px 6px;
-      border-radius: 4px;
-      animation: pulseGlow 1.2s infinite alternate;
-      margin-right: 4px;
-      margin-left: 4px;
-    }
-    @keyframes pulseGlow {
-      from { transform: scale(1); box-shadow: 0 0 4px #ffe600; }
-      to { transform: scale(1.08); box-shadow: 0 0 12px #ffe600; }
-    }
+    @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    .offer-glow-badge { background: linear-gradient(90deg, #ffe600, #ffffff, #ffe600); color: #000; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 4px; animation: pulseGlow 1.2s infinite alternate; margin-right: 4px; margin-left: 4px; }
+    @keyframes pulseGlow { from { transform: scale(1); box-shadow: 0 0 4px #ffe600; } to { transform: scale(1.08); box-shadow: 0 0 12px #ffe600; } }
 
     .user-profile-badge { font-size: 11px; background: rgba(255, 255, 255, 0.25); padding: 4px 8px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
 
@@ -80,6 +50,7 @@
 
     .products-container { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
     .product-card { background: #ffffff; border-radius: 12px; padding: 8px; border: 1px solid #f0f0f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; width: 100%; overflow: hidden; position: relative; }
+    .pinned-badge { position: absolute; top: 10px; left: 10px; background: #8b5cf6; color: #ffffff; font-size: 9px; font-weight: bold; padding: 2px 6px; border-radius: 4px; z-index: 2; }
 
     .slider-wrapper { position: relative; width: 100%; height: 155px; border-radius: 8px; overflow: hidden; margin-bottom: 8px; background: #fdfdfd; }
     .product-media { width: 100%; height: 155px; object-fit: cover; border-radius: 8px; }
@@ -92,7 +63,7 @@
     .share-btn { background: #2563eb; color: #ffffff; border: none; padding: 7px 4px; border-radius: 20px; font-weight: bold; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 3px; }
     .proof-btn { background: #16a34a; color: #ffffff; border: none; padding: 6px 4px; border-radius: 20px; font-weight: bold; font-size: 10px; cursor: pointer; }
     
-    .btn-approved { background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important; color: #ffffff !important; border: 2px solid #34d399 !important; font-weight: bold !important; cursor: not-allowed !important; opacity: 1 !important; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4); pointer-events: none; }
+    .btn-approved { background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important; color: #ffffff !important; border: 2px solid #34d399 !important; font-weight: bold !important; cursor: not-allowed !important; opacity: 1 !important; pointer-events: none; }
     .btn-pending { background: #f59e0b !important; color: #ffffff !important; cursor: not-allowed !important; opacity: 0.9 !important; pointer-events: none; }
     .proof-btn:disabled, .share-btn:disabled { opacity: 0.85; cursor: not-allowed; pointer-events: none; }
 
@@ -291,7 +262,6 @@
     let cachedData = null;
     let currentUser = JSON.parse(localStorage.getItem('app_user_data') || 'null');
 
-    // Strict Platforms OCR UI Keywords Scanning
     const platformKeywords = {
       1: ["youtube", "shorts", "subscribe", "comments", "videos", "search", "home", "subscriptions"],
       2: ["facebook", "share", "like", "comment", "public", "posts", "reels", "groups"],
@@ -618,7 +588,6 @@
       return keywords;
     }
 
-    // Strict Platform Verification + Link Verification + Title Verification
     async function verifySingleImage(index) {
       if (!proofFiles[index]) return;
       const loader = document.getElementById('proofLoader');
@@ -636,7 +605,6 @@
         const scannedText = ocrResult.data.text.toLowerCase();
         const cleanScannedText = scannedText.replace(/[^a-z0-9]/g, '');
 
-        // 1. Strict Social Media App UI Text Check
         const requiredPlatformKw = platformKeywords[index];
         let isPlatformMatch = requiredPlatformKw.some(kw => scannedText.includes(kw));
 
@@ -652,7 +620,6 @@
           return;
         }
 
-        // 2. Affiliate Link or Title Keywords Check
         let isLinkMatch = (targetLinkKey.length > 3 && cleanScannedText.includes(targetLinkKey));
 
         if (!isLinkMatch) {
@@ -672,7 +639,6 @@
           }
         }
 
-        // 3. Cloud Storage Upload
         loader.innerText = `Uploading Verified ${platformNames[index]} Screenshot... 🚀`;
         const formData = new FormData();
         formData.append("image", proofFiles[index]);
@@ -729,9 +695,15 @@
       try {
         const urlArray = Object.values(uploadedUrls);
         proofsDb.push({
-          userPhone: currentUser.phone, userName: currentUser.name,
-          prodKey: selectedProdKey, prodTitle: selectedProdTitle,
-          proofUrls: urlArray, proofUrl: urlArray[0], timestamp: Date.now(), status: 'Pending'
+          userPhone: currentUser.phone, 
+          userName: currentUser.name,
+          prodKey: selectedProdKey, 
+          prodTitle: selectedProdTitle,
+          prodLink: selectedProdLink, // Direct link saving fixed
+          proofUrls: urlArray, 
+          proofUrl: urlArray[0], 
+          timestamp: Date.now(), 
+          status: 'Pending'
         });
 
         usersDb.child(currentUser.phone).child('sharedProducts').child(selectedProdKey).set('Pending').then(() => {
@@ -808,7 +780,11 @@
       const txt = i18n[activeLang];
       let count = 0;
 
-      Object.keys(data).forEach((key) => {
+      const keys = Object.keys(data).sort((a, b) => {
+        return (data[b].pinned === true ? 1 : 0) - (data[a].pinned === true ? 1 : 0);
+      });
+
+      keys.forEach((key) => {
         const item = data[key];
         if (searchQuery && !item.title.toLowerCase().includes(searchQuery)) return;
         count++;
@@ -838,6 +814,7 @@
         const cardDiv = document.createElement('div');
         cardDiv.className = `product-card`;
         cardDiv.innerHTML = `
+          ${item.pinned ? '<div class="pinned-badge">📌 PINNED</div>' : ''}
           <div>
             <div class="slider-wrapper"><img src="${imgList[0]}" class="product-media" onerror="this.src='https://via.placeholder.com/150'"></div>
             <div class="product-title">${item.title}</div>
