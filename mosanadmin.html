@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ایڈمن پینل - وڈراول مینجمنٹ</title>
+  <title>ایڈمن پینل - سکرین شاٹ اپروول</title>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <style>
@@ -18,9 +18,11 @@
     .section-toggle-btn { width: 100%; background: #ffffff; color: #1e293b; border: 2px solid #cbd5e1; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
     .collapsible-content { display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 0 0 10px 10px; padding: 12px; margin-top: -6px; }
 
-    .item-row { background: #fff; border: 1px solid #e2e8f0; padding: 8px 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .approve-btn { background: #22c55e; color: white; border: none; padding: 6px 10px; font-size: 11px; border-radius: 6px; cursor: pointer; }
-    .del-btn { background: #ef4444; color: white; border: none; padding: 6px 10px; font-size: 11px; border-radius: 6px; cursor: pointer; }
+    .item-row { background: #fff; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; margin-bottom: 8px; }
+    .proof-img-thumb { width: 100%; max-height: 180px; object-fit: contain; border-radius: 6px; border: 1px solid #cbd5e1; margin: 6px 0; background: #000; }
+    
+    .approve-btn { background: #22c55e; color: white; border: none; padding: 8px 12px; font-size: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 4px; }
+    .del-btn { background: #ef4444; color: white; border: none; padding: 6px 10px; font-size: 11px; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 4px; }
   </style>
 </head>
 <body>
@@ -32,7 +34,16 @@
 
   <div class="main-wrapper">
 
-    <!-- 1. Withdrawal Requests Section -->
+    <!-- 1. Screenshot Proofs Verification Section -->
+    <button class="section-toggle-btn" onclick="toggleSection('proofsSection', this)">
+      <span>📸 شیئر سکرین شاٹس اپروول (ImgBB)</span>
+      <span>▼</span>
+    </button>
+    <div class="collapsible-content" id="proofsSection">
+      <div id="proofsList"></div>
+    </div>
+
+    <!-- 2. Withdrawal Requests Section -->
     <button class="section-toggle-btn" onclick="toggleSection('withdrawalsSection', this)">
       <span>💸 پیسے نکالنے کی درخواستیں (Withdrawals)</span>
       <span>▼</span>
@@ -41,7 +52,7 @@
       <div id="withdrawalsList"></div>
     </div>
 
-    <!-- 2. Registered Users Section -->
+    <!-- 3. Registered Users Section -->
     <button class="section-toggle-btn" onclick="toggleSection('usersSection', this)">
       <span>👥 رجسٹرڈ یوزرز اور ان کے کل شیئرز</span>
       <span>▼</span>
@@ -67,8 +78,10 @@
     const db = firebase.database().ref("products");
     const usersDb = firebase.database().ref("app_users");
     const withdrawalsDb = firebase.database().ref("withdrawals");
+    const proofsDb = firebase.database().ref("share_proofs");
 
     window.onload = function() {
+      renderProofsList();
       renderWithdrawalsList();
       renderUsersList();
     };
@@ -76,6 +89,47 @@
     function toggleSection(id, btn) {
       const content = document.getElementById(id);
       content.style.display = (content.style.display === "block") ? "none" : "block";
+    }
+
+    /* Render Proof Screenshots Hosted on ImgBB */
+    function renderProofsList() {
+      const container = document.getElementById('proofsList');
+      proofsDb.on('value', (snap) => {
+        const data = snap.val();
+        if(!data) { container.innerHTML = '<p style="font-size:11px; color:#64748b;">کوئی پینڈنگ سکرین شاٹ موجود نہیں ہے۔</p>'; return; }
+
+        container.innerHTML = '';
+        Object.keys(data).reverse().forEach(key => {
+          const p = data[key];
+          container.innerHTML += `
+            <div class="item-row" style="border-right: 4px solid #16a34a;">
+              <div style="font-size:12px; font-weight:bold;">👤 یوزر: ${p.userName} (${p.userPhone})</div>
+              <div style="font-size:11px; color:#2563eb;">📦 پروڈکٹ: ${p.prodTitle}</div>
+              <a href="${p.proofUrl}" target="_blank">
+                <img src="${p.proofUrl}" class="proof-img-thumb" onerror="this.src='https://via.placeholder.com/150'">
+              </a>
+              <button class="approve-btn" onclick="approveProof('${key}', '${p.userPhone}', '${p.prodKey}')">✅ سکرین شاٹ منظور کریں +100 Points</button>
+              <button class="del-btn" onclick="rejectProof('${key}')">🗑️ رد کریں</button>
+            </div>
+          `;
+        });
+      });
+    }
+
+    function approveProof(key, phone, prodKey) {
+      // Add Points to User Account
+      usersDb.child(phone).child('totalShares').transaction((current) => (current || 0) + 1);
+      // Increment Product Global Share Counter
+      if(prodKey) db.child(prodKey).child('shares').transaction((current) => (current || 0) + 1);
+      
+      // Remove Proof entry from database
+      proofsDb.child(key).remove().then(() => {
+        alert("سکرین شاٹ منظور ہو گیا! یوزر کے والیٹ میں 100 پوائنٹس (10 SAR) شامل کر دیے گئے ہیں۔ 🚀");
+      });
+    }
+
+    function rejectProof(key) {
+      proofsDb.child(key).remove();
     }
 
     function renderWithdrawalsList() {
@@ -89,13 +143,9 @@
           const w = data[key];
           container.innerHTML += `
             <div class="item-row" style="border-right: 4px solid #22c55e;">
-              <div>
-                <div style="font-size:12px; font-weight:bold;">👤 ${w.userName} (${w.userPhone})</div>
-                <div style="font-size:10px; color:#2563eb;">💳 ${w.method}: ${w.account}</div>
-              </div>
-              <div>
-                <button class="approve-btn" onclick="approveWithdrawal('${key}', '${w.userPhone}')">✅ ادا کر دیا</button>
-              </div>
+              <div style="font-size:12px; font-weight:bold;">👤 ${w.userName} (${w.userPhone})</div>
+              <div style="font-size:11px; color:#2563eb;">💳 ${w.method}: ${w.account}</div>
+              <button class="approve-btn" style="margin-top:6px;" onclick="approveWithdrawal('${key}', '${w.userPhone}')">✅ ادا کر دیا</button>
             </div>
           `;
         });
@@ -103,8 +153,7 @@
     }
 
     function approveWithdrawal(key, phone) {
-      if(confirm("کیا آپ نے پیسے بھیج دیے ہیں اور درخواست منظور کرنا چاہتے ہیں؟")) {
-        // Reset User Shares/Points after payment
+      if(confirm("کیا آپ نے پیسے بھیج دیے ہیں؟")) {
         usersDb.child(phone).child('totalShares').set(0);
         withdrawalsDb.child(key).remove();
         alert("وڈراول منظوری مکمل ہو گئی ہے!");
@@ -125,10 +174,8 @@
 
           container.innerHTML += `
             <div class="item-row">
-              <div>
-                <div style="font-size:12px; font-weight:bold;">👤 ${user.name} (${phone})</div>
-                <div style="font-size:10px; color:#16a34a;">🪙 شیئرز: ${shares} | 💰 کمیشن: ${sar} SAR</div>
-              </div>
+              <div style="font-size:12px; font-weight:bold;">👤 ${user.name} (${phone})</div>
+              <div style="font-size:11px; color:#16a34a;">🪙 منظور شدہ شیئرز: ${shares} | 💰 کل رقم: ${sar} SAR</div>
             </div>
           `;
         });
