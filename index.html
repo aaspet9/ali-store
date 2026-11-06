@@ -6,6 +6,9 @@
   <title id="pageTitle">Afuma Best Deals & Lucky Draw</title>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  
+  <!-- Social Bar Ad Script -->
+  <script data-cfasync="false" src="https://bauval.org/14/dde22c76238accac44005865c543d450"></script>
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -50,9 +53,10 @@
     .entry-input { width: 90%; padding: 9px; margin: 4px 0; border: 1px solid #cbd5e1; border-radius: 20px; text-align: center; font-size: 13px; outline: none; }
     .btn-entry { width: 90%; padding: 10px; background: #10b981; color: white; font-weight: bold; border: none; border-radius: 20px; font-size: 13px; cursor: pointer; margin-top: 4px; }
 
-    .user-profile-box { background: #ecfdf5; border: 1.5px solid #10b981; border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: center; display: none; }
+    .user-profile-box { background: #ecfdf5; border: 1.5px solid #10b981; border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: center; display: none; position: relative; }
     .user-profile-box h4 { color: #047857; font-size: 13px; margin-bottom: 3px; }
-    .user-profile-box p { font-size: 12px; color: #065f46; font-weight: bold; }
+    .user-profile-box p { font-size: 12px; color: #065f46; font-weight: bold; margin-bottom: 6px; }
+    .btn-logout { background: #ef4444; color: white; border: none; padding: 5px 12px; border-radius: 12px; font-size: 11px; font-weight: bold; cursor: pointer; }
 
     /* Action Buttons */
     .action-btn-group { display: flex; gap: 8px; margin-bottom: 10px; }
@@ -63,10 +67,6 @@
     .category-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px; scrollbar-width: none; }
     .cat-btn { white-space: nowrap; background: #ffffff; border: 1px solid #e2e8f0; padding: 7px 14px; border-radius: 20px; font-size: 11px; font-weight: bold; color: #475569; cursor: pointer; }
     .cat-btn.active { background: #059669; color: #ffffff; border-color: #059669; }
-
-    /* Full Width Responsive Banners */
-    .adsterra-slim-banner { width: 100%; background: #ffffff; border-radius: 10px; padding: 4px; text-align: center; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; min-height: 60px; border: 1px dashed #cbd5e1; overflow: hidden; }
-    .adsterra-in-grid-banner { grid-column: span 2; width: 100%; background: #ffffff; border-radius: 10px; padding: 4px; text-align: center; margin: 8px 0; display: flex; justify-content: center; align-items: center; min-height: 60px; border: 1px dashed #cbd5e1; overflow: hidden; }
 
     /* Products Grid */
     .products-container { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
@@ -128,9 +128,11 @@
       <button class="btn-entry" id="btnEntrySubmit" onclick="registerUserEntry()">اینٹری کریں 🚀</button>
   </div>
 
+  <!-- User Profile & Logout Box -->
   <div id="userProfileBox" class="user-profile-box">
       <h4 id="userProfileStatus">✅ آپ قرعہ اندازی میں شامل ہو چکے ہیں!</h4>
       <p id="profileCardText"></p>
+      <button class="btn-logout" id="btnLogoutBtn" onclick="logoutUser()">🚪 لاگ آؤٹ کریں</button>
   </div>
 
   <div class="action-btn-group">
@@ -144,15 +146,9 @@
 
   <div class="category-scroll" id="categoryBar"></div>
 
-  <!-- Banner Ad Top (Full Length) -->
-  <div class="adsterra-slim-banner" id="bannerTop"></div>
-
   <div class="products-container" id="productsGrid">
     <p style="text-align: center; grid-column: span 2; padding: 20px; color: #059669; font-weight:bold;" id="loadingTextGrid">Loading deals... ⏳</p>
   </div>
-
-  <!-- Banner Ad Bottom (Full Length) -->
-  <div class="adsterra-slim-banner" style="margin-top: 16px;" id="bannerBottom"></div>
 
   <!-- Modal Form -->
   <div class="modal-overlay" id="uploadModal">
@@ -220,7 +216,7 @@
         lblTitle: "پروڈکٹ کا عنوان:", phTitle: "عنوان درج کریں...", lblCategory: "کیٹیگری:", lblPrice: "قیمت:", lblLink: "افیلی ایٹ لنک:", lblImages: "تصاویر (گیلری سے منتخب کریں):",
         uFileText: "📁 گیلری سے تصاویر منتخب کریں", btnSubmitModal: "شائع کرنے کے لیے بھیجیں 📤", entryTitle: "🎟️ لکی ڈرا قرعہ اندازی میں شامل ہوں", phName: "اپنا پورا نام درج کریں", phPhone: "موبائل نمبر (05...)",
         btnEntrySubmit: "اینٹری کریں 🚀", userProfileStatus: "✅ آپ قرعہ اندازی میں شامل ہو چکے ہیں!", lblCustomer: "کسٹمر", lcdLabelText: "🎁 عفومہ بیسٹ ڈیلز شاندار انعامات 🎁",
-        lcdLoadingText: "انعامات لوڈ ہو رہے ہیں... ⏳", lcdWinBadge: "🎉 مبارک ہو! انعام نکل گیا 🎉",
+        lcdLoadingText: "انعامات لوڈ ہو رہے ہیں... ⏳", lcdWinBadge: "🎉 مبارک ہو! انعام نکل گیا 🎉", btnLogoutBtn: "🚪 لاگ آؤٹ کریں",
         cats: { all: "سب", kids: "بچوں کے کپڑے", watch: "گھڑی", mobile: "موبائل فون", laptop: "لیپ ٹاپ", electronics: "الیکٹرانکس", keyboard: "کی بورڈ", shoes: "شوز", kitchen: "کچن کا سامان", medical: "میڈیکل سامان", beauty: "بیوٹی کریم", jewelry: "جیولری سامان" }
       },
       en: { 
@@ -229,7 +225,7 @@
         lblTitle: "Product Title:", phTitle: "Enter product title...", lblCategory: "Category:", lblPrice: "Price:", lblLink: "Affiliate Link:", lblImages: "Images:",
         uFileText: "📁 Select Images", btnSubmitModal: "Submit for Approval 📤", entryTitle: "🎟️ Join Lucky Draw", phName: "Enter full name", phPhone: "Mobile (05...)",
         btnEntrySubmit: "Submit Entry 🚀", userProfileStatus: "✅ Entered in Lucky Draw!", lblCustomer: "Customer", lcdLabelText: "🎁 Afuma Best Deals Grand Prizes 🎁",
-        lcdLoadingText: "Loading Prizes... ⏳", lcdWinBadge: "🎉 Winner Declared! 🎉",
+        lcdLoadingText: "Loading Prizes... ⏳", lcdWinBadge: "🎉 Winner Declared! 🎉", btnLogoutBtn: "🚪 Logout",
         cats: { all: "All", kids: "Kids Clothes", watch: "Watches", mobile: "Mobiles", laptop: "Laptops", electronics: "Electronics", keyboard: "Keyboards", shoes: "Shoes", kitchen: "Kitchenware", medical: "Medical Items", beauty: "Beauty Creams", jewelry: "Jewelry" }
       },
       ar: { 
@@ -238,7 +234,7 @@
         lblTitle: "عنوان المنتج:", phTitle: "أدخل عنوان المنتج...", lblCategory: "الفئة:", lblPrice: "السعر:", lblLink: "رابط التتبع:", lblImages: "الصور:",
         uFileText: "📁 اختر الصور من المعرض", btnSubmitModal: "إرسال للنشر 📤", entryTitle: "🎟️ اشترك في السحب اليومي", phName: "أدخل اسمك الكامل", phPhone: "رقم الجوال (05...)",
         btnEntrySubmit: "دخول السحب 🚀", userProfileStatus: "✅ لقد تم تسجيلك في السحب بنجاح!", lblCustomer: "العميل", lcdLabelText: "🎁 جوائز عفومة الكبرى 🎁",
-        lcdLoadingText: "جاري تحميل الجوائز... ⏳", lcdWinBadge: "🎉 مبروك! فائز بالسحب 🎉",
+        lcdLoadingText: "جاري تحميل الجوائز... ⏳", lcdWinBadge: "🎉 مبروك! فائز بالسحب 🎉", btnLogoutBtn: "🚪 تسجيل الخروج",
         cats: { all: "الكل", kids: "ملابس الأطفال", watch: "ساعات", mobile: "جوالات", laptop: "لابتوب", electronics: "إلكترونيات", keyboard: "لوحة مفاتيح", shoes: "أحذية", kitchen: "أدوات المطبخ", medical: "مستلزمات طبية", beauty: "كريمات التجميل", jewelry: "مجوهرات" }
       },
       hi: { 
@@ -247,50 +243,10 @@
         lblTitle: "प्रोडक्ट का नाम:", phTitle: "प्रोडक्ट का नाम दर्ज करें...", lblCategory: "कैटेगरी:", lblPrice: "कीमत:", lblLink: "एफिलिएट लिंक:", lblImages: "इमेजेस:",
         uFileText: "📁 गैलरी से इमेजेस चुनें", btnSubmitModal: "पब्लिश करने के लिए भेजें 📤", entryTitle: "🎟️ लकी ड्रॉ में शामिल हों", phName: "अपना पूरा नाम दर्ज करें", phPhone: "मोबाइल नंबर (05...)",
         btnEntrySubmit: "एंट्री करें 🚀", userProfileStatus: "✅ आप लकी ड्रॉ में शामिल हो चुके हैं!", lblCustomer: "ग्राहक", lcdLabelText: "🎁 अफ़ूमा बेस्ट डील्स शानदार इनाम 🎁",
-        lcdLoadingText: "इनाम लोड हो रहे हैं... ⏳", lcdWinBadge: "🎉 बधाई हो! विजेता घोषित 🎉",
+        lcdLoadingText: "इनाम लोड हो रहे हैं... ⏳", lcdWinBadge: "🎉 बधाई हो! विजेता घोषित 🎉", btnLogoutBtn: "🚪 लॉगआउट करें",
         cats: { all: "सब", kids: "बच्चों के कपड़े", watch: "घड़ी", mobile: "मोबाइल", laptop: "लैपटॉप", electronics: "इलेक्ट्रॉनिक्स", keyboard: "कीबोर्ड", shoes: "जूते", kitchen: "रसोई का सामान", medical: "मेडिकल सामान", beauty: "ब्यूटी क्रीम", jewelry: "ज्वेलरी सामान" }
       }
     };
-
-    /* Injections for Full Width Ad Banner */
-    function injectFullWidthBanner(elementId) {
-      const container = document.getElementById(elementId);
-      if(!container) return;
-      container.innerHTML = '';
-      const iframe = document.createElement('iframe');
-      iframe.style.width = '100%'; iframe.style.height = '60px'; iframe.style.border = 'none'; iframe.style.overflow = 'hidden';
-
-      const adHtml = `
-        <!DOCTYPE html>
-        <html>
-        <head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head>
-        <body>
-          <script type="text/javascript">
-            atOptions = {
-              'key' : 'b56241b7779e2ce343e13c97202a3e26',
-              'format' : 'iframe',
-              'height' : 50,
-              'width' : 320,
-              'params' : {}
-            };
-          <\/script>
-          <script type="text/javascript" src="https://bauval.org/22/b56241b7779e2ce343e13c97202a3e26"><\/script>
-        </body>
-        </html>
-      `;
-      container.appendChild(iframe);
-      setTimeout(() => {
-        try {
-          const doc = iframe.contentWindow.document;
-          doc.open(); doc.write(adHtml); doc.close();
-        } catch(e){}
-      }, 50);
-    }
-
-    function renderAllAds() {
-      injectFullWidthBanner('bannerTop');
-      injectFullWidthBanner('bannerBottom');
-    }
 
     /* 100% Dynamic Language Switcher */
     function switchLanguage(lang) {
@@ -321,6 +277,7 @@
       document.getElementById('lcdLabelText').innerText = langObj.lcdLabelText;
       document.getElementById('lcdLoadingText').innerText = langObj.lcdLoadingText;
       document.getElementById('lcdWinBadge').innerText = langObj.lcdWinBadge;
+      document.getElementById('btnLogoutBtn').innerText = langObj.btnLogoutBtn;
 
       const modalBox = document.querySelector('.modal-box');
       if (modalBox) modalBox.style.textAlign = langObj.dir === 'rtl' ? 'right' : 'left';
@@ -456,6 +413,15 @@
       });
     }
 
+    function logoutUser() {
+      localStorage.removeItem("afuma_user_name");
+      localStorage.removeItem("afuma_user_phone");
+      document.getElementById('userProfileBox').style.display = 'none';
+      document.getElementById('entrySection').style.display = 'block';
+      document.getElementById('uEntryName').value = '';
+      document.getElementById('uEntryPhone').value = '';
+    }
+
     function showSavedUserProfile(name, phone) {
       document.getElementById('entrySection').style.display = 'none';
       const profBox = document.getElementById('userProfileBox');
@@ -468,6 +434,10 @@
       const name = localStorage.getItem("afuma_user_name");
       const phone = localStorage.getItem("afuma_user_phone");
       if (name && phone) showSavedUserProfile(name, phone);
+      else {
+        document.getElementById('userProfileBox').style.display = 'none';
+        document.getElementById('entrySection').style.display = 'block';
+      }
     }
 
     function openUploadModal() { document.getElementById('uploadModal').style.display = 'flex'; }
@@ -538,52 +508,13 @@
       displayData(globalProductsData);
     }
 
-    function createAdBannerElement() {
-      const adDiv = document.createElement('div');
-      adDiv.className = 'adsterra-in-grid-banner';
-      injectFullWidthBannerDirect(adDiv);
-      return adDiv;
-    }
-
-    function injectFullWidthBannerDirect(container) {
-      const iframe = document.createElement('iframe');
-      iframe.style.width = '100%'; iframe.style.height = '60px'; iframe.style.border = 'none'; iframe.style.overflow = 'hidden';
-      const iframeDoc = `
-        <!DOCTYPE html>
-        <html>
-        <head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head>
-        <body>
-          <script type="text/javascript">
-            atOptions = {
-              'key' : 'b56241b7779e2ce343e13c97202a3e26',
-              'format' : 'iframe',
-              'height' : 50,
-              'width' : 320,
-              'params' : {}
-            };
-          <\/script>
-          <script type="text/javascript" src="https://bauval.org/22/b56241b7779e2ce343e13c97202a3e26"><\/script>
-        </body>
-        </html>
-      `;
-      container.appendChild(iframe);
-      setTimeout(() => {
-        try {
-          const doc = iframe.contentWindow.document;
-          doc.open(); doc.write(iframeDoc); doc.close();
-        } catch(e){}
-      }, 50);
-    }
-
     function displayData(data) {
       const grid = document.getElementById('productsGrid');
       if (!data) { grid.innerHTML = `<p style="text-align: center; grid-column: span 2; padding: 20px; color: #64748b;">${translations[currentLang].emptyMsg}</p>`; return; }
       grid.innerHTML = '';
-      let count = 0;
       Object.keys(data).reverse().forEach((key) => {
         const item = data[key];
         if (!matchCategory(item.category, currentCategory, item.title)) return;
-        count++;
         const imgList = item.images && item.images.length > 0 ? item.images : [item.img || 'https://via.placeholder.com/150'];
         const cardDiv = document.createElement('div');
         cardDiv.className = 'product-card';
@@ -594,10 +525,6 @@
           <a href="${item.link}" target="_blank" class="buy-btn">${translations[currentLang].buyBtn}</a>
         `;
         grid.appendChild(cardDiv);
-
-        if (count % 6 === 0) {
-          grid.appendChild(createAdBannerElement());
-        }
       });
     }
 
@@ -605,7 +532,6 @@
       listenToProducts();
       listenToLCDPrizes();
       listenForLiveWinners();
-      renderAllAds();
       switchLanguage('ur'); 
     };
   </script>
