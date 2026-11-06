@@ -7,17 +7,17 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   
-  <!-- Social Bar Ad Script -->
+  <!-- Social Bar Script -->
   <script data-cfasync="false" src="https://bauval.org/14/dde22c76238accac44005865c543d450"></script>
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background-color: #f8fafc; color: #1e293b; padding: 8px; padding-bottom: 30px; overflow-x: hidden; }
 
-    /* Language Switcher Bar */
-    .lang-bar { display: flex; justify-content: space-around; gap: 4px; margin-bottom: 8px; background: #ffffff; padding: 6px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-    .lang-btn { flex: 1; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 8px 4px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; color: #334155; display: flex; align-items: center; justify-content: center; gap: 4px; }
-    .lang-btn.active { background: #059669; color: #ffffff; border-color: #059669; }
+    /* Language Switcher Bar Fixed & Visible */
+    .lang-bar { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 10px; background: #ffffff; padding: 8px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+    .lang-btn { flex: 1; background: #f1f5f9; border: 1.5px solid #cbd5e1; padding: 10px 4px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; color: #1e293b; display: flex; align-items: center; justify-content: center; gap: 4px; z-index: 100; }
+    .lang-btn.active { background: #059669; color: #ffffff; border-color: #047857; box-shadow: 0 2px 5px rgba(5, 150, 105, 0.3); }
 
     /* Quran Strip Top */
     .quran-strip { background: linear-gradient(135deg, #0f5132 0%, #198754 100%); color: #ffffff; padding: 6px 12px; margin-bottom: 8px; text-align: center; border-radius: 8px; font-weight: bold; font-size: 16px; border: 1.5px solid #ffc107; box-shadow: 0 2px 6px rgba(15, 81, 50, 0.2); }
@@ -63,10 +63,17 @@
     .user-upload-btn { flex: 1; background: #2563eb; color: #ffffff; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
     .promo-btn { flex: 1; background: #16a34a; color: #ffffff; text-decoration: none; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; text-align: center; }
 
+    /* Compact Social Bar Box Centered */
+    .social-bar-compact { display: flex; justify-content: center; align-items: center; margin: 10px auto; max-width: 320px; height: 50px; background: #ffffff; border-radius: 8px; border: 1px dashed #cbd5e1; overflow: hidden; }
+
     /* Category Bar */
     .category-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px; scrollbar-width: none; }
     .cat-btn { white-space: nowrap; background: #ffffff; border: 1px solid #e2e8f0; padding: 7px 14px; border-radius: 20px; font-size: 11px; font-weight: bold; color: #475569; cursor: pointer; }
     .cat-btn.active { background: #059669; color: #ffffff; border-color: #059669; }
+
+    /* Full Width Banner Ads */
+    .adsterra-slim-banner { width: 100%; background: #ffffff; border-radius: 10px; padding: 4px; text-align: center; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; min-height: 60px; border: 1px dashed #cbd5e1; overflow: hidden; }
+    .adsterra-in-grid-banner { grid-column: span 2; width: 100%; background: #ffffff; border-radius: 10px; padding: 4px; text-align: center; margin: 8px 0; display: flex; justify-content: center; align-items: center; min-height: 60px; border: 1px dashed #cbd5e1; overflow: hidden; }
 
     /* Products Grid */
     .products-container { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
@@ -120,6 +127,9 @@
       </div>
   </div>
 
+  <!-- Compact Centered Social Bar -->
+  <div class="social-bar-compact" id="socialBarAd"></div>
+
   <!-- Entry Section -->
   <div id="entrySection" class="entry-card">
       <h3 style="font-size:13px; color:#047857; margin-bottom:6px;" id="entryTitle">🎟️ لکی ڈرا قرعہ اندازی میں شامل ہوں</h3>
@@ -128,7 +138,7 @@
       <button class="btn-entry" id="btnEntrySubmit" onclick="registerUserEntry()">اینٹری کریں 🚀</button>
   </div>
 
-  <!-- User Profile & Logout Box -->
+  <!-- User Profile Box -->
   <div id="userProfileBox" class="user-profile-box">
       <h4 id="userProfileStatus">✅ آپ قرعہ اندازی میں شامل ہو چکے ہیں!</h4>
       <p id="profileCardText"></p>
@@ -146,9 +156,15 @@
 
   <div class="category-scroll" id="categoryBar"></div>
 
+  <!-- Banner Ad Top -->
+  <div class="adsterra-slim-banner" id="bannerTop"></div>
+
   <div class="products-container" id="productsGrid">
     <p style="text-align: center; grid-column: span 2; padding: 20px; color: #059669; font-weight:bold;" id="loadingTextGrid">Loading deals... ⏳</p>
   </div>
+
+  <!-- Banner Ad Bottom -->
+  <div class="adsterra-slim-banner" style="margin-top: 16px;" id="bannerBottom"></div>
 
   <!-- Modal Form -->
   <div class="modal-overlay" id="uploadModal">
@@ -248,7 +264,47 @@
       }
     };
 
-    /* 100% Dynamic Language Switcher */
+    /* Full Width Banner Ads Renderer */
+    function injectFullWidthBanner(elementId) {
+      const container = document.getElementById(elementId);
+      if(!container) return;
+      container.innerHTML = '';
+      const iframe = document.createElement('iframe');
+      iframe.style.width = '100%'; iframe.style.height = '60px'; iframe.style.border = 'none'; iframe.style.overflow = 'hidden';
+
+      const adHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head>
+        <body>
+          <script type="text/javascript">
+            atOptions = {
+              'key' : 'b56241b7779e2ce343e13c97202a3e26',
+              'format' : 'iframe',
+              'height' : 50,
+              'width' : 320,
+              'params' : {}
+            };
+          <\/script>
+          <script type="text/javascript" src="https://bauval.org/22/b56241b7779e2ce343e13c97202a3e26"><\/script>
+        </body>
+        </html>
+      `;
+      container.appendChild(iframe);
+      setTimeout(() => {
+        try {
+          const doc = iframe.contentWindow.document;
+          doc.open(); doc.write(adHtml); doc.close();
+        } catch(e){}
+      }, 50);
+    }
+
+    function renderAllAds() {
+      injectFullWidthBanner('bannerTop');
+      injectFullWidthBanner('bannerBottom');
+    }
+
+    /* 100% Dynamic Language Switcher Fix */
     function switchLanguage(lang) {
       currentLang = lang;
       const langObj = translations[lang] || translations['ur'];
@@ -508,13 +564,52 @@
       displayData(globalProductsData);
     }
 
+    function createAdBannerElement() {
+      const adDiv = document.createElement('div');
+      adDiv.className = 'adsterra-in-grid-banner';
+      injectFullWidthBannerDirect(adDiv);
+      return adDiv;
+    }
+
+    function injectFullWidthBannerDirect(container) {
+      const iframe = document.createElement('iframe');
+      iframe.style.width = '100%'; iframe.style.height = '60px'; iframe.style.border = 'none'; iframe.style.overflow = 'hidden';
+      const iframeDoc = `
+        <!DOCTYPE html>
+        <html>
+        <head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}</style></head>
+        <body>
+          <script type="text/javascript">
+            atOptions = {
+              'key' : 'b56241b7779e2ce343e13c97202a3e26',
+              'format' : 'iframe',
+              'height' : 50,
+              'width' : 320,
+              'params' : {}
+            };
+          <\/script>
+          <script type="text/javascript" src="https://bauval.org/22/b56241b7779e2ce343e13c97202a3e26"><\/script>
+        </body>
+        </html>
+      `;
+      container.appendChild(iframe);
+      setTimeout(() => {
+        try {
+          const doc = iframe.contentWindow.document;
+          doc.open(); doc.write(iframeDoc); doc.close();
+        } catch(e){}
+      }, 50);
+    }
+
     function displayData(data) {
       const grid = document.getElementById('productsGrid');
       if (!data) { grid.innerHTML = `<p style="text-align: center; grid-column: span 2; padding: 20px; color: #64748b;">${translations[currentLang].emptyMsg}</p>`; return; }
       grid.innerHTML = '';
+      let count = 0;
       Object.keys(data).reverse().forEach((key) => {
         const item = data[key];
         if (!matchCategory(item.category, currentCategory, item.title)) return;
+        count++;
         const imgList = item.images && item.images.length > 0 ? item.images : [item.img || 'https://via.placeholder.com/150'];
         const cardDiv = document.createElement('div');
         cardDiv.className = 'product-card';
@@ -525,6 +620,10 @@
           <a href="${item.link}" target="_blank" class="buy-btn">${translations[currentLang].buyBtn}</a>
         `;
         grid.appendChild(cardDiv);
+
+        if (count % 6 === 0) {
+          grid.appendChild(createAdBannerElement());
+        }
       });
     }
 
@@ -532,6 +631,7 @@
       listenToProducts();
       listenToLCDPrizes();
       listenForLiveWinners();
+      renderAllAds();
       switchLanguage('ur'); 
     };
   </script>
