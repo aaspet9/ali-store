@@ -19,7 +19,7 @@
     .user-profile-badge { font-size: 11px; background: rgba(255, 255, 255, 0.25); padding: 4px 8px; border-radius: 6px; cursor: pointer; }
 
     /* Social Bar Ad Container under header */
-    .social-bar-container { background: #ffffff; border: 1px dashed #2563eb; border-radius: 10px; padding: 4px; margin-bottom: 10px; text-align: center; min-height: 50px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+    .social-bar-container { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 4px; margin-bottom: 10px; text-align: center; min-height: 50px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
 
     /* Total Shares Counter Box */
     .total-shares-box { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #ffffff; padding: 8px 12px; border-radius: 10px; text-align: center; margin-bottom: 10px; font-size: 12px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 8px rgba(15, 23, 42, 0.15); }
@@ -82,9 +82,9 @@
     <span class="user-profile-badge" id="userProfileBadge" onclick="handleAuthClick()">🔑 Login</span>
   </div>
 
-  <!-- Social Bar Ad Container under header -->
+  <!-- Social Bar Ad Ribbon (Scrolls up naturally with page scroll) -->
   <div class="social-bar-container">
-    <script data-cfasync="false" src="https://bauval.org/14/dde22c76238accac44005865c543d450"></script>
+    <script type="text/javascript" src="//pl25884950.effectiveratecpm.com/7d/53/7c/7d537c3574be95325b8ef091a1005232.js"></script>
   </div>
 
   <!-- Total Products Share Counter Box -->
@@ -491,10 +491,20 @@
       return adDiv;
     }
 
-    /* Precise Category Matcher Fix */
+    /* Auto Scan Category / Title Matcher */
     function isItemInCategory(item, catKey) {
       if (catKey === 'all') return true;
       if (item.category === catKey) return true;
+
+      // Scanning Product Title against Selected Category (Watch, Mobile, etc.)
+      const titleLower = (item.title || "").toLowerCase();
+      if (catKey === 'watch' && (titleLower.includes('watch') || titleLower.includes('clock') || titleLower.includes('گھڑی'))) return true;
+      if (catKey === 'mobile' && (titleLower.includes('mobile') || titleLower.includes('phone') || titleLower.includes('موبائل'))) return true;
+      if (catKey === 'laptop' && (titleLower.includes('laptop') || titleLower.includes('notebook') || titleLower.includes('لیپ ٹاپ'))) return true;
+      if (catKey === 'kids' && (titleLower.includes('kid') || titleLower.includes('baby') || titleLower.includes('child') || titleLower.includes('بچوں'))) return true;
+      if (catKey === 'shoes' && (titleLower.includes('shoe') || titleLower.includes('sneaker') || titleLower.includes('شوز'))) return true;
+      if (catKey === 'kitchen' && (titleLower.includes('kitchen') || titleLower.includes('cook') || titleLower.includes('کچن'))) return true;
+
       return false;
     }
 
@@ -528,7 +538,7 @@
       keysList.forEach((key) => {
         const item = data[key];
 
-        // Strict category filtering check
+        // Automatic category scanning check
         if (!isItemInCategory(item, currentCategory)) return;
         count++;
 
