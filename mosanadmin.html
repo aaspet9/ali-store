@@ -3,92 +3,154 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - Saudi Best Deals</title>
+  <title>Complete Admin Management Dashboard</title>
+  
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
-    body { background: #f1f5f9; padding: 15px; color: #1e293b; }
-    h2 { color: #0f172a; margin-bottom: 12px; }
-    .card { background: #fff; border-radius: 10px; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-    .table-responsive { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-    th, td { border: 1px solid #e2e8f0; padding: 10px; text-align: left; }
-    th { background: #3b82f6; color: #fff; }
-    .btn { padding: 6px 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px; margin-right: 4px; }
-    .btn-approve { background: #22c55e; color: #fff; }
-    .btn-reject { background: #ef4444; color: #fff; }
-    .btn-pin { background: #eab308; color: #fff; }
-    .btn-pinned { background: #8b5cf6; color: #fff; }
-    .img-thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; margin-right: 4px; cursor: pointer; border: 1px solid #ddd; }
-    .img-group { display: flex; gap: 4px; flex-wrap: wrap; }
-    .status-badge { padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; }
-    .status-pending { background: #fef08a; color: #854d0e; }
-    .status-approved { background: #bbf7d0; color: #166534; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background-color: #f1f5f9; color: #1e293b; padding: 12px; font-size: 13px; }
+    
+    .admin-title { color: #0f172a; margin-bottom: 12px; font-size: 18px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; }
+    
+    .card { background: #ffffff; border-radius: 10px; padding: 14px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; }
+    .card-title { font-size: 14px; font-weight: bold; color: #2563eb; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+
+    .table-responsive { overflow-x: auto; width: 100%; }
+    table { width: 100%; border-collapse: collapse; margin-top: 6px; white-space: nowrap; }
+    th, td { border: 1px solid #cbd5e1; padding: 8px 10px; text-align: left; vertical-align: middle; }
+    th { background: #2563eb; color: #ffffff; font-size: 12px; font-weight: 600; }
+    tr:nth-child(even) { background-color: #f8fafc; }
+
+    .btn { padding: 6px 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 11px; margin-right: 2px; }
+    .btn-approve { background: #16a34a; color: white; }
+    .btn-reject { background: #dc2626; color: white; }
+    .btn-pin { background: #eab308; color: white; }
+    .btn-pinned { background: #8b5cf6; color: white; }
+    .btn-delete { background: #64748b; color: white; }
+
+    .img-thumb { width: 45px; height: 45px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer; transition: 0.2s; }
+    .img-thumb:hover { transform: scale(1.1); }
+    .img-group { display: flex; gap: 4px; align-items: center; }
+
+    .link-box { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .link-box a { color: #2563eb; text-decoration: underline; font-weight: 600; }
+
+    .input-field { padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; margin-bottom: 8px; width: 100%; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin-bottom: 8px; }
+
+    .badge { padding: 3px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+    .badge-pinned { background: #f3e8ff; color: #6b21a8; border: 1px solid #d8b4fe; }
+    .badge-normal { background: #f1f5f9; color: #475569; }
   </style>
 </head>
 <body>
 
-  <h2>🛠️ Admin Management Dashboard</h2>
+  <div class="admin-title">
+    <span>🛠️ Complete Admin Management Dashboard</span>
+    <span id="fastStatus" style="font-size:11px; color:#16a34a; font-weight:bold;">⚡ Live System Fast</span>
+  </div>
 
-  <!-- 1. Pending Share Proofs -->
+  <!-- Add New Admin Product -->
   <div class="card">
-    <h3>📸 Pending Share Proofs (5 Screenshots + Link & Title)</h3>
+    <div class="card-title">➕ Add New Deal / Product</div>
+    <div class="form-grid">
+      <input type="text" id="npTitle" class="input-field" placeholder="Product Title">
+      <input type="text" id="npPrice" class="input-field" placeholder="Price (e.g. SAR 50)">
+      <input type="text" id="npLink" class="input-field" placeholder="Affiliate Link (https://...)">
+      <input type="text" id="npImg" class="input-field" placeholder="Image Direct URL">
+    </div>
+    <button class="btn btn-approve" onclick="addNewProductByAdmin()" style="padding:8px 16px;">Add Product 🚀</button>
+  </div>
+
+  <!-- 1. Pending Share Proofs (5 Screenshots + Link) -->
+  <div class="card">
+    <div class="card-title">
+      <span>📸 Pending Share Proofs (5 Screenshots Mandatory + Link Only)</span>
+      <span id="countProofs" class="badge badge-normal">0 Pending</span>
+    </div>
     <div class="table-responsive">
       <table>
         <thead>
           <tr>
-            <th>User</th>
-            <th>Title & Link</th>
-            <th>5 Screenshots</th>
+            <th>User Phone</th>
+            <th>Affiliate Link</th>
+            <th>All 5 Screenshots</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody id="shareProofsList">
-          <tr><td colspan="4">Loading proofs...</td></tr>
+          <tr><td colspan="4">Loading share proofs... ⏳</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <!-- 2. Pending User Products -->
+  <!-- 2. Pending User Deals -->
   <div class="card">
-    <h3>➕ Pending User Deals</h3>
+    <div class="card-title">
+      <span>➕ Pending User Deals</span>
+      <span id="countDeals" class="badge badge-normal">0 Pending</span>
+    </div>
     <div class="table-responsive">
       <table>
         <thead>
           <tr>
-            <th>User</th>
-            <th>Product</th>
+            <th>User Info</th>
+            <th>Product Title</th>
             <th>Price & Link</th>
             <th>Image</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody id="userDealsList">
-          <tr><td colspan="5">Loading pending deals...</td></tr>
+          <tr><td colspan="5">Loading user deals... ⏳</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
-  <!-- 3. All Active Products Management (Pin Feature) -->
+  <!-- 3. All Live Products (Pin to Top & Management) -->
   <div class="card">
-    <h3>📌 Live Products (Pin to Top)</h3>
+    <div class="card-title">
+      <span>📌 Live Products Management (Pin to Top)</span>
+      <span id="countProducts" class="badge badge-normal">0 Active</span>
+    </div>
     <div class="table-responsive">
       <table>
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Link</th>
-            <th>Image</th>
             <th>Pin Status</th>
+            <th>Product Title</th>
+            <th>Price</th>
+            <th>Affiliate Link</th>
+            <th>Image</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody id="liveProductsList">
-          <tr><td colspan="6">Loading products...</td></tr>
+          <tr><td colspan="6">Loading live products... ⏳</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 4. Withdrawals Management -->
+  <div class="card">
+    <div class="card-title">💸 Pending Withdrawals</div>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Method</th>
+            <th>Account Details</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="withdrawalsList">
+          <tr><td colspan="4">No pending withdrawals.</td></tr>
         </tbody>
       </table>
     </div>
@@ -107,28 +169,51 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // 1. Load Pending Proofs
+    // 1. Add Product Direct
+    function addNewProductByAdmin() {
+      const title = document.getElementById('npTitle').value.trim();
+      const price = document.getElementById('npPrice').value.trim();
+      const link = document.getElementById('npLink').value.trim();
+      const img = document.getElementById('npImg').value.trim();
+
+      if(!title || !link || !img) { alert("تمام فیلڈز پر کریں!"); return; }
+
+      db.ref('products').push({
+        title: title, price: price || 'Best Price', link: link,
+        img: img, images: [img], pinned: false, timestamp: Date.now()
+      }).then(() => {
+        alert("پروڈکٹ ڈائریکٹ ایڈ ہو گئی! 🚀");
+        document.getElementById('npTitle').value = '';
+        document.getElementById('npPrice').value = '';
+        document.getElementById('npLink').value = '';
+        document.getElementById('npImg').value = '';
+      });
+    }
+
+    // 2. Load Share Proofs (Fast 5 Images + Link View)
     db.ref('share_proofs').on('value', snap => {
       const tbody = document.getElementById('shareProofsList');
       tbody.innerHTML = '';
       const data = snap.val();
-      if(!data) { tbody.innerHTML = '<tr><td colspan="4">No pending proofs.</td></tr>'; return; }
+      if(!data) { tbody.innerHTML = '<tr><td colspan="4">No pending proofs.</td></tr>'; document.getElementById('countProofs').innerText = "0 Pending"; return; }
 
+      let pendingCount = 0;
       Object.keys(data).forEach(key => {
         const item = data[key];
         if(item.status === 'Approved') return;
+        pendingCount++;
 
         let imgsHtml = '<div class="img-group">';
         const urls = item.proofUrls || [item.proofUrl];
-        urls.forEach((u, i) => {
-          imgsHtml += `<a href="${u}" target="_blank"><img src="${u}" class="img-thumb" title="Screenshot #${i+1}"></a>`;
+        urls.forEach((u, idx) => {
+          if(u) imgsHtml += `<a href="${u}" target="_blank"><img src="${u}" class="img-thumb" title="Screenshot #${idx+1}"></a>`;
         });
         imgsHtml += '</div>';
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td><b>${item.userName || 'User'}</b><br><small>${item.userPhone}</small></td>
-          <td><b>${item.prodTitle || ''}</b><br><a href="${item.prodLink || '#'}" target="_blank" style="word-break:break-all;">${item.prodLink || 'Link'}</a></td>
+          <td><b>${item.userName || 'User'}</b><br><small>${item.userPhone || ''}</small></td>
+          <td class="link-box"><a href="${item.prodLink || '#'}" target="_blank">${item.prodLink || 'View Affiliate Link'}</a></td>
           <td>${imgsHtml}</td>
           <td>
             <button class="btn btn-approve" onclick="approveProof('${key}', '${item.userPhone}', '${item.prodKey}')">Approve ✅</button>
@@ -137,6 +222,9 @@
         `;
         tbody.appendChild(tr);
       });
+
+      document.getElementById('countProofs').innerText = `${pendingCount} Pending`;
+      if(pendingCount === 0) tbody.innerHTML = '<tr><td colspan="4">No pending proofs.</td></tr>';
     });
 
     function approveProof(proofKey, phone, prodKey) {
@@ -149,7 +237,6 @@
         db.ref(`app_users/${phone}/sharedProducts/${prodKey}`).set('Approved');
       });
 
-      // Update product share count
       db.ref(`products/${prodKey}`).once('value', s => {
         if(s.exists()){
           const shares = (s.val().shares || 0) + 1;
@@ -162,20 +249,22 @@
       db.ref(`share_proofs/${proofKey}`).remove();
     }
 
-    // 2. Load User Submitted Deals
+    // 3. Pending User Deals
     db.ref('pending_products').on('value', snap => {
       const tbody = document.getElementById('userDealsList');
       tbody.innerHTML = '';
       const data = snap.val();
-      if(!data) { tbody.innerHTML = '<tr><td colspan="5">No pending user deals.</td></tr>'; return; }
+      if(!data) { tbody.innerHTML = '<tr><td colspan="5">No pending user deals.</td></tr>'; document.getElementById('countDeals').innerText = "0 Pending"; return; }
 
+      let count = 0;
       Object.keys(data).forEach(key => {
+        count++;
         const item = data[key];
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><b>${item.userName}</b><br><small>${item.userPhone}</small></td>
           <td><b>${item.title}</b></td>
-          <td>${item.price}<br><a href="${item.link}" target="_blank" style="word-break:break-all;">Link</a></td>
+          <td class="link-box">${item.price}<br><a href="${item.link}" target="_blank">View Link</a></td>
           <td><img src="${item.img}" class="img-thumb"></td>
           <td>
             <button class="btn btn-approve" onclick="approveUserDeal('${key}')">Approve & Publish ✅</button>
@@ -184,6 +273,7 @@
         `;
         tbody.appendChild(tr);
       });
+      document.getElementById('countDeals').innerText = `${count} Pending`;
     });
 
     function approveUserDeal(key) {
@@ -196,7 +286,6 @@
             pinned: false, timestamp: Date.now()
           });
 
-          // Add to user's registered page history bar
           if(d.userPhone) {
             db.ref(`app_users/${d.userPhone}/myDeals/${newRef.key}`).set({
               title: d.title, price: d.price, link: d.link, img: d.img, status: 'Approved'
@@ -212,27 +301,35 @@
       db.ref(`pending_products/${key}`).remove();
     }
 
-    // 3. Live Products & Pin System
+    // 4. Live Products & Pin System (Pin to Top)
     db.ref('products').on('value', snap => {
       const tbody = document.getElementById('liveProductsList');
       tbody.innerHTML = '';
       const data = snap.val();
-      if(!data) return;
+      if(!data) { tbody.innerHTML = '<tr><td colspan="6">No products.</td></tr>'; return; }
 
-      Object.keys(data).forEach(key => {
+      // Sort Pinned Items First
+      const keys = Object.keys(data).sort((a, b) => {
+        return (data[b].pinned === true ? 1 : 0) - (data[a].pinned === true ? 1 : 0);
+      });
+
+      document.getElementById('countProducts').innerText = `${keys.length} Active`;
+
+      keys.forEach(key => {
         const item = data[key];
         const isPinned = item.pinned || false;
         const tr = document.createElement('tr');
         tr.innerHTML = `
+          <td>${isPinned ? '<span class="badge badge-pinned">📌 Pinned Top</span>' : '<span class="badge badge-normal">Normal</span>'}</td>
           <td><b>${item.title}</b></td>
           <td>${item.price}</td>
-          <td><a href="${item.link}" target="_blank" style="word-break:break-all;">Link</a></td>
+          <td class="link-box"><a href="${item.link}" target="_blank">Open Link</a></td>
           <td><img src="${item.img || (item.images?item.images[0]:'')}" class="img-thumb"></td>
-          <td>${isPinned ? '<span class="status-badge status-approved">📌 Pinned Top</span>' : 'Normal'}</td>
           <td>
             <button class="btn ${isPinned ? 'btn-pinned' : 'btn-pin'}" onclick="togglePin('${key}', ${isPinned})">
               ${isPinned ? 'Unpin 📌' : 'Pin to Top 📌'}
             </button>
+            <button class="btn btn-delete" onclick="deleteProduct('${key}')">Delete 🗑️</button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -241,6 +338,39 @@
 
     function togglePin(key, currentPin) {
       db.ref(`products/${key}`).update({ pinned: !currentPin });
+    }
+
+    function deleteProduct(key) {
+      if(confirm("پروڈکٹ ڈیلیٹ کریں؟")) {
+        db.ref(`products/${key}`).remove();
+      }
+    }
+
+    // 5. Withdrawals List
+    db.ref('withdrawals').on('value', snap => {
+      const tbody = document.getElementById('withdrawalsList');
+      tbody.innerHTML = '';
+      const data = snap.val();
+      if(!data) { tbody.innerHTML = '<tr><td colspan="4">No pending withdrawals.</td></tr>'; return; }
+
+      Object.keys(data).forEach(key => {
+        const item = data[key];
+        if(item.status === 'Approved') return;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><b>${item.userName}</b><br><small>${item.userPhone}</small></td>
+          <td>${item.method}</td>
+          <td><b>${item.account}</b></td>
+          <td>
+            <button class="btn btn-approve" onclick="approveWithdrawal('${key}')">Mark Paid ✅</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    });
+
+    function approveWithdrawal(key) {
+      db.ref(`withdrawals/${key}`).update({ status: 'Approved' });
     }
   </script>
 </body>
