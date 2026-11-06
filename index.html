@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" id="htmlTag">
+<html lang="ur" dir="rtl" id="htmlTag">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -20,6 +20,11 @@
 
     .header { background: linear-gradient(135deg, #ff4747 0%, #e60000 100%); color: #ffffff; text-align: center; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 16px; margin-bottom: 8px; box-shadow: 0 4px 10px rgba(255, 71, 71, 0.25); display: flex; justify-content: space-between; align-items: center; }
     .user-profile-badge { font-size: 11px; background: rgba(255, 255, 255, 0.25); padding: 4px 8px; border-radius: 6px; cursor: pointer; }
+
+    /* 5 Guide Buttons Bar Style */
+    .guide-bar-title { font-size: 12px; font-weight: bold; color: #1e293b; margin: 6px 2px; text-align: right; }
+    .guide-btn-group { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; }
+    .guide-btn { flex: none; background: #ffffff; border: 1.5px solid #2563eb; color: #1e293b; padding: 6px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
     .wallet-card { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; border-radius: 12px; padding: 12px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 1px solid #38bdf8; }
     .wallet-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 12px; font-weight: bold; }
@@ -50,16 +55,15 @@
     .share-btn { background: #2563eb; color: #ffffff; border: none; padding: 7px 4px; border-radius: 20px; font-weight: bold; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 3px; }
     .proof-btn { background: #16a34a; color: #ffffff; border: none; padding: 6px 4px; border-radius: 20px; font-weight: bold; font-size: 10px; cursor: pointer; }
     
-    /* Strict Lock & Highlight Styles */
     .btn-approved { background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important; color: #ffffff !important; border: 2px solid #34d399 !important; font-weight: bold !important; cursor: not-allowed !important; opacity: 1 !important; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4); pointer-events: none; }
     .btn-pending { background: #f59e0b !important; color: #ffffff !important; cursor: not-allowed !important; opacity: 0.9 !important; pointer-events: none; }
     .proof-btn:disabled, .share-btn:disabled { opacity: 0.85; cursor: not-allowed; pointer-events: none; }
 
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
-    .modal-box { background: #ffffff; width: 100%; max-width: 420px; border-radius: 14px; padding: 18px; max-height: 90vh; overflow-y: auto; text-align: left; position: relative; }
-    .close-modal { position: absolute; right: 15px; top: 12px; background: #e2e8f0; border: none; font-size: 16px; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; }
+    .modal-box { background: #ffffff; width: 100%; max-width: 420px; border-radius: 14px; padding: 18px; max-height: 90vh; overflow-y: auto; text-align: right; position: relative; }
+    .close-modal { position: absolute; left: 15px; top: 12px; background: #e2e8f0; border: none; font-size: 16px; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; }
     .modal-input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 10px; font-size: 13px; outline: none; }
-    .file-btn { border: 2px dashed #2563eb; background: #eff6ff; padding: 10px; text-align: center; border-radius: 8px; cursor: pointer; margin-bottom: 10px; font-size: 12px; }
+    .file-btn { border: 2px dashed #2563eb; background: #eff6ff; padding: 8px; text-align: center; border-radius: 8px; cursor: pointer; margin-bottom: 8px; font-size: 11px; }
   </style>
 </head>
 <body>
@@ -76,16 +80,26 @@
     <span class="user-profile-badge" id="userProfileBadge" onclick="handleAuthClick()">🔑 Login</span>
   </div>
 
+  <!-- 5 Platforms Guide Bar -->
+  <div class="guide-bar-title">📖 شیئرنگ کی ہدایات (کیسے پوسٹ کریں):</div>
+  <div class="guide-btn-group">
+    <button class="guide-btn" onclick="openGuideModal('youtube')">▶️ یوٹیوب</button>
+    <button class="guide-btn" onclick="openGuideModal('facebook')">📘 فیس بک</button>
+    <button class="guide-btn" onclick="openGuideModal('whatsapp')">💬 واٹس ایپ</button>
+    <button class="guide-btn" onclick="openGuideModal('instagram')">📸 انسٹاگرام</button>
+    <button class="guide-btn" onclick="openGuideModal('tiktok')">🎵 ٹک ٹاک</button>
+  </div>
+
   <div class="wallet-card">
     <div class="wallet-row">
-      <span id="txtPointsLabel">🪙 Approved Shares / منظور شدہ شیئرز:</span>
+      <span id="txtPointsLabel">🪙 منظور شدہ شیئرز:</span>
       <span class="wallet-val" id="uPoints">0 Points</span>
     </div>
     <div class="wallet-row">
-      <span id="txtBalanceLabel">💰 Total Balance (100 Shares = 10 SAR):</span>
-      <span class="wallet-val" id="uEarnings">0 SAR (0 PKR)</span>
+      <span id="txtBalanceLabel">💰 کل رقم (5 پلیٹ فارم = 25 روپے):</span>
+      <span class="wallet-val" id="uEarnings">0 PKR (0 SAR)</span>
     </div>
-    <button class="withdraw-btn" id="withdrawBtn" disabled onclick="openWithdrawModal()">💸 Withdraw Money (Min 50 SAR)</button>
+    <button class="withdraw-btn" id="withdrawBtn" disabled onclick="openWithdrawModal()">💸 Withdraw Money (Min 50 SAR / 375 PKR)</button>
   </div>
 
   <div class="search-box-wrapper">
@@ -112,17 +126,30 @@
     </div>
   </div>
 
-  <!-- Screenshot Upload Modal -->
+  <!-- Platform Guide Modal -->
+  <div class="modal-overlay" id="guideModal">
+    <div class="modal-box">
+      <button class="close-modal" onclick="closeGuideModal()">✕</button>
+      <h3 id="guideTitle" style="margin-bottom: 10px; color:#2563eb; text-align:center;"></h3>
+      <div id="guideText" style="font-size: 12px; line-height: 1.6; color: #334155;"></div>
+    </div>
+  </div>
+
+  <!-- 5 Screenshots Upload Modal -->
   <div class="modal-overlay" id="proofModal">
     <div class="modal-box">
       <button class="close-modal" onclick="closeProofModal()">✕</button>
-      <h3 style="margin-bottom: 12px; color:#16a34a; text-align:center;">📸 Upload Screenshot Proof</h3>
-      <div class="file-btn" onclick="document.getElementById('proofImgInput').click()">
-        <span id="proofFileText">📁 Select Image</span>
-        <input type="file" id="proofImgInput" accept="image/*" style="display:none;" onchange="handleProofImage(event)">
-      </div>
-      <div id="proofLoader" style="display:none; text-align:center; font-size:12px; color:#16a34a; font-weight:bold; margin-bottom:8px;">Verifying screenshot link... 🔍⏳</div>
-      <button style="width:100%; background:#16a34a; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="submitShareProof()">Submit Proof 🚀</button>
+      <h3 style="margin-bottom: 8px; color:#16a34a; text-align:center;">📸 5 پلیٹ فارم کے سکرین شاٹس اپلوڈ کریں</h3>
+      <p style="font-size:11px; color:#64748b; text-align:center; margin-bottom:12px;">ہر پلیٹ فارم پر وہی پروڈکٹ پوسٹ کر کے 5 تصاویر سلیکٹ کریں (کل رقم: 25 روپے)</p>
+      
+      <div class="file-btn" onclick="document.getElementById('pImg1').click()"><span id="pTxt1">▶️ 1. یوٹیوب سکرین شاٹ</span><input type="file" id="pImg1" accept="image/*" style="display:none;" onchange="handleProofImage(event, 1)"></div>
+      <div class="file-btn" onclick="document.getElementById('pImg2').click()"><span id="pTxt2">📘 2. فیس بک سکرین شاٹ</span><input type="file" id="pImg2" accept="image/*" style="display:none;" onchange="handleProofImage(event, 2)"></div>
+      <div class="file-btn" onclick="document.getElementById('pImg3').click()"><span id="pTxt3">💬 3. واٹس ایپ سکرین شاٹ</span><input type="file" id="pImg3" accept="image/*" style="display:none;" onchange="handleProofImage(event, 3)"></div>
+      <div class="file-btn" onclick="document.getElementById('pImg4').click()"><span id="pTxt4">📸 4. انسٹاگرام سکرین شاٹ</span><input type="file" id="pImg4" accept="image/*" style="display:none;" onchange="handleProofImage(event, 4)"></div>
+      <div class="file-btn" onclick="document.getElementById('pImg5').click()"><span id="pTxt5">🎵 5. ٹک ٹاک سکرین شاٹ</span><input type="file" id="pImg5" accept="image/*" style="display:none;" onchange="handleProofImage(event, 5)"></div>
+
+      <div id="proofLoader" style="display:none; text-align:center; font-size:12px; color:#16a34a; font-weight:bold; margin:8px 0;">تصاویر میں لنک اسکین ہو رہا ہے... 🔍⏳</div>
+      <button style="width:100%; background:#16a34a; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="submit5ShareProofs()">تمام 5 سکرین شاٹ جمع کریں 🚀</button>
     </div>
   </div>
 
@@ -179,8 +206,10 @@
     const pendingDb = firebase.database().ref("pending_products");
 
     const IMGBB_API_KEY = "66dcdf21e30733bfd85545d9fb5e76c4";
-    const PKR_RATE = 75; 
-    let currentProofFile = null;
+    const PKR_PER_SHARE = 25; // 5 platforms = 25 PKR
+    const SAR_RATE = 75;
+
+    let proofFiles = { 1: null, 2: null, 3: null, 4: null, 5: null };
     let currentUserImg = null;
     let selectedProdKey = "";
     let selectedProdTitle = "";
@@ -191,13 +220,21 @@
     let cachedData = null;
     let currentUser = JSON.parse(localStorage.getItem('app_user_data') || 'null');
 
-    const i18n = {
-      en: { title: "🛍️ Saudi Best Deals & Discounts", pub: "➕ Publish Deals", pro: "📌 Promote Deal", buy: "🛒 Buy", search: "🔍 Search product...", shared: "✅ Shared & Approved", share: "🔗 Share Deal", pending: "⏳ Pending Approval", sendProof: "📸 Send Screenshot Proof" },
-      ur: { title: "🛍️ سعودی بیسٹ ڈیلز & ڈسکاؤنٹس", pub: "➕ اپنی ڈیلز شائع کریں", pro: "📌 ڈیل پروموٹ کروائیں", buy: "🛒 خریدیں", search: "🔍 پروڈکٹ تلاش کریں...", shared: "✅ منظور شدہ (Approved)", share: "🔗 شیئر ڈیل", pending: "⏳ منظوری کا منتظر", sendProof: "📸 سکرین شاٹ بھیجیں" },
-      ar: { title: "🛍️ أفضل العروض والخصومات في السعودية", pub: "➕ انشر عروضك", pro: "📌 روج لمنتجك", buy: "🛒 شراء", search: "🔍 ابحث عن منتج...", shared: "✅ تم القبول والمشاركة", share: "🔗 مشاركة العرض", pending: "⏳ قيد المراجعة", sendProof: "📸 إرسال لقطة الشاشة" },
-      hi: { title: "🛍️ सऊदी बेस्ट डील्स और डिस्काउंट्स", pub: "➕ डील पब्लिश करें", pro: "📌 डील प्रमोट करें", buy: "🛒 खरीदें", search: "🔍 प्रोडक्ट खोजें...", shared: "✅ स्वीकृत (Approved)", share: "🔗 शेयर डील", pending: "⏳ समीक्षाधीन", sendProof: "📸 स्क्रीनशॉट भेजें" }
+    const platformGuides = {
+      youtube: { title: "▶️ یوٹیوب پر پوسٹ کرنے کا طریقہ", text: "1. پروڈکٹ کا عنوان اور لنک کاپی کریں۔<br>2. یوٹیوب شارٹس یا ویڈیو اپلوڈ کرتے وقت پروڈکٹ کی تصویر ڈالیں۔<br>3. ڈسکرپشن اور پن کمنٹ (Pinned Comment) میں پروڈکٹ کا لنک درج کریں۔<br>4. اس کا سکرین شاٹ لے کر ایپ میں اپلوڈ کریں۔" },
+      facebook: { title: "📘 فیس بک پر پوسٹ کرنے کا طریقہ", text: "1. فیس بک پر پروڈکٹ کی تصویر کے ساتھ نئی پوسٹ بنائیں۔<br>2. متن میں عنوان، قیمت اور اپنا لنک درج کریں۔<br>3. اپنی پروفائل اور فیس بک گروپس (Buy & Sell) میں شیئر کریں۔<br>4. اس کا سکرین شاٹ لے کر ایپ میں اپلوڈ کریں۔" },
+      whatsapp: { title: "💬 واٹس ایپ پر پوسٹ کرنے کا طریقہ", text: "1. پروڈکٹ کی تصویر واٹس ایپ سٹیٹس (Status) یا گروپس میں لگائیں۔<br>2. کیپشن میں پروڈکٹ کی تفصیلات اور لنک شامل کریں۔<br>3. سٹیٹس لگانے کے بعد اس کا واضح سکرین شاٹ لے کر اپلوڈ کریں۔" },
+      instagram: { title: "📸 انسٹاگرام پر پوسٹ کرنے کا طریقہ", text: "1. انسٹاگرام سٹوری یا پوسٹ میں پروڈکٹ کی تصویر لگائیں۔<br>2. سٹوری میں Link کا اسٹیکر استعمال کر کے لنک لگائیں یا بائیو میں دیں۔<br>3. سٹوری/پوسٹ کا سکرین شاٹ لے کر اپلوڈ کریں۔" },
+      tiktok: { title: "🎵 ٹک ٹاک پر پوسٹ کرنے کا طریقہ", text: "1. ٹک ٹاک پر پروڈکٹ کی تصویر یا سلاڈ شو ویڈیو اپلوڈ کریں۔<br>2. کیپشن یا کمنٹس میں پروڈکٹ کی تفصیل اور اپنا لنک درج کریں۔<br>3. ویڈیو یا کمنٹ سیکشن کا سکرین شاٹ لے کر اپلوڈ کریں۔" }
     };
-    let activeLang = 'en';
+
+    const i18n = {
+      en: { title: "🛍️ Saudi Best Deals & Discounts", pub: "➕ Publish Deals", pro: "📌 Promote Deal", buy: "🛒 Buy", search: "🔍 Search product...", shared: "✅ 5 Platforms Approved", share: "🔗 Share 5 Platforms", pending: "⏳ Pending Approval", sendProof: "📸 Submit 5 Screenshots" },
+      ur: { title: "🛍️ سعودی بیسٹ ڈیلز & ڈسکاؤنٹس", pub: "➕ اپنی ڈیلز شائع کریں", pro: "📌 ڈیل پروموٹ کروائیں", buy: "🛒 خریدیں", search: "🔍 پروڈکٹ تلاش کریں...", shared: "✅ 5 پلیٹ فارم منظور شدہ", share: "🔗 5 پلیٹ فارم شیئر", pending: "⏳ منظوری کا منتظر", sendProof: "📸 5 سکرین شاٹ بھیجیں" },
+      ar: { title: "🛍️ أفضل العروض والخصومات في السعودية", pub: "➕ انشر عروضك", pro: "📌 روج لمنتجك", buy: "🛒 شراء", search: "🔍 ابحث عن منتج...", shared: "✅ تم القبول (5 منصات)", share: "🔗 مشاركة 5 منصات", pending: "⏳ قيد المراجعة", sendProof: "📸 إرسال 5 لقطات" },
+      hi: { title: "🛍️ सऊदी बेस्ट डील्स और डिस्काउंट्स", pub: "➕ डील पब्लिश करें", pro: "📌 डील प्रमोट करें", buy: "🛒 खरीदें", search: "🔍 प्रोडक्ट खोजें...", shared: "✅ 5 प्लेटफॉर्म स्वीकृत", share: "🔗 5 प्लेटफॉर्म शेयर", pending: "⏳ समीक्षाधीन", sendProof: "📸 5 स्क्रीनशॉट भेजें" }
+    };
+    let activeLang = 'ur';
 
     function checkUserSession() {
       const badge = document.getElementById('userProfileBadge');
@@ -225,13 +262,19 @@
       }
     }
 
+    function openGuideModal(platform) {
+      const g = platformGuides[platform];
+      document.getElementById('guideTitle').innerHTML = g.title;
+      document.getElementById('guideText').innerHTML = g.text;
+      document.getElementById('guideModal').style.display = 'flex';
+    }
+    function closeGuideModal() { document.getElementById('guideModal').style.display = 'none'; }
+
     function loadUserSharedHistory() {
       if(!currentUser) return;
-
       usersDb.child(currentUser.phone).on('value', uSnap => {
         userSharedProducts = {};
         const uData = uSnap.val() || {};
-        
         const sharedProds = uData.sharedProducts || {};
         Object.keys(sharedProds).forEach(pKey => {
           userSharedProducts[pKey] = sharedProds[pKey]; 
@@ -256,12 +299,12 @@
       if(!currentUser) return;
       usersDb.child(currentUser.phone).on('value', snap => {
         const uData = snap.val() || {};
-        const sharesCount = uData.totalShares || 0;
-        const sarEarnings = (sharesCount * 0.10).toFixed(2);
-        const pkrEarnings = Math.round(sarEarnings * PKR_RATE);
+        const approvedCount = uData.totalShares || 0; // Each approved batch = 25 PKR
+        const pkrEarnings = approvedCount * PKR_PER_SHARE;
+        const sarEarnings = (pkrEarnings / SAR_RATE).toFixed(2);
 
-        document.getElementById('uPoints').innerText = `${sharesCount} Points`;
-        document.getElementById('uEarnings').innerText = `${sarEarnings} SAR (${pkrEarnings} PKR)`;
+        document.getElementById('uPoints').innerText = `${approvedCount} Task Approved (${approvedCount * 5} Posts)`;
+        document.getElementById('uEarnings').innerText = `${pkrEarnings} PKR (${sarEarnings} SAR)`;
         document.getElementById('withdrawBtn').disabled = (parseFloat(sarEarnings) < 50);
       });
     }
@@ -325,14 +368,10 @@
 
     function shareProduct(key, title, link) {
       if (!currentUser) { checkUserSession(); return; }
-      
       const status = userSharedProducts[key];
       if (status) {
-        if(status === 'Approved') {
-          alert("🚨 آپ اس پروڈکٹ کو پہلے ہی شیئر کر چکے ہیں اور ایڈمن سے منظوری مل چکی ہے! (ہر یوزر صرف 1 بار شیئر کر سکتا ہے)");
-        } else {
-          alert("⏳ آپ کا سکرین شاٹ زیرِ جائزہ (Pending) ہے۔ ایڈمن کی منظوری کا انتظار کریں!");
-        }
+        if(status === 'Approved') alert("🚨 آپ 5 پلیٹ فارم پر شیئر کر کے منظوری حاصل کر چکے ہیں!");
+        else alert("⏳ آپ کے سکرین شاٹس پہلے ہی بھیجے جا چکے ہیں، برائے مہربانی اپروول کا انتظار کریں!");
         return;
       }
 
@@ -348,8 +387,8 @@
     function openProofModal(key, title, link) {
       const status = userSharedProducts[key];
       if (status) {
-        if(status === 'Approved') alert("🚨 آپ کی یہ پروڈکٹ پہلے ہی ایڈمن سے منظور ہو چکی ہے!");
-        else alert("⏳ آپ کا سکرین شاٹ پہلے سے بھیجا جا چکا ہے، برائے مہربانی اپروول کا انتظار کریں!");
+        if(status === 'Approved') alert("🚨 آپ کی یہ پروڈکٹ منظور ہو چکی ہے!");
+        else alert("⏳ آپ کا پروف زیرِ جائزہ ہے!");
         return;
       }
       selectedProdKey = key; 
@@ -359,10 +398,10 @@
     }
     function closeProofModal() { document.getElementById('proofModal').style.display = 'none'; }
 
-    function handleProofImage(e) {
+    function handleProofImage(e, index) {
       if (e.target.files.length > 0) {
-        currentProofFile = e.target.files[0];
-        document.getElementById('proofFileText').innerText = `Selected: ${currentProofFile.name} ✅`;
+        proofFiles[index] = e.target.files[0];
+        document.getElementById(`pTxt${index}`).innerText = `Selected: ${proofFiles[index].name} ✅`;
       }
     }
 
@@ -376,49 +415,56 @@
       }
     }
 
-    async function submitShareProof() {
-      if (!currentProofFile) { alert("سکرین شاٹ منتخب کریں!"); return; }
+    async function submit5ShareProofs() {
+      // 5 تصاویر کی موجودگی چیک کریں
+      for(let i=1; i<=5; i++) {
+        if (!proofFiles[i]) { alert(`لطفاً پلیٹ فارم نمبر ${i} کا سکرین شاٹ بھی منتخب کریں! تمام 5 سکرین شاٹس لازمی ہیں۔`); return; }
+      }
+
       const loader = document.getElementById('proofLoader');
-      loader.innerText = "تصویر میں لنک اسکین کیا جا رہا ہے... 🔍⏳";
       loader.style.display = "block";
+      let targetKey = extractUrlKey(selectedProdLink).toLowerCase().replace(/\s+/g, '');
+      let uploadedUrls = [];
 
       try {
-        const ocrResult = await Tesseract.recognize(currentProofFile, 'eng');
-        const scannedText = ocrResult.data.text.toLowerCase().replace(/\s+/g, '');
-        
-        let targetKey = extractUrlKey(selectedProdLink).toLowerCase().replace(/\s+/g, '');
-        
-        if (targetKey.length > 3 && !scannedText.includes(targetKey)) {
-          loader.style.display = "none";
-          alert("❌ غلط اسکرین شاٹ!\nاس تصویر میں اس پروڈکٹ کا صحیح لنک نظر نہیں آ رہا۔ برائے مہربانی اسی پروڈکٹ کی شیئر کی گئی تصویر اپلوڈ کریں!");
-          return;
+        // Tesseract.js OCR اسکیننگ تمام 5 تصاویر کے لیے
+        for(let i=1; i<=5; i++) {
+          loader.innerText = `تصویر نمبر ${i} اسکین ہو رہی ہے... 🔍⏳`;
+          const ocrResult = await Tesseract.recognize(proofFiles[i], 'eng');
+          const scannedText = ocrResult.data.text.toLowerCase().replace(/\s+/g, '');
+
+          if (targetKey.length > 3 && !scannedText.includes(targetKey)) {
+            loader.style.display = "none";
+            alert(`❌ غلط اسکرین شاٹ (تصویر ${i})!\nاس تصویر میں اس پروڈکٹ کا صحیح لنک نظر نہیں آ رہا۔ تمام 5 تصاویر میں پروڈکٹ کا لنک ہونا لازمی ہے!`);
+            return;
+          }
+
+          loader.innerText = `تصویر نمبر ${i} اپلوڈ ہو رہی ہے... 🚀`;
+          const formData = new FormData();
+          formData.append("image", proofFiles[i]);
+          const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
+          const imgData = await res.json();
+          if (imgData.success) uploadedUrls.push(imgData.data.url);
         }
 
-        loader.innerText = "اپلوڈ ہو رہا ہے... 🚀";
-        const formData = new FormData();
-        formData.append("image", currentProofFile);
-
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
-        const imgData = await res.json();
-        
-        if (imgData.success) {
+        if (uploadedUrls.length === 5) {
           proofsDb.push({
             userPhone: currentUser.phone, userName: currentUser.name,
             prodKey: selectedProdKey, prodTitle: selectedProdTitle,
-            proofUrl: imgData.data.url, timestamp: Date.now(), status: 'Pending'
+            proofUrls: uploadedUrls, proofUrl: uploadedUrls[0], timestamp: Date.now(), status: 'Pending'
           });
 
           usersDb.child(currentUser.phone).child('sharedProducts').child(selectedProdKey).set('Pending').then(() => {
             loader.style.display = "none";
             userSharedProducts[selectedProdKey] = 'Pending';
-            alert("تصویر اسکین اور اپلوڈ ہو گئی ہے! ایڈمن کے اپروول کے بعد پوائنٹس ملیں گے۔ 🚀");
+            alert("کامیابی! 5 پلیٹ فارمز کی تمام تصاویر کی تصدیق ہو گئی ہے اور ایڈمن کو بھیج دی گئی ہیں۔ اپروول پر 25 روپے ملیں گے! 🚀");
             closeProofModal();
             if(cachedData) displayData(cachedData);
           });
         }
       } catch (e) { 
         loader.style.display = "none";
-        alert("تصویر اسکین کرتے وقت کوئی مسئلہ آیا، دوبارہ کوشش کریں۔");
+        alert("تصاویر پروسیس کرتے وقت مسئلہ آیا، دوبارہ کوشش کریں۔");
       }
     }
 
@@ -443,38 +489,21 @@
       }, 150);
     }
 
-    /* Adsterra Banner (b56241b7779e2ce343e13c97202a3e26) using Safe srcdoc */
     function createAdBannerElement() {
       const adDiv = document.createElement('div');
       adDiv.className = 'adsterra-in-grid-banner';
       
       const iframe = document.createElement('iframe');
-      iframe.width = "320";
-      iframe.height = "50";
-      iframe.style.border = "none";
-      iframe.style.overflow = "hidden";
-      iframe.scrolling = "no";
+      iframe.width = "320"; iframe.height = "50"; iframe.style.border = "none"; iframe.style.overflow = "hidden"; iframe.scrolling = "no";
       
       const htmlContent = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:50px;background:#fff;}</style>
-        </head>
+        <!DOCTYPE html><html><head><meta charset="utf-8"><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:50px;background:#fff;}</style></head>
         <body>
           <script type="text/javascript">
-            atOptions = {
-              'key' : 'b56241b7779e2ce343e13c97202a3e26',
-              'format' : 'iframe',
-              'height' : 50,
-              'width' : 320,
-              'params' : {}
-            };
+            atOptions = { 'key' : 'b56241b7779e2ce343e13c97202a3e26', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
           <\/script>
           <script type="text/javascript" src="https://bauval.org/22/b56241b7779e2ce343e13c97202a3e26"><\/script>
-        </body>
-        </html>
+        </body></html>
       `;
 
       iframe.srcdoc = htmlContent;
@@ -508,14 +537,12 @@
         if (userStatus === 'Approved') {
           shareBtnText = txt.shared;
           proofBtnText = txt.shared;
-          isShareDisabled = true;
-          isProofDisabled = true;
+          isShareDisabled = true; isProofDisabled = true;
           extraBtnClass = 'btn-approved'; 
         } else if (userStatus === 'Pending') {
           shareBtnText = txt.pending;
           proofBtnText = txt.pending;
-          isShareDisabled = true;
-          isProofDisabled = true;
+          isShareDisabled = true; isProofDisabled = true;
           extraBtnClass = 'btn-pending'; 
         }
 
