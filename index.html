@@ -20,15 +20,14 @@
 
     .social-bar-container { background: #ffffff; border: 1px dashed #2563eb; border-radius: 10px; padding: 4px; margin-bottom: 10px; text-align: center; min-height: 50px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
 
-    .search-box-wrapper { margin-bottom: 10px; }
-    .search-input { width: 100%; padding: 12px 16px; border: 2px solid #2563eb; border-radius: 25px; font-size: 13px; outline: none; background: #ffffff; box-shadow: 0 3px 8px rgba(37, 99, 235, 0.12); font-weight: 500; }
-
-    /* Secure Wallet & Earnings Section */
     .wallet-card { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; border-radius: 12px; padding: 12px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 1px solid #38bdf8; }
     .wallet-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 12px; font-weight: bold; }
     .wallet-val { color: #38bdf8; font-size: 15px; font-weight: 800; }
     .withdraw-btn { width: 100%; background: #22c55e; color: white; border: none; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; margin-top: 6px; }
     .withdraw-btn:disabled { background: #64748b; cursor: not-allowed; opacity: 0.6; }
+
+    .search-box-wrapper { margin-bottom: 10px; }
+    .search-input { width: 100%; padding: 12px 16px; border: 2px solid #2563eb; border-radius: 25px; font-size: 13px; outline: none; background: #ffffff; box-shadow: 0 3px 8px rgba(37, 99, 235, 0.12); font-weight: 500; }
 
     .action-btn-group { display: flex; gap: 8px; margin-bottom: 10px; }
     .user-upload-btn { flex: 1; background: #2563eb; color: #ffffff; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
@@ -42,29 +41,23 @@
     .product-card.pinned { border: 2px solid #eab308; background: #fffdf0; }
     .pinned-badge { position: absolute; top: 12px; right: 12px; background: #eab308; color: #000; font-size: 9px; font-weight: bold; padding: 3px 6px; border-radius: 4px; z-index: 10; }
 
-    .hashtag-badge { display: inline-block; background: #eff6ff; color: #2563eb; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-bottom: 4px; }
-
     .slider-wrapper { position: relative; width: 100%; height: 155px; border-radius: 8px; overflow: hidden; margin-bottom: 8px; background: #fdfdfd; }
     .slider-track { display: flex; width: 100%; height: 100%; transition: transform 0.3s ease-in-out; }
     .product-media { width: 100%; min-width: 100%; max-width: 100%; height: 155px; object-fit: cover; border-radius: 8px; }
-    .slide-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.4); color: white; border: none; width: 24px; height: 24px; border-radius: 50%; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 5; }
-    .slide-btn.left { left: 4px; }
-    .slide-btn.right { right: 4px; }
 
     .product-title { font-size: 12px; font-weight: 600; color: #222222; margin-bottom: 4px; line-height: 1.3; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
     .product-price { font-size: 14px; font-weight: 800; color: #ff4747; margin-bottom: 8px; }
 
-    .btn-action-row { display: flex; gap: 4px; align-items: center; }
-    .buy-btn { flex: 2; background: linear-gradient(135deg, #ff4747 0%, #e60000 100%); color: #ffffff; text-decoration: none; text-align: center; padding: 8px 4px; border-radius: 20px; font-weight: bold; font-size: 11px; }
-    .share-btn { flex: 1; background: #2563eb; color: #ffffff; border: none; padding: 8px 4px; border-radius: 20px; font-weight: bold; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 3px; }
+    .btn-action-row { display: flex; flex-direction: column; gap: 4px; }
+    .buy-btn { background: linear-gradient(135deg, #ff4747 0%, #e60000 100%); color: #ffffff; text-decoration: none; text-align: center; padding: 8px 4px; border-radius: 20px; font-weight: bold; font-size: 11px; }
+    .share-btn { background: #2563eb; color: #ffffff; border: none; padding: 7px 4px; border-radius: 20px; font-weight: bold; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 3px; }
+    .proof-btn { background: #16a34a; color: #ffffff; border: none; padding: 6px 4px; border-radius: 20px; font-weight: bold; font-size: 10px; cursor: pointer; }
 
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
     .modal-box { background: #ffffff; width: 100%; max-width: 420px; border-radius: 14px; padding: 18px; max-height: 90vh; overflow-y: auto; text-align: left; position: relative; }
     .close-modal { position: absolute; right: 15px; top: 12px; background: #e2e8f0; border: none; font-size: 16px; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; }
     .modal-input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 10px; font-size: 13px; outline: none; }
     .file-btn { border: 2px dashed #2563eb; background: #eff6ff; padding: 10px; text-align: center; border-radius: 8px; cursor: pointer; margin-bottom: 10px; font-size: 12px; }
-
-    @media (max-width: 340px) { .products-container { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -83,29 +76,29 @@
 
   <div class="social-bar-container" id="socialBarAdBox"></div>
 
-  <!-- Wallet & Points Section -->
+  <!-- Wallet & Earnings Card -->
   <div class="wallet-card">
     <div class="wallet-row">
-      <span>🪙 Total Points / پرائم پوائنٹس:</span>
+      <span>🪙 Approved Shares / منظور شدہ شیئرز:</span>
       <span class="wallet-val" id="uPoints">0 Points</span>
     </div>
     <div class="wallet-row">
-      <span>💰 Commission Earned / والیٹ رقم:</span>
+      <span>💰 Total Balance (100 Shares = 10 SAR):</span>
       <span class="wallet-val" id="uEarnings">0 SAR (0 PKR)</span>
     </div>
     <button class="withdraw-btn" id="withdrawBtn" disabled onclick="openWithdrawModal()">💸 Withdraw Money (Min 50 SAR)</button>
   </div>
 
-  <!-- High-Level Search Bar -->
+  <!-- Search Bar -->
   <div class="search-box-wrapper">
     <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search product (e.g. Watch, Cream, Mobile)..." oninput="onSearchChange()">
   </div>
 
   <div class="action-btn-group">
     <button class="user-upload-btn" onclick="openUploadModal()">
-      <span id="btnUploadMain">➕ Publish Deals</span>
+      <span>➕ Publish Deals</span>
     </button>
-    <a href="mailto:aaspet2025@gmail.com?subject=Promote%20My%20Product" class="promo-btn" id="btnPromoMain">
+    <a href="mailto:aaspet2025@gmail.com" class="promo-btn">
       📌 Promote Deal
     </a>
   </div>
@@ -119,70 +112,47 @@
   <!-- Mandatory Login Modal -->
   <div class="modal-overlay" id="authModal" style="display: flex;">
     <div class="modal-box">
-      <h3 style="margin-bottom: 12px; color:#2563eb; text-align:center;">🔐 Login / اکاؤنٹ درج کریں</h3>
+      <h3 style="margin-bottom: 12px; color:#2563eb; text-align:center;">🔐 Login / لاگ ان کریں</h3>
       <p style="font-size:11px; color:#64748b; text-align:center; margin-bottom:12px;">اپنا نام، موبائل نمبر اور پاسورڈ درج کریں۔</p>
-      
-      <label style="font-size:11px; font-weight:bold;">Name / نام:</label>
       <input type="text" id="authName" class="modal-input" placeholder="Your Name">
-
-      <label style="font-size:11px; font-weight:bold;">Phone / موبائل نمبر:</label>
       <input type="text" id="authPhone" class="modal-input" placeholder="05XXXXXXXX" dir="ltr">
-
-      <label style="font-size:11px; font-weight:bold;">Password / پاسورڈ:</label>
       <input type="password" id="authPassword" class="modal-input" placeholder="••••••••">
-
       <button style="width:100%; background:#2563eb; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="submitAuth()">Continue 🚀</button>
     </div>
   </div>
 
-  <!-- Withdrawal Modal -->
+  <!-- Screenshot Upload Modal (ImgBB Hosted) -->
+  <div class="modal-overlay" id="proofModal">
+    <div class="modal-box">
+      <button class="close-modal" onclick="closeProofModal()">✕</button>
+      <h3 style="margin-bottom: 12px; color:#16a34a; text-align:center;">📸 Upload Share Screenshot</h3>
+      <p style="font-size:11px; color:#64748b; text-align:center; margin-bottom:10px;">شیئر کرنے کے بعد اس کا سکرین شاٹ اپلوڈ کریں تا کہ ایڈمن تصدیق کر کے پوائنٹس شامل کرے۔</p>
+      
+      <div class="file-btn" onclick="document.getElementById('proofImgInput').click()">
+        <span id="proofFileText">📁 Select Screenshot Image</span>
+        <input type="file" id="proofImgInput" accept="image/*" style="display:none;" onchange="handleProofImage(event)">
+      </div>
+
+      <div id="proofLoader" style="display:none; text-align:center; font-size:12px; color:#16a34a; font-weight:bold; margin-bottom:8px;">Uploading Screenshot to ImgBB... ⏳</div>
+
+      <button style="width:100%; background:#16a34a; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="submitShareProof()">Submit Proof for Approval 🚀</button>
+    </div>
+  </div>
+
+  <!-- Withdraw Modal -->
   <div class="modal-overlay" id="withdrawModal">
     <div class="modal-box">
       <button class="close-modal" onclick="closeWithdrawModal()">✕</button>
       <h3 style="margin-bottom: 12px; color:#22c55e; text-align:center;">💸 Request Withdrawal</h3>
-      
-      <label style="font-size:11px; font-weight:bold;">Payment Method / ادائیگی کا طریقہ:</label>
       <select id="wMethod" class="modal-input">
-        <option value="STC Pay">🇸🇦 STC Pay (Saudi Arabia)</option>
-        <option value="Urpay">🇸🇦 Urpay (Saudi Arabia)</option>
-        <option value="EasyPaisa">🇵🇰 EasyPaisa (Pakistan)</option>
-        <option value="JazzCash">🇵🇰 JazzCash (Pakistan)</option>
+        <option value="STC Pay">🇸🇦 STC Pay</option>
+        <option value="Urpay">🇸🇦 Urpay</option>
+        <option value="EasyPaisa">🇵🇰 EasyPaisa</option>
+        <option value="JazzCash">🇵🇰 JazzCash</option>
         <option value="Bank Transfer">🏦 Bank Account Transfer</option>
       </select>
-
-      <label style="font-size:11px; font-weight:bold;">Account Number / موبائل نمبر یا اکاؤنٹ نمبر:</label>
-      <input type="text" id="wAccount" class="modal-input" placeholder="e.g. 05XXXXXXXX / 03XXXXXXXX" dir="ltr">
-
-      <button style="width:100%; background:#22c55e; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="submitWithdrawalRequest()">Submit Withdrawal Request 🚀</button>
-    </div>
-  </div>
-
-  <!-- Upload Modal -->
-  <div class="modal-overlay" id="uploadModal">
-    <div class="modal-box">
-      <button class="close-modal" onclick="closeUploadModal()">✕</button>
-      <h3 style="margin-bottom: 12px; color:#2563eb; text-align:center;">🚀 Add Your Product</h3>
-      
-      <label style="font-size:11px; font-weight:bold;">Product Title:</label>
-      <input type="text" id="uTitle" class="modal-input">
-
-      <label style="font-size:11px; font-weight:bold;">Category:</label>
-      <select id="uCategory" class="modal-input"></select>
-
-      <label style="font-size:11px; font-weight:bold;">Price:</label>
-      <input type="text" id="uPrice" class="modal-input" placeholder="SAR 0.00">
-
-      <label style="font-size:11px; font-weight:bold;">Affiliate Link:</label>
-      <input type="text" id="uLink" class="modal-input" placeholder="https://..." dir="ltr">
-
-      <label style="font-size:11px; font-weight:bold;">Images:</label>
-      <div class="file-btn" onclick="document.getElementById('uImgInput').click()">
-        <span id="uFileText">📁 Select Images</span>
-        <input type="file" id="uImgInput" accept="image/*" multiple style="display:none;" onchange="handleUserImages(event)">
-      </div>
-
-      <div id="uLoader" style="display:none; text-align:center; font-size:12px; color:#2563eb; font-weight:bold; margin-bottom:8px;">Uploading... ⏳</div>
-      <button style="width:100%; background:#2563eb; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="submitUserProduct()">Submit for Approval 📤</button>
+      <input type="text" id="wAccount" class="modal-input" placeholder="Account Number / Phone" dir="ltr">
+      <button style="width:100%; background:#22c55e; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="submitWithdrawalRequest()">Submit Request 🚀</button>
     </div>
   </div>
 
@@ -199,60 +169,18 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database().ref("products");
-    const pendingDb = firebase.database().ref("pending_products");
-    const settingsDb = firebase.database().ref("settings");
     const usersDb = firebase.database().ref("app_users");
     const withdrawalsDb = firebase.database().ref("withdrawals");
+    const proofsDb = firebase.database().ref("share_proofs");
 
     const IMGBB_API_KEY = "66dcdf21e30733bfd85545d9fb5e76c4";
-    const PKR_RATE = 75; // 1 SAR = 75 PKR
-
-    let userFiles = [];
-    let currentLang = 'en'; 
+    const PKR_RATE = 75; 
+    let currentProofFile = null;
+    let selectedProdKey = "";
+    let selectedProdTitle = "";
     let searchQuery = '';
-    let adminTrackingTag = ""; 
-    const sliderIndices = {};
-    let cachedProducts = null;
-
     let currentUser = JSON.parse(localStorage.getItem('app_user_data') || 'null');
 
-    settingsDb.child("admin_tag").once('value', snap => {
-      if(snap.exists()) adminTrackingTag = snap.val();
-    });
-
-    function loadSocialBarAd() {
-      const box = document.getElementById('socialBarAdBox');
-      if(!box) return;
-      box.innerHTML = '';
-      const script = document.createElement('script');
-      script.setAttribute('data-cfasync', 'false');
-      script.src = 'https://bauval.org/14/e361984475f2ca7f086c70fada052d75';
-      box.appendChild(script);
-    }
-
-    function loadTopBannerAd() {
-      const box = document.getElementById('topBannerAd');
-      if(!box) return;
-      box.innerHTML = '';
-      const iframe = document.createElement('iframe');
-      iframe.style.width = '320px'; iframe.style.height = '50px'; iframe.style.border = 'none'; iframe.style.overflow = 'hidden';
-      box.appendChild(iframe);
-
-      const iframeDoc = `
-        <!DOCTYPE html><html><head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:100vh;}</style></head>
-        <body>
-          <script type="text/javascript">
-            atOptions = { 'key' : 'cf3494f4a6b7bb56bec2bab7b59f7f36', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-          <\/script>
-          <script type="text/javascript" src="https://bauval.org/22/cf3494f4a6b7bb56bec2bab7b59f7f36"><\/script>
-        </body></html>
-      `;
-      setTimeout(() => {
-        const doc = iframe.contentWindow.document; doc.open(); doc.write(iframeDoc); doc.close();
-      }, 50);
-    }
-
-    /* Auth & Wallet Listener */
     function checkUserSession() {
       const badge = document.getElementById('userProfileBadge');
       const authModal = document.getElementById('authModal');
@@ -272,7 +200,7 @@
         const uData = snap.val() || {};
         const sharesCount = uData.totalShares || 0;
         
-        // 1 Share = 1 Point. 100 Points = 10 SAR (0.10 SAR per share)
+        // Rate: 100 Shares = 10 SAR (0.10 SAR per approved share)
         const sarEarnings = (sharesCount * 0.10).toFixed(2);
         const pkrEarnings = Math.round(sarEarnings * PKR_RATE);
 
@@ -280,11 +208,7 @@
         document.getElementById('uEarnings').innerText = `${sarEarnings} SAR (${pkrEarnings} PKR)`;
 
         const wBtn = document.getElementById('withdrawBtn');
-        if (parseFloat(sarEarnings) >= 50) {
-          wBtn.disabled = false;
-        } else {
-          wBtn.disabled = true;
-        }
+        wBtn.disabled = (parseFloat(sarEarnings) < 50);
       });
     }
 
@@ -292,19 +216,85 @@
       const name = document.getElementById('authName').value.trim();
       const phone = document.getElementById('authPhone').value.trim();
       const pass = document.getElementById('authPassword').value.trim();
-
       if (!name || !phone || !pass) { alert("تمام معلومات درج کریں!"); return; }
 
       const userObj = { name: name, phone: phone, pass: pass, totalShares: 0 };
       usersDb.child(phone).once('value', snap => {
-        if(!snap.exists()) {
-          usersDb.child(phone).set(userObj);
-        }
+        if(!snap.exists()) usersDb.child(phone).set(userObj);
         currentUser = userObj;
         localStorage.setItem('app_user_data', JSON.stringify(userObj));
         checkUserSession();
-        alert("لاگ ان کامیاب ہو گیا ہے! 🚀");
       });
+    }
+
+    /* Social Share Dialog Triggers Screenshot Modal Popup */
+    function shareProduct(key, title, link) {
+      if (!currentUser) { checkUserSession(); return; }
+
+      const shareData = { title: title, text: `Check out this deal: ${title}`, url: link };
+
+      if (navigator.share) {
+        navigator.share(shareData).then(() => {
+          openProofModal(key, title);
+        }).catch(() => {});
+      } else {
+        openProofModal(key, title);
+      }
+    }
+
+    function openProofModal(key, title) {
+      selectedProdKey = key;
+      selectedProdTitle = title;
+      document.getElementById('proofModal').style.display = 'flex';
+    }
+    function closeProofModal() { document.getElementById('proofModal').style.display = 'none'; }
+
+    function handleProofImage(e) {
+      if (e.target.files.length > 0) {
+        currentProofFile = e.target.files[0];
+        document.getElementById('proofFileText').innerText = `Selected: ${currentProofFile.name} ✅`;
+      }
+    }
+
+    /* Compress & Upload Screenshot to ImgBB */
+    async function submitShareProof() {
+      if (!currentProofFile) { alert("براہ کرم سکرین شاٹ منتخب کریں!"); return; }
+
+      const loader = document.getElementById('proofLoader');
+      loader.style.display = "block";
+
+      const formData = new FormData();
+      formData.append("image", currentProofFile);
+
+      try {
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
+        const imgData = await res.json();
+
+        if (imgData.success) {
+          const imgUrl = imgData.data.url;
+
+          // Save Only ImgBB URL text to Firebase Database (Zero database bloat)
+          proofsDb.push({
+            userPhone: currentUser.phone,
+            userName: currentUser.name,
+            prodKey: selectedProdKey,
+            prodTitle: selectedProdTitle,
+            proofUrl: imgUrl,
+            timestamp: Date.now(),
+            status: 'Pending'
+          }).then(() => {
+            loader.style.display = "none";
+            alert("سکرین شاٹ اپلوڈ ہو گیا ہے! ایڈمن کی منظوری کے بعد پوائنٹس شامل کر دیے جائیں گے۔ 🚀");
+            closeProofModal();
+          });
+        } else {
+          loader.style.display = "none";
+          alert("تصویر اپلوڈ کرنے میں مسئلہ آیا ہے!");
+        }
+      } catch (e) {
+        loader.style.display = "none";
+        alert("نیٹ ورک مسئلہ ہے، دوبارہ کوشش کریں!");
+      }
     }
 
     function openWithdrawModal() { document.getElementById('withdrawModal').style.display = 'flex'; }
@@ -313,8 +303,7 @@
     function submitWithdrawalRequest() {
       const method = document.getElementById('wMethod').value;
       const account = document.getElementById('wAccount').value.trim();
-
-      if(!account) { alert("اپنا اکاؤنٹ / موبائل نمبر درج کریں!"); return; }
+      if(!account) { alert("اپنا نمبر درج کریں!"); return; }
 
       withdrawalsDb.push({
         userPhone: currentUser.phone,
@@ -324,31 +313,9 @@
         timestamp: Date.now(),
         status: 'Pending'
       }).then(() => {
-        alert("آپ کی وڈراول درخواست بھیج دی گئی ہے! ایڈمن جلد تصدیق کرے گا۔ 🚀");
+        alert("درخواست بھیج دی گئی ہے! 🚀");
         closeWithdrawModal();
       });
-    }
-
-    /* Highly Secure Share Function (Executes ONLY on Verified Promise Resolution) */
-    function shareProduct(key, title, link) {
-      if (!currentUser) { checkUserSession(); return; }
-
-      const shareData = { title: title, text: `Check out this deal: ${title}`, url: link };
-
-      if (navigator.share) {
-        navigator.share(shareData).then(() => {
-          // Increment Product Shares
-          db.child(key).child('shares').transaction((current) => (current || 0) + 1);
-          // Increment User Personal Shares
-          usersDb.child(currentUser.phone).child('totalShares').transaction((current) => (current || 0) + 1);
-        }).catch(() => {});
-      } else {
-        navigator.clipboard.writeText(`${title} - ${link}`).then(() => {
-          alert("Link copied to clipboard!");
-          db.child(key).child('shares').transaction((current) => (current || 0) + 1);
-          usersDb.child(currentUser.phone).child('totalShares').transaction((current) => (current || 0) + 1);
-        });
-      }
     }
 
     function onSearchChange() {
@@ -356,178 +323,45 @@
       renderProducts();
     }
 
-    function openUploadModal() { 
-      if (!currentUser) { checkUserSession(); return; }
-      document.getElementById('uploadModal').style.display = 'flex'; 
-    }
-    function closeUploadModal() { document.getElementById('uploadModal').style.display = 'none'; }
-
-    function handleUserImages(e) {
-      userFiles = Array.from(e.target.files);
-      if(userFiles.length > 0) {
-        document.getElementById('uFileText').innerText = `${userFiles.length} Images Selected ✅`;
-      }
-    }
-
-    function compressImage(file, maxWidth = 1000, quality = 0.75) {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (event) => {
-          const img = new Image();
-          img.src = event.target.result;
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            let width = img.width; let height = img.height;
-            if (width > maxWidth) { height = Math.round((height * maxWidth) / width); width = maxWidth; }
-            canvas.width = width; canvas.height = height;
-            const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
-            canvas.toBlob((blob) => { resolve(new File([blob], file.name, { type: 'image/jpeg', lastModified: Date.now() })); }, 'image/jpeg', quality);
-          };
-        };
-      });
-    }
-
-    async function submitUserProduct() {
-      const title = document.getElementById('uTitle').value.trim();
-      const category = document.getElementById('uCategory').value;
-      const price = document.getElementById('uPrice').value.trim();
-      const link = document.getElementById('uLink').value.trim();
-      const loader = document.getElementById('uLoader');
-
-      if (!title || !link || userFiles.length === 0) { alert("تمام معلومات فراہم کریں!"); return; }
-
-      loader.style.display = "block";
-      let imgUrls = [];
-
-      for (let file of userFiles) {
-        const compressedFile = await compressImage(file);
-        const formData = new FormData();
-        formData.append("image", compressedFile);
-        try {
-          const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
-          const imgData = await res.json();
-          if (imgData.success) imgUrls.push(imgData.data.url);
-        } catch(e){}
-      }
-
-      pendingDb.push({
-        title: title, category: category, price: price || "Best Price", link: link,
-        images: imgUrls, img: imgUrls[0], pinned: false, timestamp: Date.now(),
-        shares: 0, userPhone: currentUser.phone, userName: currentUser.name
-      }).then(() => {
-        loader.style.display = "none";
-        alert("آپ کی پروڈکٹ ایڈمن کو بھیج دی گئی ہے! 🚀");
-        closeUploadModal();
-      });
-    }
-
-    function moveSlide(cardKey, direction, totalImages) {
-      if (!sliderIndices[cardKey]) sliderIndices[cardKey] = 0;
-      sliderIndices[cardKey] += direction;
-      if (sliderIndices[cardKey] < 0) sliderIndices[cardKey] = totalImages - 1;
-      if (sliderIndices[cardKey] >= totalImages) sliderIndices[cardKey] = 0;
-      const track = document.getElementById(`track-${cardKey}`);
-      if (track) track.style.transform = `translateX(${sliderIndices[cardKey] * 100}%)`;
-    }
-
-    function createAdBannerElement() {
-      const adDiv = document.createElement('div');
-      adDiv.className = 'adsterra-in-grid-banner';
-      const iframe = document.createElement('iframe');
-      iframe.style.width = '320px'; iframe.style.height = '50px'; iframe.style.border = 'none'; iframe.style.overflow = 'hidden';
-      const iframeDoc = `
-        <!DOCTYPE html><html><head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:100vh;}</style></head>
-        <body>
-          <script type="text/javascript">
-            atOptions = { 'key' : 'cf3494f4a6b7bb56bec2bab7b59f7f36', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-          <\/script>
-          <script type="text/javascript" src="https://bauval.org/22/cf3494f4a6b7bb56bec2bab7b59f7f36"><\/script>
-        </body></html>
-      `;
-      adDiv.appendChild(iframe);
-      setTimeout(() => {
-        const doc = iframe.contentWindow.document; doc.open(); doc.write(iframeDoc); doc.close();
-      }, 50);
-      return adDiv;
-    }
-
-    function matchesSearch(item, query) {
-      if (!query) return true;
-      const titleLower = (item.title || "").toLowerCase();
-      const categoryLower = (item.category || "").toLowerCase();
-      return titleLower.includes(query) || categoryLower.includes(query);
-    }
-
     function displayData(data) {
       const grid = document.getElementById('productsGrid');
-      if (!data) { grid.innerHTML = `<p style="text-align: center; grid-column: span 2; padding: 20px;">No products available.</p>`; return; }
+      if (!data) { grid.innerHTML = `<p style="text-align: center; grid-column: span 2;">No products.</p>`; return; }
 
       grid.innerHTML = '';
-      let count = 0;
-      const keysList = Object.keys(data);
-
-      keysList.sort((a, b) => {
-        const isPinnedA = data[a].pinned ? 1 : 0; const isPinnedB = data[b].pinned ? 1 : 0;
-        if (isPinnedA !== isPinnedB) return isPinnedB - isPinnedA;
-        return (data[b].timestamp || 0) - (data[a].timestamp || 0);
-      });
-
-      keysList.forEach((key) => {
+      Object.keys(data).forEach((key) => {
         const item = data[key];
-        if (!matchesSearch(item, searchQuery)) return;
-        count++;
+        if (searchQuery && !item.title.toLowerCase().includes(searchQuery)) return;
 
         const imgList = item.images && item.images.length > 0 ? item.images : [item.img || 'https://via.placeholder.com/150'];
-        let sliderHtml = imgList.length > 1 ? `
-          <div class="slider-wrapper">
-            <button class="slide-btn right" onclick="moveSlide('${key}', 1, ${imgList.length})">❯</button>
-            <div class="slider-track" id="track-${key}">
-              ${imgList.map(src => `<img src="${src}" class="product-media" onerror="this.src='https://via.placeholder.com/150'">`).join('')}
-            </div>
-            <button class="slide-btn left" onclick="moveSlide('${key}', -1, ${imgList.length})">❮</button>
-          </div>
-        ` : `<div class="slider-wrapper"><img src="${imgList[0]}" class="product-media" onerror="this.src='https://via.placeholder.com/150'"></div>`;
-
-        const pinnedClass = item.pinned ? 'pinned' : '';
-        const pinnedBadge = item.pinned ? `<div class="pinned-badge">⭐ Featured</div>` : '';
         const shareCount = item.shares || 0;
 
         const cardDiv = document.createElement('div');
-        cardDiv.className = `product-card ${pinnedClass}`;
+        cardDiv.className = `product-card`;
         cardDiv.innerHTML = `
-          ${pinnedBadge}
           <div>
-            ${sliderHtml}
+            <div class="slider-wrapper"><img src="${imgList[0]}" class="product-media" onerror="this.src='https://via.placeholder.com/150'"></div>
             <div class="product-title">${item.title}</div>
             <div class="product-price">${item.price}</div>
           </div>
           <div class="btn-action-row">
             <a href="${item.link}" target="_blank" class="buy-btn">🛒 Buy</a>
             <button class="share-btn" onclick="shareProduct('${key}', '${item.title.replace(/'/g, "\\'")}', '${item.link}')">
-              🔗 ${shareCount}
+              🔗 Share Deal
+            </button>
+            <button class="proof-btn" onclick="openProofModal('${key}', '${item.title.replace(/'/g, "\\'")}')">
+              📸 Send Screenshot Proof
             </button>
           </div>
         `;
-
         grid.appendChild(cardDiv);
-        if (count % 6 === 0) { grid.appendChild(createAdBannerElement()); }
       });
     }
 
     function renderProducts() {
-      db.on('value', (snapshot) => {
-        cachedProducts = snapshot.val();
-        displayData(cachedProducts);
-      });
+      db.on('value', (snapshot) => { displayData(snapshot.val()); });
     }
 
-    window.onload = function() { 
-      checkUserSession();
-      loadSocialBarAd();
-      loadTopBannerAd();
-      renderProducts();
-    };
+    window.onload = function() { checkUserSession(); renderProducts(); };
   </script>
 </body>
 </html>
