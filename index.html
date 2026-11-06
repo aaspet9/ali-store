@@ -43,7 +43,6 @@
       100% { background-position: 0% 50%; }
     }
     .offer-glow-badge {
-      background: #yellow;
       background: linear-gradient(90deg, #ffe600, #ffffff, #ffe600);
       color: #000;
       font-size: 10px;
@@ -105,7 +104,16 @@
     html[dir="rtl"] .close-modal { left: 15px; }
     html[dir="ltr"] .close-modal { right: 15px; }
     .modal-input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 10px; font-size: 13px; outline: none; }
-    .file-btn { border: 2px dashed #2563eb; background: #eff6ff; padding: 8px; text-align: center; border-radius: 8px; cursor: pointer; margin-bottom: 8px; font-size: 11px; }
+
+    /* New File-row & Independent Verification Button */
+    .file-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 8px; background: #f8fafc; border: 1px solid #e2e8f0; padding: 6px 10px; border-radius: 8px; }
+    .file-btn-sm { flex: 1; text-align: left; background: #eff6ff; border: 1px dashed #2563eb; padding: 6px 8px; border-radius: 6px; font-size: 11px; font-weight: 500; cursor: pointer; }
+    html[dir="rtl"] .file-btn-sm { text-align: right; }
+    .verify-btn { background: #2563eb; color: #ffffff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+    .verify-btn:disabled { background: #94a3b8; cursor: not-allowed; }
+    .status-badge { font-size: 10px; font-weight: bold; padding: 4px 8px; border-radius: 4px; white-space: nowrap; }
+    .status-badge.verified { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .status-badge.not-verified { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
   </style>
 </head>
 <body>
@@ -181,21 +189,50 @@
     </div>
   </div>
 
-  <!-- 5 Screenshots Upload Modal -->
+  <!-- 5 Screenshots Upload Modal with Verification Buttons -->
   <div class="modal-overlay" id="proofModal">
     <div class="modal-box">
-      <button class="close-modal" onclick="closeProofModal()">✕</button>
+      <button class="close-modal" onclick="cancelUploadProofAndClear()">✕</button>
       <h3 id="modalProofTitle" style="margin-bottom: 8px; color:#16a34a; text-align:center;">📸 5 پلیٹ فارم کے سکرین شاٹس اپلوڈ کریں</h3>
       <p id="modalProofSub" style="font-size:11px; color:#64748b; text-align:center; margin-bottom:12px;">ہر پلیٹ فارم پر وہی پروڈکٹ پوسٹ کر کے 5 تصاویر سلیکٹ کریں (کل رقم: 25 روپے)</p>
       
-      <div class="file-btn" onclick="document.getElementById('pImg1').click()"><span id="pTxt1">▶️ 1. YouTube Screenshot</span><input type="file" id="pImg1" accept="image/*" style="display:none;" onchange="handleProofImage(event, 1)"></div>
-      <div class="file-btn" onclick="document.getElementById('pImg2').click()"><span id="pTxt2">📘 2. Facebook Screenshot</span><input type="file" id="pImg2" accept="image/*" style="display:none;" onchange="handleProofImage(event, 2)"></div>
-      <div class="file-btn" onclick="document.getElementById('pImg3').click()"><span id="pTxt3">💬 3. WhatsApp Screenshot</span><input type="file" id="pImg3" accept="image/*" style="display:none;" onchange="handleProofImage(event, 3)"></div>
-      <div class="file-btn" onclick="document.getElementById('pImg4').click()"><span id="pTxt4">📸 4. Instagram Screenshot</span><input type="file" id="pImg4" accept="image/*" style="display:none;" onchange="handleProofImage(event, 4)"></div>
-      <div class="file-btn" onclick="document.getElementById('pImg5').click()"><span id="pTxt5">🎵 5. TikTok Screenshot</span><input type="file" id="pImg5" accept="image/*" style="display:none;" onchange="handleProofImage(event, 5)"></div>
+      <!-- YT File Row -->
+      <div class="file-row">
+        <div class="file-btn-sm" onclick="document.getElementById('pImg1').click()"><span id="pTxt1">▶️ 1. YouTube Screenshot</span><input type="file" id="pImg1" accept="image/*" style="display:none;" onchange="handleProofImage(event, 1)"></div>
+        <button class="verify-btn" id="verifyBtn1" onclick="verifySingleImage(1)" disabled>Verify 🔍</button>
+        <span id="badge1" style="display:none;" class="status-badge"></span>
+      </div>
+
+      <!-- FB File Row -->
+      <div class="file-row">
+        <div class="file-btn-sm" onclick="document.getElementById('pImg2').click()"><span id="pTxt2">📘 2. Facebook Screenshot</span><input type="file" id="pImg2" accept="image/*" style="display:none;" onchange="handleProofImage(event, 2)"></div>
+        <button class="verify-btn" id="verifyBtn2" onclick="verifySingleImage(2)" disabled>Verify 🔍</button>
+        <span id="badge2" style="display:none;" class="status-badge"></span>
+      </div>
+
+      <!-- WA File Row -->
+      <div class="file-row">
+        <div class="file-btn-sm" onclick="document.getElementById('pImg3').click()"><span id="pTxt3">💬 3. WhatsApp Screenshot</span><input type="file" id="pImg3" accept="image/*" style="display:none;" onchange="handleProofImage(event, 3)"></div>
+        <button class="verify-btn" id="verifyBtn3" onclick="verifySingleImage(3)" disabled>Verify 🔍</button>
+        <span id="badge3" style="display:none;" class="status-badge"></span>
+      </div>
+
+      <!-- IG File Row -->
+      <div class="file-row">
+        <div class="file-btn-sm" onclick="document.getElementById('pImg4').click()"><span id="pTxt4">📸 4. Instagram Screenshot</span><input type="file" id="pImg4" accept="image/*" style="display:none;" onchange="handleProofImage(event, 4)"></div>
+        <button class="verify-btn" id="verifyBtn4" onclick="verifySingleImage(4)" disabled>Verify 🔍</button>
+        <span id="badge4" style="display:none;" class="status-badge"></span>
+      </div>
+
+      <!-- TT File Row -->
+      <div class="file-row">
+        <div class="file-btn-sm" onclick="document.getElementById('pImg5').click()"><span id="pTxt5">🎵 5. TikTok Screenshot</span><input type="file" id="pImg5" accept="image/*" style="display:none;" onchange="handleProofImage(event, 5)"></div>
+        <button class="verify-btn" id="verifyBtn5" onclick="verifySingleImage(5)" disabled>Verify 🔍</button>
+        <span id="badge5" style="display:none;" class="status-badge"></span>
+      </div>
 
       <div id="proofLoader" style="display:none; text-align:center; font-size:12px; color:#16a34a; font-weight:bold; margin:8px 0;">تصاویر میں لنک اسکین ہو رہا ہے... 🔍⏳</div>
-      <button id="btnSubmitProof" style="width:100%; background:#16a34a; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="submit5ShareProofs()">تمام 5 سکرین شاٹ جمع کریں 🚀</button>
+      <button id="btnSubmitProof" style="width:100%; background:#16a34a; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer; opacity:0.6;" disabled onclick="submit5ShareProofs()">تمام 5 سکرین شاٹ جمع کریں 🚀</button>
     </div>
   </div>
 
@@ -256,6 +293,9 @@
     const SAR_RATE = 75;
 
     let proofFiles = { 1: null, 2: null, 3: null, 4: null, 5: null };
+    let verifiedStates = { 1: false, 2: false, 3: false, 4: false, 5: false };
+    let uploadedUrls = { 1: null, 2: null, 3: null, 4: null, 5: null };
+
     let currentUserImg = null;
     let selectedProdKey = "";
     let selectedProdTitle = "";
@@ -275,7 +315,8 @@
         ptsLabel: "🪙 Approved Shares:", balLabel: "💰 Total Balance (5 Platforms = 25 PKR):",
         modalTitle: "📸 Upload 5 Platform Screenshots", modalSub: "Post the same deal on all 5 platforms and select 5 images (Earn 25 PKR)",
         p1: "▶️ 1. YouTube Screenshot", p2: "📘 2. Facebook Screenshot", p3: "💬 3. WhatsApp Screenshot", p4: "📸 4. Instagram Screenshot", p5: "🎵 5. TikTok Screenshot",
-        btnSubmit: "Submit All 5 Screenshots 🚀"
+        btnSubmit: "Submit All 5 Screenshots 🚀", btnVerify: "Verify 🔍",
+        alertTitle: "Cancel Upload Proof?", alertMsg: "Do you really want to cancel this sharing task? All currently selected and verified images will be lost."
       },
       ur: { 
         title: "🛍️ سعودی بیسٹ ڈیلز & ڈسکاؤنٹس", pub: "➕ اپنی ڈیلز شائع کریں", pro: "📌 ڈیل پروموٹ کروائیں", buy: "🛒 خریدیں", search: "🔍 پروڈکٹ تلاش کریں...", 
@@ -284,7 +325,8 @@
         ptsLabel: "🪙 منظور شدہ شیئرز:", balLabel: "💰 کل رقم (5 پلیٹ فارم = 25 روپے):",
         modalTitle: "📸 5 پلیٹ فارم کے سکرین شاٹس اپلوڈ کریں", modalSub: "ہر پلیٹ فارم پر وہی پروڈکٹ پوسٹ کر کے 5 تصاویر سلیکٹ کریں (کل رقم: 25 روپے)",
         p1: "▶️ 1. یوٹیوب سکرین شاٹ", p2: "📘 2. فیس بک سکرین شاٹ", p3: "💬 3. واٹس ایپ سکرین شاٹ", p4: "📸 4. انسٹاگرام سکرین شاٹ", p5: "🎵 5. ٹک ٹاک سکرین شاٹ",
-        btnSubmit: "تمام 5 سکرین شاٹ جمع کریں 🚀"
+        btnSubmit: "تمام 5 سکرین شاٹ جمع کریں 🚀", btnVerify: "تصدیق کریں 🔍",
+        alertTitle: "ٹاسک منسوخ کریں؟", alertMsg: "کیا آپ واقعی اس ٹاسک کو منسوخ کرنا چاہتے ہیں؟ آپ کے سلیکٹ کردہ اور تصدیق شدہ سکرین شاٹس ضائع ہو جائیں گے۔"
       },
       ar: { 
         title: "🛍️ أفضل العروض والخصومات في السعودية", pub: "➕ انشر عروضك", pro: "📌 روج لمنتجك", buy: "🛒 شراء", search: "🔍 ابحث عن منتج...", 
@@ -293,7 +335,8 @@
         ptsLabel: "🪙 المشاركات المقبولة:", balLabel: "💰 الرصيد الإجمالي (5 منصات = 25 بكر):",
         modalTitle: "📸 تحميل 5 لقطات شاشة للمنصات", modalSub: "انشر نفس المنتج على 5 منصات وحدد 5 صور (احصل على 25 بكر)",
         p1: "▶️ 1. لقطة شاشة يوتيوب", p2: "📘 2. لقطة شاشة فيسبوك", p3: "💬 3. لقطة شاشة واتساب", p4: "📸 4. لقطة شاشة انستغرام", p5: "🎵 5. لقطة شاشة تيك توك",
-        btnSubmit: "إرسال جميع لقطات الشاشة الـ 5 🚀"
+        btnSubmit: "إرسال جميع لقطات الشاشة الـ 5 🚀", btnVerify: "تحقق 🔍",
+        alertTitle: "إلغاء تحميل الإثبات؟", alertMsg: "هل تريد بالفعل إلغاء هذه المهمة؟ ستفقد جميع الصور المحددة والتي تم التحقق منها."
       },
       hi: { 
         title: "🛍️ सऊदी बेस्ट डील्स और डिस्काउंट्स", pub: "➕ डील पब्लिश करें", pro: "📌 डील प्रमोट करें", buy: "🛒 खरीदें", search: "🔍 प्रोडक्ट खोजें...", 
@@ -302,7 +345,8 @@
         ptsLabel: "🪙 स्वीकृत शेयर:", balLabel: "💰 कुल बैलेंस (5 प्लेटफॉर्म = 25 रुपये):",
         modalTitle: "📸 5 प्लेटफॉर्म स्क्रीनशॉट अपलोड करें", modalSub: "सभी 5 प्लेटफॉर्म पर वही डील पोस्ट करें और 5 इमेज चुनें (25 रुपये कमाएं)",
         p1: "▶️ 1. यूट्यूब स्क्रीनशॉट", p2: "📘 2. फेसबुक स्क्रीनशॉट", p3: "💬 3. व्हाट्सएप स्क्रीनशॉट", p4: "📸 4. इंस्टाग्राम स्क्रीनशॉट", p5: "🎵 5. टिकटॉक स्क्रीनशॉट",
-        btnSubmit: "सभी 5 स्क्रीनशॉट जमा करें 🚀"
+        btnSubmit: "सभी 5 स्क्रीनशॉट जमा करें 🚀", btnVerify: "सत्यापन करें 🔍",
+        alertTitle: "अपलोड सबूत रद्द करें?", alertMsg: "क्या आप वाकई इस साझाकरण कार्य को रद्द करना चाहते हैं? सभी चयनित और सत्यापित चित्र खो जाएंगे।"
       }
     };
 
@@ -490,21 +534,74 @@
     function openProofModal(key, title, link) {
       const status = userSharedProducts[key];
       if (status) {
-        if(status === 'Approved') alert("🚨 Approved!");
-        else alert("⏳ Pending!");
-        return;
+        if(status === 'Approved') { alert("🚨 Approved!"); return; }
+        else { alert("⏳ Pending!"); return; }
       }
       selectedProdKey = key; 
       selectedProdTitle = title;
       selectedProdLink = link || "";
+
+      // Persistence implementation via localStorage
+      localStorage.setItem('pendingTask_Key', key);
+      localStorage.setItem('pendingTask_Title', title);
+      localStorage.setItem('pendingTask_Link', selectedProdLink);
+
       document.getElementById('proofModal').style.display = 'flex';
+      checkAllVerificationStatuses();
     }
-    function closeProofModal() { document.getElementById('proofModal').style.display = 'none'; }
+
+    function checkActivePendingTask() {
+      const savedKey = localStorage.getItem('pendingTask_Key');
+      if (savedKey) {
+        selectedProdKey = savedKey;
+        selectedProdTitle = localStorage.getItem('pendingTask_Title');
+        selectedProdLink = localStorage.getItem('pendingTask_Link');
+        document.getElementById('proofModal').style.display = 'flex';
+        checkAllVerificationStatuses();
+      }
+    }
+
+    // Interactive custom cancel with localized warnings
+    function cancelUploadProofAndClear() {
+      const text = i18n[activeLang];
+      if (confirm(text.alertMsg)) {
+        localStorage.removeItem('pendingTask_Key');
+        localStorage.removeItem('pendingTask_Title');
+        localStorage.removeItem('pendingTask_Link');
+        
+        proofFiles = { 1: null, 2: null, 3: null, 4: null, 5: null };
+        verifiedStates = { 1: false, 2: false, 3: false, 4: false, 5: false };
+        uploadedUrls = { 1: null, 2: null, 3: null, 4: null, 5: null };
+
+        for (let i = 1; i <= 5; i++) {
+          const defaultLabel = i18n[activeLang][`p${i}`];
+          document.getElementById(`pTxt${i}`).innerText = defaultLabel;
+          document.getElementById(`verifyBtn${i}`).disabled = true;
+          document.getElementById(`badge${i}`).style.display = 'none';
+        }
+
+        document.getElementById('proofModal').style.display = 'none';
+        alert("OK ✅");
+      }
+    }
+
+    function closeProofModal() { 
+      // Safe exit only if already uploaded or task complete
+      document.getElementById('proofModal').style.display = 'none'; 
+    }
 
     function handleProofImage(e, index) {
       if (e.target.files.length > 0) {
         proofFiles[index] = e.target.files[0];
-        document.getElementById(`pTxt${index}`).innerText = `Selected: ${proofFiles[index].name} ✅`;
+        document.getElementById(`pTxt${index}`).innerText = `Selected: ${proofFiles[index].name}`;
+        
+        // Disable pre-existing verified label to force re-verification on change
+        verifiedStates[index] = false;
+        document.getElementById(`badge${index}`).style.display = 'none';
+        
+        // Active verify button now
+        document.getElementById(`verifyBtn${index}`).disabled = false;
+        checkAllVerificationStatuses();
       }
     }
 
@@ -518,54 +615,120 @@
       }
     }
 
+    // Single specific image validation flow
+    async function verifySingleImage(index) {
+      if (!proofFiles[index]) return;
+      const loader = document.getElementById('proofLoader');
+      const verifyBtn = document.getElementById(`verifyBtn${index}`);
+      const badge = document.getElementById(`badge${index}`);
+
+      loader.style.display = 'block';
+      loader.innerText = `Checking platform ${index} screenshot... 🔍⏳`;
+      verifyBtn.disabled = true;
+
+      let targetKey = extractUrlKey(selectedProdLink).toLowerCase().replace(/\s+/g, '');
+
+      try {
+        const ocrResult = await Tesseract.recognize(proofFiles[index], 'eng');
+        const scannedText = ocrResult.data.text.toLowerCase().replace(/\s+/g, '');
+
+        if (targetKey.length > 3 && !scannedText.includes(targetKey)) {
+          loader.style.display = "none";
+          badge.style.display = 'inline-block';
+          badge.className = 'status-badge not-verified';
+          badge.innerText = "Error ❌";
+          verifyBtn.disabled = false;
+          verifiedStates[index] = false;
+          checkAllVerificationStatuses();
+          alert(`❌ link mismatch in image #${index}. please use correct platform.`);
+          return;
+        }
+
+        // Upload instantly if OCR approves
+        loader.innerText = `Saving verified image ${index}... 🚀`;
+        const formData = new FormData();
+        formData.append("image", proofFiles[index]);
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
+        const imgData = await res.json();
+        
+        if (imgData.success) {
+          uploadedUrls[index] = imgData.data.url;
+          verifiedStates[index] = true;
+          badge.style.display = 'inline-block';
+          badge.className = 'status-badge verified';
+          badge.innerText = "Verified ✅";
+          verifyBtn.disabled = true;
+        } else {
+          verifyBtn.disabled = false;
+        }
+      } catch(e) {
+        verifyBtn.disabled = false;
+        alert("ocr test exception occurred.");
+      }
+
+      loader.style.display = 'none';
+      checkAllVerificationStatuses();
+    }
+
+    function checkAllVerificationStatuses() {
+      let allVerified = true;
+      for (let i = 1; i <= 5; i++) {
+        if (!verifiedStates[i]) {
+          allVerified = false;
+          break;
+        }
+      }
+      
+      const submitBtn = document.getElementById('btnSubmitProof');
+      if (allVerified) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+      } else {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.6';
+      }
+    }
+
     async function submit5ShareProofs() {
+      // Validate all verification states are explicitly true
       for(let i=1; i<=5; i++) {
-        if (!proofFiles[i]) { alert(`Please select Screenshot #${i}! All 5 screenshots are required.`); return; }
+        if (!verifiedStates[i] || !uploadedUrls[i]) { alert(`Verify Screenshot #${i}! All 5 are mandatory.`); return; }
       }
 
       const loader = document.getElementById('proofLoader');
       loader.style.display = "block";
-      let targetKey = extractUrlKey(selectedProdLink).toLowerCase().replace(/\s+/g, '');
-      let uploadedUrls = [];
+      loader.innerText = "Submitting task to database... 🚀";
 
       try {
-        for(let i=1; i<=5; i++) {
-          loader.innerText = `Scanning Image #${i}... 🔍⏳`;
-          const ocrResult = await Tesseract.recognize(proofFiles[i], 'eng');
-          const scannedText = ocrResult.data.text.toLowerCase().replace(/\s+/g, '');
+        const urlArray = Object.values(uploadedUrls);
+        proofsDb.push({
+          userPhone: currentUser.phone, userName: currentUser.name,
+          prodKey: selectedProdKey, prodTitle: selectedProdTitle,
+          proofUrls: urlArray, proofUrl: urlArray[0], timestamp: Date.now(), status: 'Pending'
+        });
 
-          if (targetKey.length > 3 && !scannedText.includes(targetKey)) {
-            loader.style.display = "none";
-            alert(`❌ Error in Screenshot #${i}!\nProduct link not found in image #${i}.`);
-            return;
-          }
-
-          loader.innerText = `Uploading Image #${i}... 🚀`;
-          const formData = new FormData();
-          formData.append("image", proofFiles[i]);
-          const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
-          const imgData = await res.json();
-          if (imgData.success) uploadedUrls.push(imgData.data.url);
-        }
-
-        if (uploadedUrls.length === 5) {
-          proofsDb.push({
-            userPhone: currentUser.phone, userName: currentUser.name,
-            prodKey: selectedProdKey, prodTitle: selectedProdTitle,
-            proofUrls: uploadedUrls, proofUrl: uploadedUrls[0], timestamp: Date.now(), status: 'Pending'
-          });
-
-          usersDb.child(currentUser.phone).child('sharedProducts').child(selectedProdKey).set('Pending').then(() => {
-            loader.style.display = "none";
-            userSharedProducts[selectedProdKey] = 'Pending';
-            alert("Success! 5 Platform screenshots submitted. Earn 25 PKR upon admin approval! 🚀");
-            closeProofModal();
-            if(cachedData) displayData(cachedData);
-          });
-        }
+        usersDb.child(currentUser.phone).child('sharedProducts').child(selectedProdKey).set('Pending').then(() => {
+          loader.style.display = "none";
+          userSharedProducts[selectedProdKey] = 'Pending';
+          
+          // Clear persistence data on successful submission
+          localStorage.removeItem('pendingTask_Key');
+          localStorage.removeItem('pendingTask_Title');
+          localStorage.removeItem('pendingTask_Link');
+          
+          alert("Success! 5 Platform screenshots submitted. Earn 25 PKR upon admin approval! 🚀");
+          
+          // reset states
+          proofFiles = { 1: null, 2: null, 3: null, 4: null, 5: null };
+          verifiedStates = { 1: false, 2: false, 3: false, 4: false, 5: false };
+          uploadedUrls = { 1: null, 2: null, 3: null, 4: null, 5: null };
+          
+          closeProofModal();
+          if(cachedData) displayData(cachedData);
+        });
       } catch (e) { 
         loader.style.display = "none";
-        alert("Error scanning images, please try again.");
+        alert("Error saving your proofs.");
       }
     }
 
@@ -688,11 +851,21 @@
       document.getElementById('txtBalanceLabel').innerText = txt.balLabel;
       document.getElementById('modalProofTitle').innerText = txt.modalTitle;
       document.getElementById('modalProofSub').innerText = txt.modalSub;
-      document.getElementById('pTxt1').innerText = txt.p1;
-      document.getElementById('pTxt2').innerText = txt.p2;
-      document.getElementById('pTxt3').innerText = txt.p3;
-      document.getElementById('pTxt4').innerText = txt.p4;
-      document.getElementById('pTxt5').innerText = txt.p5;
+      
+      // Update dynamic screenshot label and button states
+      for (let i = 1; i <= 5; i++) {
+        const textKey = `p${i}`;
+        if (!proofFiles[i]) {
+          document.getElementById(`pTxt${i}`).innerText = txt[textKey];
+        }
+        
+        // Verify text localization
+        const vBtn = document.getElementById(`verifyBtn${i}`);
+        if(vBtn && vBtn.innerText.includes("🔍")) {
+          vBtn.innerText = txt.btnVerify;
+        }
+      }
+
       document.getElementById('btnSubmitProof').innerText = txt.btnSubmit;
 
       // RTL / LTR Direction Handling for Languages
@@ -706,7 +879,7 @@
       document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
       if(lang === 'en') document.getElementById('btnEn').classList.add('active');
       if(lang === 'ur') document.getElementById('btnUr').classList.add('active');
-      if(lang === 'ar') document.getElementById('btnAr').classList.add('active');
+      if(lang === 'ar') document.getElementById('ar').classList.add('active');
       if(lang === 'hi') document.getElementById('btnHi').classList.add('active');
 
       if (cachedData) displayData(cachedData);
@@ -714,6 +887,7 @@
 
     window.onload = function() {
       checkUserSession();
+      checkActivePendingTask(); // Verify persistent tasks on page load
       db.on('value', (snapshot) => {
         cachedData = snapshot.val();
         displayData(cachedData);
