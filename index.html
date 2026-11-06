@@ -200,7 +200,6 @@
         const uData = snap.val() || {};
         const sharesCount = uData.totalShares || 0;
         
-        // Rate: 100 Shares = 10 SAR (0.10 SAR per approved share)
         const sarEarnings = (sharesCount * 0.10).toFixed(2);
         const pkrEarnings = Math.round(sarEarnings * PKR_RATE);
 
@@ -227,10 +226,8 @@
       });
     }
 
-    /* Social Share Dialog Triggers Screenshot Modal Popup */
     function shareProduct(key, title, link) {
       if (!currentUser) { checkUserSession(); return; }
-
       const shareData = { title: title, text: `Check out this deal: ${title}`, url: link };
 
       if (navigator.share) {
@@ -256,7 +253,6 @@
       }
     }
 
-    /* Compress & Upload Screenshot to ImgBB */
     async function submitShareProof() {
       if (!currentProofFile) { alert("براہ کرم سکرین شاٹ منتخب کریں!"); return; }
 
@@ -273,7 +269,6 @@
         if (imgData.success) {
           const imgUrl = imgData.data.url;
 
-          // Save Only ImgBB URL text to Firebase Database (Zero database bloat)
           proofsDb.push({
             userPhone: currentUser.phone,
             userName: currentUser.name,
@@ -346,7 +341,7 @@
           <div class="btn-action-row">
             <a href="${item.link}" target="_blank" class="buy-btn">🛒 Buy</a>
             <button class="share-btn" onclick="shareProduct('${key}', '${item.title.replace(/'/g, "\\'")}', '${item.link}')">
-              🔗 Share Deal
+              🔗 Share Deal (${shareCount})
             </button>
             <button class="proof-btn" onclick="openProofModal('${key}', '${item.title.replace(/'/g, "\\'")}')">
               📸 Send Screenshot Proof
