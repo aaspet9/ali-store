@@ -34,7 +34,7 @@
     .user-upload-btn { flex: 1; background: #2563eb; color: #ffffff; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
     .promo-btn { flex: 1; background: #16a34a; color: #ffffff; text-decoration: none; border: none; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; text-align: center; }
 
-    .adsterra-in-grid-banner { grid-column: span 2; background: #ffffff; border-radius: 8px; padding: 4px; text-align: center; margin: 6px 0; display: flex; justify-content: center; align-items: center; min-height: 55px; border: 1px dashed #cbd5e1; width: 100%; overflow: hidden; }
+    .adsterra-in-grid-banner { grid-column: span 2; background: #ffffff; border-radius: 8px; padding: 6px; text-align: center; margin: 8px 0; display: flex; justify-content: center; align-items: center; min-height: 60px; border: 1px dashed #cbd5e1; width: 100%; overflow: hidden; }
 
     .products-container { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
     .product-card { background: #ffffff; border-radius: 12px; padding: 8px; border: 1px solid #f0f0f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; width: 100%; overflow: hidden; position: relative; }
@@ -51,9 +51,9 @@
     .proof-btn { background: #16a34a; color: #ffffff; border: none; padding: 6px 4px; border-radius: 20px; font-weight: bold; font-size: 10px; cursor: pointer; }
     
     /* Highlighted and Disabled styles */
-    .btn-approved { background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important; color: #ffffff !important; border: 2px solid #34d399 !important; font-weight: bold; cursor: default !important; opacity: 1 !important; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3); }
-    .btn-pending { background: #f59e0b !important; color: #ffffff !important; cursor: not-allowed !important; opacity: 0.9 !important; }
-    .proof-btn:disabled, .share-btn:disabled { opacity: 0.75; cursor: not-allowed; }
+    .btn-approved { background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important; color: #ffffff !important; border: 2px solid #34d399 !important; font-weight: bold !important; cursor: default !important; opacity: 1 !important; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4); pointer-events: none; }
+    .btn-pending { background: #f59e0b !important; color: #ffffff !important; cursor: not-allowed !important; opacity: 0.9 !important; pointer-events: none; }
+    .proof-btn:disabled, .share-btn:disabled { opacity: 0.85; cursor: not-allowed; }
 
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
     .modal-box { background: #ffffff; width: 100%; max-width: 420px; border-radius: 14px; padding: 18px; max-height: 90vh; overflow-y: auto; text-align: left; position: relative; }
@@ -187,7 +187,7 @@
     let selectedProdLink = "";
     let searchQuery = '';
     let searchTimeout = null;
-    let userSharedProducts = {}; // Object storing status per product key for active user
+    let userSharedProducts = {}; 
     let cachedData = null;
     let currentUser = JSON.parse(localStorage.getItem('app_user_data') || 'null');
 
@@ -225,28 +225,31 @@
       }
     }
 
-    // لوڈ یوزر ہسٹری: چیک کریں کہ پروڈکٹ Pending ہے یا Approved
+    // لوڈ ہسٹری: منظور اور پینڈنگ ریکویسٹ کا ریکارڈ حاصل کریں
     function loadUserSharedHistory() {
       if(!currentUser) return;
 
-      // 1. Check database of active proofs to know status (Pending vs Approved)
-      proofsDb.orderByChild('userPhone').equalTo(currentUser.phone).on('value', snap => {
+      usersDb.child(currentUser.phone).on('value', uSnap => {
         userSharedProducts = {};
-        const data = snap.val();
-        if(data) {
-          Object.keys(data).forEach(k => { 
-            const p = data[k];
-            userSharedProducts[p.prodKey] = p.status || 'Pending';
-          });
-        }
+        const uData = uSnap.val() || {};
         
-        // 2. Also fetch user wallet/shares to cross check approved items
-        usersDb.child(currentUser.phone).once('value', uSnap => {
-          const uData = uSnap.val() || {};
-          const approvedKeys = uData.approvedProds || {};
-          Object.keys(approvedKeys).forEach(pKey => {
-            userSharedProducts[pKey] = 'Approved';
-          });
+        // ایڈمن کی طرف سے اپرووڈ کی گئی پروڈکٹس
+        const approved = uData.approvedProds || {};
+        Object.keys(approved).forEach(pKey => {
+          userSharedProducts[pKey] = 'Approved';
+        });
+
+        // پینڈنگ (Pending) سکرین شاٹس
+        proofsDb.orderByChild('userPhone').equalTo(currentUser.phone).once('value', snap => {
+          const data = snap.val();
+          if(data) {
+            Object.keys(data).forEach(k => { 
+              const p = data[k];
+              if (!userSharedProducts[p.prodKey]) {
+                userSharedProducts[p.prodKey] = 'Pending';
+              }
+            });
+          }
           if(cachedData) displayData(cachedData);
         });
       });
@@ -327,7 +330,7 @@
       if (!currentUser) { checkUserSession(); return; }
       if (userSharedProducts[key]) {
         if(userSharedProducts[key] === 'Approved') {
-          alert("✅ آپ کی یہ پروڈکٹ ایڈمن سے منظور ہو چکی ہے!");
+          alert("🚨 آپ کی یہ پروڈکٹ پہلے ہی ایڈمن سے منظور ہو چکی ہے اور پوائنٹس مل چکے ہیں!");
         } else {
           alert("⏳ آپ کا سکرین شاٹ زیرِ جائزہ (Pending) ہے۔ ایڈمن کی منظوری کا انتظار کریں!");
         }
@@ -345,7 +348,7 @@
 
     function openProofModal(key, title, link) {
       if (userSharedProducts[key]) {
-        if(userSharedProducts[key] === 'Approved') alert("✅ آپ کی یہ پروڈکٹ پہلے ہی ایڈمن سے منظور ہو چکی ہے!");
+        if(userSharedProducts[key] === 'Approved') alert("🚨 آپ کی یہ پروڈکٹ پہلے ہی ایڈمن سے منظور ہو چکی ہے!");
         else alert("⏳ آپ کا پروف پہلے سے اپلوڈ ہے، برائے مہربانی ایڈمن اپروول کا انتظار کریں!");
         return;
       }
@@ -438,22 +441,41 @@
       }, 150);
     }
 
+    /* Adsterra Banner Ad Loader (Direct Iframe Rendering) */
     function createAdBannerElement() {
       const adDiv = document.createElement('div');
       adDiv.className = 'adsterra-in-grid-banner';
+      
       const iframe = document.createElement('iframe');
-      iframe.style.width = '320px'; iframe.style.height = '50px'; iframe.style.border = 'none'; iframe.style.overflow = 'hidden';
-      const iframeDoc = `
-        <!DOCTYPE html><html><head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:100vh;}</style></head>
-        <body>
-          <script type="text/javascript">
-            atOptions = { 'key' : 'cf3494f4a6b7bb56bec2bab7b59f7f36', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-          <\/script>
-          <script type="text/javascript" src="https://bauval.org/22/cf3494f4a6b7bb56bec2bab7b59f7f36"><\/script>
-        </body></html>
-      `;
+      iframe.setAttribute('width', '320');
+      iframe.setAttribute('height', '50');
+      iframe.setAttribute('frameborder', '0');
+      iframe.setAttribute('scrolling', 'no');
+      iframe.style.border = 'none';
+      iframe.style.overflow = 'hidden';
+
       adDiv.appendChild(iframe);
-      setTimeout(() => { const doc = iframe.contentWindow.document; doc.open(); doc.write(iframeDoc); doc.close(); }, 50);
+
+      setTimeout(() => {
+        try {
+          const doc = iframe.contentWindow.document;
+          doc.open();
+          doc.write(`
+            <!DOCTYPE html>
+            <html>
+            <head><style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:50px;background:#fff;}</style></head>
+            <body>
+              <script type="text/javascript">
+                atOptions = { 'key' : 'cf3494f4a6b7bb56bec2bab7b59f7f36', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+              <\/script>
+              <script type="text/javascript" src="https://www.highperformanceformat.com/cf3494f4a6b7bb56bec2bab7b59f7f36/invoke.js"><\/script>
+            </body>
+            </html>
+          `);
+          doc.close();
+        } catch(e){}
+      }, 100);
+
       return adDiv;
     }
 
@@ -471,8 +493,8 @@
         count++;
 
         const imgList = item.images && item.images.length > 0 ? item.images : [item.img || 'https://via.placeholder.com/150'];
-        const totalSharesCount = item.shares || 0; // تمام یوزرز کی کل تعداد
-        const userStatus = userSharedProducts[key] || null; // پینڈنگ، منظور، یا نل
+        const totalSharesCount = item.shares || 0; 
+        const userStatus = userSharedProducts[key] || null; 
 
         let shareBtnText = `${txt.share} (${totalSharesCount})`;
         let proofBtnText = txt.sendProof;
@@ -485,13 +507,13 @@
           proofBtnText = txt.shared;
           isShareDisabled = true;
           isProofDisabled = true;
-          extraBtnClass = 'btn-approved'; // ہائی لائٹ سبز رنگ
+          extraBtnClass = 'btn-approved'; 
         } else if (userStatus === 'Pending') {
           shareBtnText = txt.pending;
           proofBtnText = txt.pending;
           isShareDisabled = true;
           isProofDisabled = true;
-          extraBtnClass = 'btn-pending'; // پینڈنگ اورنج رنگ
+          extraBtnClass = 'btn-pending'; 
         }
 
         const cardDiv = document.createElement('div');
@@ -514,6 +536,7 @@
         `;
         fragment.appendChild(cardDiv);
 
+        /* Display Adsterra Banner Every 6 Items */
         if (count % 6 === 0) {
           fragment.appendChild(createAdBannerElement());
         }
