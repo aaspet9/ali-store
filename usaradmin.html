@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Admin Panel - یوزر مینجمنٹ کنٹرول</title>
+  
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background-color: #f0fdf4; color: #0f172a; padding: 12px; }
+
+    .header-card { background: linear-gradient(135deg, #15803d 0%, #166534 100%); color: #ffffff; text-align: center; padding: 16px; border-radius: 12px; max-width: 600px; margin: 0 auto 15px auto; box-shadow: 0 4px 12px rgba(22, 101, 52, 0.2); }
+    .header-card h2 { font-size: 20px; font-weight: 800; color: #86efac; }
+
+    .main-wrapper { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+
+    .section-toggle-btn { width: 100%; background: #ffffff; color: #1e293b; border: 2px solid #bbf7d0; padding: 12px 14px; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: all 0.2s ease; }
+    .section-toggle-btn.active { border-color: #16a34a; background: #f0fdf4; color: #15803d; }
+
+    .collapsible-content { display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 0 0 10px 10px; padding: 14px; margin-top: -6px; margin-bottom: 6px; }
+
+    .search-input { width: 100%; padding: 10px; border: 1.5px solid #2563eb; border-radius: 8px; font-size: 13px; margin-bottom: 10px; outline: none; }
+    .text-link-box { background: #eff6ff; padding: 8px; border-radius: 6px; border: 1px solid #93c5fd; font-family: monospace; font-size: 11px; color: #1d4ed8; word-break: break-all; margin: 6px 0; user-select: all; }
+
+    .item-card { background: #ffffff; border: 1px solid #cbd5e1; padding: 12px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+    .proof-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin: 8px 0; }
+    .proof-grid img { width: 100%; height: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer; }
+
+    .approve-btn { background: #16a34a; color: white; border: none; padding: 8px; font-size: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 4px; }
+    .reject-btn { background: #ef4444; color: white; border: none; padding: 8px; font-size: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 4px; }
+
+    .user-strip { background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 8px; margin-bottom: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+    .user-strip-header { padding: 10px; background: #f8fafc; cursor: pointer; display: flex; flex-direction: column; gap: 4px; font-size: 12px; border-bottom: 1px solid #e2e8f0; }
+    .user-strip-header-top { display: flex; justify-content: space-between; font-weight: bold; color: #1e293b; }
+    .user-strip-header-bottom { display: flex; justify-content: space-between; font-size: 11px; color: #16a34a; font-weight: bold; background: #f0fdf4; padding: 4px 8px; border-radius: 4px; margin-top: 4px; }
+
+    .chat-box { height: 220px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; overflow-y: auto; background: #f8fafc; margin-bottom: 8px; }
+    .chat-msg { background: #ffffff; padding: 6px 10px; border-radius: 6px; margin-bottom: 6px; border: 1px solid #e2e8f0; font-size: 12px; }
+    .chat-msg-img { max-width: 100%; max-height: 120px; border-radius: 6px; margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+  <div class="header-card">
+    <h2>👥 USER MANAGEMENT ADMIN PANEL</h2>
+    <span style="font-size:12px; color:#dcfce7;">یوزرز، سکرین شاٹس، اپلوڈز، لائیو چیٹ اور وڈراول ڈیش بورڈ</span>
+  </div>
+
+  <div class="main-wrapper">
+
+    <!-- 1. Screenshot Proofs Approval -->
+    <button class="section-toggle-btn" onclick="toggleSection('proofsSection', this)">
+      <span>📸 5 سکرین شاٹس اپروول درخواستیں</span>
+      <span>▼</span>
+    </button>
+    <div class="collapsible-content" id="proofsSection">
+      <div id="proofsList"></div>
+    </div>
+
+    <!-- 2. Approved Screenshots History & Search -->
+    <button class="section-toggle-btn" onclick="toggleSection('approvedHistorySection', this)">
+      <span>✅ محفوظ شدہ منظور شدہ سکرین شاٹس ہسٹری (سرچ بار)</span>
+      <span>▼</span>
+    </button>
+    <div class="collapsible-content" id="approvedHistorySection">
+      <input type="text" id="approvedSearchInput" class="search-input" placeholder="🔍 فون نمبر یا پروڈکٹ لنک سے ہسٹری سرچ کریں..." oninput="searchApprovedProofs()">
+      <div id="approvedHistoryList"></div>
+    </div>
+
+    <!-- 3. User Upload Product Requests -->
+    <button class="section-toggle-btn" onclick="toggleSection('userUploadReqSection', this)">
+      <span>📦 یوزر اپلوڈ پروڈکٹ درخواستیں (کنفرم / کینسل)</span>
+      <span>▼</span>
+    </button>
+    <div class="collapsible-content" id="userUploadReqSection">
+      <div id="userUploadReqList"></div>
+    </div>
+
+    <!-- 4. Confirmed User Uploaded Products & Search -->
+    <button class="section-toggle-btn" onclick="toggleSection('confirmedUserProdsSection', this)">
+      <span>📂 کنفرم شدہ یوزر پروڈکٹس ہسٹری (سرچ بار)</span>
+      <span>▼</span>
+    </button>
+    <div class="collapsible-content" id="confirmedUserProdsSection">
+      <input type="text" id="confirmedProdsSearchInput" class="search-input" placeholder="🔍 یوزر فون نمبر یا پروڈکٹ نام سرچ کریں..." oninput="searchConfirmedUserProducts()">
+      <div id="confirmedUserProdsList"></div>
+    </div>
+
+    <!-- 5. Registered Users & Accounts -->
+    <button class="section-toggle-btn" onclick="toggleSection('usersSection', this)">
+      <span>👥 کل رجسٹرڈ یوزرز، پاسورڈ، پوائنٹس & رقم</span>
+      <span>▼</span>
+    </button>
+    <div class="collapsible-content" id="usersSection">
+      <div id="usersContainer"></div>
+    </div>
+
+    <!-- 6. Withdrawals Management -->
+    <button class="section-toggle-btn" onclick="toggleSection('withdrawalsSection', this)">
+      <span>💸 رقم نکالنے کی درخواستیں (Withdrawals)</span>
+      <span>▼</span>
+    </button>
+    <div class="collapsible-content" id="withdrawalsSection">
+      <div id="withdrawalsList"></div>
+    </div>
+
+    <!-- 7. Live Chat Support Page -->
+    <button class="section-toggle-btn" onclick="toggleSection('chatSection', this)">
+      <span>💬 یوزر لائیو چیٹ & سپورٹ (میسج + تصویر)</span>
+      <span>▼</span>
+    </button>
+    <div class="collapsible-content" id="chatSection">
+      <input type="text" id="chatUserPhone" class="search-input" placeholder="📱 یوزر کا موبائل نمبر درج کریں..." onchange="loadUserChat()">
+      <div class="chat-box" id="chatMessagesBox"></div>
+      <div style="display:flex; gap:6px;">
+        <input type="text" id="chatMsgInput" style="flex:1; padding:8px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;" placeholder="میسج لکھیں...">
+        <input type="file" id="chatImgInput" accept="image/*" style="display:none;" onchange="sendChatImage(event)">
+        <button style="background:#0284c7; color:white; border:none; padding:8px 12px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="document.getElementById('chatImgInput').click()">🖼️</button>
+        <button style="background:#16a34a; color:white; border:none; padding:8px 14px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="sendChatMessage()">بھیجیں 🚀</button>
+      </div>
+    </div>
+
+    <!-- 8. Offer Offer Offer Special Panel -->
+    <button class="section-toggle-btn" style="border-color:#f59e0b; background:#fffbeb;" onclick="toggleSection('offerSection', this)">
+      <span>🔥 OFFER OFFER OFFER پینل (خصوصی نوٹس)</span>
+      <span>▼</span>
+    </button>
+    <div class="collapsible-content" id="offerSection">
+      <div style="margin-bottom:8px; font-size:12px; font-weight:bold;">ایپ پر لائیو ڈسپلے کرنے کے لیے خصوصی افر تیار کریں:</div>
+      <input type="text" id="offerTitleInput" class="search-input" placeholder="افر کا عنوان (مثال: 🎉 عید کا ڈبل بونس افر!)">
+      <textarea id="offerDescInput" style="width:100%; height:60px; padding:8px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px; margin-bottom:8px;" placeholder="افر کی مکمل تفصیل لکھیں..."></textarea>
+      <button class="approve-btn" style="background:#f59e0b;" onclick="saveSpecialOffer()">🔥 افر لائیو شائع کریں 🚀</button>
+    </div>
+
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDp--gVk61VaLCK-4yygwN8Oj9CpDIp05E",
+      authDomain: "kist-65357.firebaseapp.com",
+      projectId: "kist-65357",
+      storageBucket: "kist-65357.firebasestorage.app",
+      messagingSenderId: "200844711272",
+      appId: "1:200844711272:web:d980a03c9fae8b8d7972dd",
+      measurementId: "G-LCZ8N3GKTE",
+      databaseURL: "https://kist-65357-default-rtdb.firebaseio.com"
+    };
+    firebase.initializeApp(firebaseConfig);
+    
+    const db = firebase.database().ref("products");
+    const usersDb = firebase.database().ref("app_users");
+    const withdrawalsDb = firebase.database().ref("withdrawals");
+    const proofsDb = firebase.database().ref("share_proofs");
+    const approvedProofsDb = firebase.database().ref("approved_share_proofs");
+    const pendingDb = firebase.database().ref("pending_products");
+    const chatsDb = firebase.database().ref("user_chats");
+    const offersDb = firebase.database().ref("special_offers");
+
+    const IMGBB_API_KEY = "66dcdf21e30733bfd85545d9fb5e76c4";
+    const PKR_PER_SHARE = 25;
+    const SAR_RATE = 75;
+
+    window.onload = function() {
+      renderProofsList();
+      renderApprovedHistory();
+      renderUserUploadRequests();
+      renderConfirmedUserProducts();
+      renderUsersList();
+      renderWithdrawalsList();
+    };
+
+    function toggleSection(id, btn) {
+      const content = document.getElementById(id);
+      if (content.style.display === "block") {
+        content.style.display = "none";
+        btn.classList.remove("active");
+      } else {
+        content.style.display = "block";
+        btn.classList.add("active");
+      }
+    }
+
+    /* 1. Pending Screenshot Proofs */
+    function renderProofsList() {
+      const container = document.getElementById('proofsList');
+      proofsDb.on('value', snap => {
+        const data = snap.val();
+        if(!data) { container.innerHTML = '<p style="font-size:11px; color:#64748b;">کوئی پینڈنگ سکرین شاٹ درخواست نہیں ہے۔</p>'; return; }
+
+        container.innerHTML = '';
+        Object.keys(data).reverse().forEach(key => {
+          const p = data[key];
+          const urls = p.proofUrls || [p.proofUrl];
+          let imgsHtml = '<div class="proof-grid">';
+          urls.forEach(url => { if(url) imgsHtml += `<a href="${url}" target="_blank"><img src="${url}"></a>`; });
+          imgsHtml += '</div>';
+
+          container.innerHTML += `
+            <div class="item-card" style="border-right: 4px solid #16a34a;">
+              <div style="font-size:12px; font-weight:bold;">👤 یوزر: ${p.userName || 'Guest'} (${p.userPhone || ''})</div>
+              <div style="font-size:11px; color:#2563eb; margin-top:2px;">📦 پروڈکٹ: <b>${p.prodTitle || ''}</b></div>
+              <div class="text-link-box" dir="ltr">🔗 ${p.prodLink || 'No Link'}</div>
+              ${imgsHtml}
+              <button class="approve-btn" onclick="approveProof('${key}')">✅ سکرین شاٹس منظور کریں (+25 PKR)</button>
+              <button class="reject-btn" onclick="rejectProof('${key}')">🗑️ رد کریں</button>
+            </div>
+          `;
+        });
+      });
+    }
+
+    function approveProof(key) {
+      proofsDb.child(key).once('value', snap => {
+        const p = snap.val();
+        if(p) {
+          usersDb.child(p.userPhone).child('totalShares').transaction(c => (c || 0) + 1);
+          if(p.prodKey) db.child(p.prodKey).child('shares').transaction(c => (c || 0) + 1);
+
+          approvedProofsDb.push({ ...p, approvedAt: Date.now() }).then(() => {
+            proofsDb.child(key).remove();
+            alert("سکرین شاٹ منظور اور ہسٹری میں سیو ہو گیا! 🚀");
+          });
+        }
+      });
+    }
+    function rejectProof(key) { proofsDb.child(key).remove(); }
+
+    /* 2. Approved Screenshots History Search */
+    function renderApprovedHistory() { searchApprovedProofs(); }
+    function searchApprovedProofs() {
+      const query = document.getElementById('approvedSearchInput').value.trim().toLowerCase();
+      const container = document.getElementById('approvedHistoryList');
+
+      approvedProofsDb.once('value', snap => {
+        const data = snap.val();
+        if(!data) { container.innerHTML = '<p style="font-size:11px; color:#64748b;">کوئی ریکار ڈ موجود نہیں ہے۔</p>'; return; }
+
+        let html = '';
+        Object.keys(data).reverse().forEach(k => {
+          const p = data[k];
+          if(query && !p.userPhone.includes(query) && !p.prodLink.toLowerCase().includes(query)) return;
+
+          let imgsHtml = '<div class="proof-grid">';
+          (p.proofUrls || []).forEach(url => { if(url) imgsHtml += `<a href="${url}" target="_blank"><img src="${url}"></a>`; });
+          imgsHtml += '</div>';
+
+          html += `
+            <div class="item-card" style="border-right: 4px solid #0284c7;">
+              <div style="font-size:12px; font-weight:bold;">👤 یوزر: ${p.userName} (${p.userPhone})</div>
+              <div style="font-size:11px; color:#16a34a; margin-top:2px;">📦 ${p.prodTitle}</div>
+              <div class="text-link-box" dir="ltr">🔗 ${p.prodLink}</div>
+              ${imgsHtml}
+            </div>
+          `;
+        });
+        container.innerHTML = html || '<p style="font-size:11px; color:#ef4444;">سرچ رزلٹ میں کچھ نہیں ملا۔</p>';
+      });
+    }
+
+    /* 3. User Upload Product Requests */
+    function renderUserUploadRequests() {
+      const container = document.getElementById('userUploadReqList');
+      pendingDb.on('value', snap => {
+        const data = snap.val();
+        if(!data) { container.innerHTML = '<p style="font-size:11px; color:#64748b;">کوئی نئی درخواست موجود نہیں ہے۔</p>'; return; }
+
+        container.innerHTML = '';
+        Object.keys(data).reverse().forEach(key => {
+          const item = data[key];
+          container.innerHTML += `
+            <div class="item-card" style="border:1px solid #f43f5e;">
+              <img src="${item.img}" style="width:100%; max-height:140px; object-fit:contain; border-radius:6px; margin-bottom:6px;">
+              <div style="font-size:12px; font-weight:bold;">${item.title}</div>
+              <div style="font-size:11px; color:#16a34a; font-weight:bold;">قیمت: ${item.price}</div>
+              <div style="font-size:11px; color:#64748b;">📱 اپلوڈر: ${item.userName} (${item.userPhone})</div>
+              <div class="text-link-box" dir="ltr">${item.link}</div>
+              <div style="display:flex; gap:6px; margin-top:6px;">
+                <button class="approve-btn" onclick="confirmUserProduct('${key}')">✅ کنفرم کریں (لائیو)</button>
+                <button class="reject-btn" onclick="rejectUserProduct('${key}')">🗑️ کینسل کریں</button>
+              </div>
+            </div>
+          `;
+        });
+      });
+    }
+
+    function confirmUserProduct(key) {
+      pendingDb.child(key).once('value', snap => {
+        const item = snap.val();
+        if(item) {
+          db.push({ ...item, pinned: false, timestamp: Date.now(), shares: 0 }).then(() => {
+            pendingDb.child(key).remove();
+            alert("پروڈکٹ منظور ہو کر ایپ پر لائیو کر دی گئی ہے!");
+          });
+        }
+      });
+    }
+    function rejectUserProduct(key) { pendingDb.child(key).remove(); }
+
+    /* 4. Confirmed User Products Search */
+    function searchConfirmedUserProducts() {
+      const query = document.getElementById('confirmedProdsSearchInput').value.trim().toLowerCase();
+      const container = document.getElementById('confirmedUserProdsList');
+
+      db.once('value', snap => {
+        const data = snap.val();
+        if(!data) { container.innerHTML = '<p style="font-size:11px; color:#64748b;">کوئی پروڈکٹ نہیں ملے۔</p>'; return; }
+
+        let html = '';
+        Object.keys(data).reverse().forEach(k => {
+          const item = data[k];
+          if(!item.userPhone || item.userPhone === 'Admin') return;
+          if(query && !item.userPhone.includes(query) && !item.title.toLowerCase().includes(query)) return;
+
+          html += `
+            <div class="item-card">
+              <div style="font-size:12px; font-weight:bold;">📦 ${item.title}</div>
+              <div style="font-size:11px; color:#16a34a;">📱 اپلوڈر: ${item.userPhone}</div>
+              <div class="text-link-box" dir="ltr">${item.link}</div>
+            </div>
+          `;
+        });
+        container.innerHTML = html || '<p style="font-size:11px; color:#ef4444;">سرچ رزلٹ میں کچھ نہیں ملا۔</p>';
+      });
+    }
+
+    /* 5. Registered Users List */
+    function renderUsersList() {
+      const container = document.getElementById('usersContainer');
+      usersDb.on('value', snap => {
+        const users = snap.val();
+        if(!users) { container.innerHTML = '<p style="font-size:11px; color:#64748b;">کوئی یوزر نہیں ہے۔</p>'; return; }
+
+        container.innerHTML = '';
+        Object.keys(users).forEach(phone => {
+          const u = users[phone];
+          const shares = u.totalShares || 0;
+          const pkr = shares * PKR_PER_SHARE;
+          const sar = (pkr / SAR_RATE).toFixed(2);
+
+          container.innerHTML += `
+            <div class="user-strip">
+              <div class="user-strip-header">
+                <div class="user-strip-header-top">
+                  <span>👤 ${u.name} (${phone})</span>
+                  <span style="color:#2563eb;">🔑 Pass: ${u.pass || '••••'}</span>
+                </div>
+                <div class="user-strip-header-bottom">
+                  <span>🪙 پوانٹس: ${shares} Shares</span>
+                  <span>💰 ${pkr} PKR (${sar} SAR)</span>
+                </div>
+              </div>
+              <div style="padding:6px; background:#fff;">
+                <button class="reject-btn" style="padding:4px;" onclick="deleteUser('${phone}')">🗑️ یوزر اکائونٹ ڈلیٹ کریں</button>
+              </div>
+            </div>
+          `;
+        });
+      });
+    }
+    function deleteUser(phone) {
+      if(confirm(`کیا آپ (${phone}) ڈلیٹ کرنا چاہتے ہیں؟`)) usersDb.child(phone).remove();
+    }
+
+    /* 6. Withdrawals List */
+    function renderWithdrawalsList() {
+      const container = document.getElementById('withdrawalsList');
+      withdrawalsDb.on('value', snap => {
+        const data = snap.val();
+        if(!data) { container.innerHTML = '<p style="font-size:11px; color:#64748b;">کوئی درخواست نہیں ہے۔</p>'; return; }
+
+        container.innerHTML = '';
+        Object.keys(data).reverse().forEach(k => {
+          const w = data[k];
+          container.innerHTML += `
+            <div class="item-card" style="border-right: 4px solid #16a34a;">
+              <div style="font-size:12px; font-weight:bold;">👤 ${w.userName} (${w.userPhone})</div>
+              <div style="font-size:11px; color:#2563eb;">💳 ${w.method}: ${w.account}</div>
+              <button class="approve-btn" style="margin-top:6px;" onclick="approveWithdrawal('${k}', '${w.userPhone}')">✅ ادا کر دیا (Paid)</button>
+            </div>
+          `;
+        });
+      });
+    }
+    function approveWithdrawal(k, phone) {
+      if(confirm("کیا رقم کی ادائیگی ہو گئی ہے؟")) {
+        usersDb.child(phone).child('totalShares').set(0);
+        withdrawalsDb.child(k).remove();
+        alert("وڈراول مکمل!");
+      }
+    }
+
+    /* 7. Live Chat Logic */
+    function loadUserChat() {
+      const phone = document.getElementById('chatUserPhone').value.trim();
+      const box = document.getElementById('chatMessagesBox');
+      if(!phone) return;
+
+      chatsDb.child(phone).on('value', snap => {
+        const data = snap.val();
+        box.innerHTML = '';
+        if(!data) { box.innerHTML = '<p style="font-size:11px; color:#94a3b8;">چیٹ خالی ہے۔</p>'; return; }
+
+        Object.keys(data).forEach(k => {
+          const m = data[k];
+          box.innerHTML += `
+            <div class="chat-msg" style="${m.sender === 'Admin' ? 'background:#dcfce7; text-align:left;' : ''}">
+              <b>${m.sender}:</b> ${m.text || ''}
+              ${m.img ? `<br><img src="${m.img}" class="chat-msg-img">` : ''}
+            </div>
+          `;
+        });
+        box.scrollTop = box.scrollHeight;
+      });
+    }
+
+    function sendChatMessage() {
+      const phone = document.getElementById('chatUserPhone').value.trim();
+      const txt = document.getElementById('chatMsgInput').value.trim();
+      if(!phone || !txt) return;
+
+      chatsDb.child(phone).push({ sender: 'Admin', text: txt, timestamp: Date.now() });
+      document.getElementById('chatMsgInput').value = '';
+    }
+
+    async function sendChatImage(e) {
+      const phone = document.getElementById('chatUserPhone').value.trim();
+      if(!phone || e.target.files.length === 0) return;
+
+      const file = e.target.files[0];
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
+        const imgData = await res.json();
+        if(imgData.success) {
+          chatsDb.child(phone).push({ sender: 'Admin', img: imgData.data.url, timestamp: Date.now() });
+        }
+      } catch(e){}
+    }
+
+    /* 8. Offer Panel */
+    function saveSpecialOffer() {
+      const title = document.getElementById('offerTitleInput').value.trim();
+      const desc = document.getElementById('offerDescInput').value.trim();
+      if(!title || !desc) { alert("عنوان اور تفصیل لکھیں!"); return; }
+
+      offersDb.set({ title: title, desc: desc, timestamp: Date.now() }).then(() => {
+        alert("🎉 افر کامیابی سے لائیو شائع ہو گئی ہے!");
+      });
+    }
+  </script>
+</body>
+</html>
