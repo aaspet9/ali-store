@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مین پروڈکٹ ایڈمن پینل - Product Admin</title>
+  
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background-color: #f8fafc; color: #0f172a; padding: 12px; }
+
+    .stats-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #ffffff; text-align: center; padding: 16px; border-radius: 12px; max-width: 600px; margin: 0 auto 15px auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .stats-card h3 { font-size: 26px; color: #38bdf8; margin-top: 4px; font-weight: 800; }
+
+    .main-wrapper { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+
+    .section-toggle-btn { width: 100%; background: #ffffff; color: #1e293b; border: 2px solid #cbd5e1; padding: 12px 14px; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: all 0.2s ease; }
+    .section-toggle-btn.active { border-color: #2563eb; background: #eff6ff; color: #2563eb; }
+
+    .collapsible-content { display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 0 0 10px 10px; padding: 14px; margin-top: -6px; margin-bottom: 6px; }
+
+    .form-group { margin-bottom: 12px; text-align: right; }
+    .form-group label { font-size: 12px; font-weight: bold; color: #475569; display: block; margin-bottom: 4px; }
+    
+    input[type="text"], textarea, select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; box-sizing: border-box; background-color: #ffffff; outline: none; }
+    
+    .file-input-box { border: 2px dashed #2563eb; background: #eff6ff; padding: 12px; text-align: center; border-radius: 8px; cursor: pointer; }
+    .file-input-box input[type="file"] { display: none; }
+
+    .add-btn { width: 100%; background: #2563eb; color: #fff; border: none; padding: 12px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px; margin-top: 8px; }
+
+    .item-row { background: #fff; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+    .item-info-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .item-thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; }
+    .item-title { font-size: 12px; font-weight: bold; color: #1e293b; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    
+    .prod-code-badge { background: #e0f2fe; color: #0369a1; font-size: 11px; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
+    .text-link-box { background: #f1f5f9; padding: 6px 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-family: monospace; font-size: 11px; color: #2563eb; word-break: break-all; margin-top: 6px; display: flex; justify-content: space-between; align-items: center; }
+
+    .pin-btn { background: #eab308; color: black; border: none; padding: 5px 8px; font-size: 11px; font-weight: bold; border-radius: 6px; cursor: pointer; }
+    .pin-btn.pinned { background: #8b5cf6; color: white; }
+    .del-btn { background: #ef4444; color: white; border: none; padding: 6px 10px; font-size: 11px; border-radius: 6px; cursor: pointer; }
+    .bulk-del-btn { background: #dc2626; color: white; border: none; padding: 8px; font-size: 12px; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; margin-bottom: 8px; }
+    .select-all-bar { display: flex; justify-content: space-between; align-items: center; background: #e2e8f0; padding: 6px 10px; border-radius: 6px; margin-bottom: 8px; font-size: 11px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <div class="stats-card">
+    <span style="font-size:12px; color:#94a3b8;">📊 ایپ پر کل اپلوڈ شدہ پروڈکٹس:</span>
+    <h3 id="totalProductsCount">0</h3>
+  </div>
+
+  <div class="main-wrapper">
+
+    <!-- 1. Tracking Tag & Domain Config -->
+    <button class="section-toggle-btn" onclick="toggleSection('tagSection', this)">
+      <span>⚙️ علی ایکسپریس Tracking Tag & ڈومین سیٹنگ</span>
+      <span>▼</span>
+    </button>
+    <div class="collapsible-content" id="tagSection">
+      <div class="form-group">
+        <label>آپ کا Tracking ID / Tag:</label>
+        <input type="text" id="adminTagInput" value="Afumawater9" dir="ltr">
+      </div>
+      <button class="add-btn" style="background: #16a34a;" onclick="saveAdminTag()">ٹیگ محفوظ کریں 💾</button>
+    </div>
+
+    <!-- 2. Bulk File Import Section -->
+    <button class="section-toggle-btn" onclick="toggleSection('bulkImportSection', this)">
+      <span>📁 علی ایکسپریس بلک فائل امپورٹ (CSV / Excel)</span>
+      <span>▼</span>
+    </button>
+    <div class="collapsible-content" id="bulkImportSection">
+      <div class="form-group">
+        <label>علی ایکسپریس کی فائل منتخب کریں:</label>
+        <div class="file-input-box" onclick="document.getElementById('csvFileInput').click()">
+          <span id="csvStatusText">📥 ڈائریکٹ فائل منتخب کرنے کے لیے کلک کریں</span>
+          <input type="file" id="csvFileInput" accept=".csv, .xlsx, .xls" onchange="fileSelected(event)">
+        </div>
+      </div>
+      <button class="add-btn" id="startImportBtn" style="background: #8b5cf6; display: none;" onclick="processSelectedFile()">تمام پروڈکٹس امپورٹ کریں 🚀</button>
+      <div id="importLoader" style="display:none; text-align:center; font-size:12px; color:#8b5cf6; font-weight:bold; margin-top:8px;">فائل پروسیس ہو رہی ہے... ⏳</div>
+    </div>
+
+    <!-- 3. Single Product Upload Section -->
+    <button class="section-toggle-btn" onclick="toggleSection('singleUploadSection', this)">
+      <span>➕ اکیلی پروڈکٹ اپلوڈ کریں</span>
+      <span>▼</span>
+    </button>
+    <div class="collapsible-content" id="singleUploadSection">
+      <div class="form-group">
+        <label>پروڈکٹ کا عنوان (Title):</label>
+        <input type="text" id="pTitle" placeholder="عنوان...">
+      </div>
+      <div class="form-group">
+        <label>قیمت (Price):</label>
+        <input type="text" id="pPrice" placeholder="SAR 0.00">
+      </div>
+      <div class="form-group">
+        <label>افیلی ایٹ لنک (Affiliate Link):</label>
+        <input type="text" id="pLink" placeholder="https://..." dir="ltr">
+      </div>
+      <div class="form-group">
+        <label>تصویر منتخب کریں:</label>
+        <div class="file-input-box" onclick="document.getElementById('imgFileInput').click()">
+          <span id="fileStatusText">📁 گیلری سے تصویر منتخب کریں</span>
+          <input type="file" id="imgFileInput" accept="image/*" onchange="previewSingleImage(event)">
+        </div>
+      </div>
+      <div id="singleLoader" style="display:none; text-align:center; font-size:12px; color:#2563eb; font-weight:bold; margin-top:6px;">اپلوڈ ہو رہا ہے... ⏳</div>
+      <button class="add-btn" onclick="addNewSingleProduct()">پروڈکٹ شائع کریں 🚀</button>
+    </div>
+
+    <!-- 4. Live Products Management & Search List -->
+    <button class="section-toggle-btn" onclick="toggleSection('liveProductsSection', this)" id="liveToggleBtn">
+      <span>📦 تمام لائیو پروڈکٹس (نمبر شمار & ڈائریکٹ لنکس)</span>
+      <span>▼</span>
+    </button>
+    <div class="collapsible-content" id="liveProductsSection">
+      <div class="form-group">
+        <input type="text" id="adminSearchInput" placeholder="🔍 پروڈکٹ کا نام یا سرچ کوڈ لکھیں..." oninput="filterLiveProducts()">
+      </div>
+      <div class="select-all-bar" id="bulkControls" style="display:none;">
+        <label><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)"> سب سلیکٹ کریں</label>
+        <span id="selectedCountText">0 منتخب شدہ</span>
+      </div>
+      <button class="bulk-del-btn" id="deleteSelectedBtn" style="display:none;" onclick="deleteSelectedProducts()">🗑️ منتخب کردہ تمام پروڈکٹس ڈلیٹ کریں</button>
+      <div id="adminItemsList"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDp--gVk61VaLCK-4yygwN8Oj9CpDIp05E",
+      authDomain: "kist-65357.firebaseapp.com",
+      projectId: "kist-65357",
+      storageBucket: "kist-65357.firebasestorage.app",
+      messagingSenderId: "200844711272",
+      appId: "1:200844711272:web:d980a03c9fae8b8d7972dd",
+      measurementId: "G-LCZ8N3GKTE",
+      databaseURL: "https://kist-65357-default-rtdb.firebaseio.com"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database().ref("products");
+    const settingsDb = firebase.database().ref("settings");
+
+    const IMGBB_API_KEY = "66dcdf21e30733bfd85545d9fb5e76c4";
+    const APP_BASE_URL = "https://aaspet9.github.io/ali-store";
+
+    let currentSelectedFile = null;
+    let singleSelectedFile = null;
+    let cachedLiveProducts = null;
+
+    window.onload = function() {
+      settingsDb.child("admin_tag").once('value', snap => {
+        if(snap.exists()) document.getElementById('adminTagInput').value = snap.val();
+      });
+      renderAdminList();
+    };
+
+    function toggleSection(id, btn) {
+      const content = document.getElementById(id);
+      if (content.style.display === "block") {
+        content.style.display = "none";
+        btn.classList.remove("active");
+      } else {
+        content.style.display = "block";
+        btn.classList.add("active");
+      }
+    }
+
+    function saveAdminTag() {
+      const tag = document.getElementById('adminTagInput').value.trim();
+      if(!tag) return;
+      settingsDb.child("admin_tag").set(tag).then(() => alert("Tracking Tag محفوظ ہو گیا ہے!"));
+    }
+
+    /* 1. Bulk File Import */
+    function fileSelected(event) {
+      const file = event.target.files[0];
+      if (file) {
+        currentSelectedFile = file;
+        document.getElementById('csvStatusText').innerText = `منتخب فائل: ${file.name} ✅`;
+        document.getElementById('startImportBtn').style.display = "block";
+      }
+    }
+
+    function processSelectedFile() {
+      if (!currentSelectedFile) return;
+      document.getElementById('importLoader').style.display = "block";
+      document.getElementById('startImportBtn').style.display = "none";
+
+      const fileName = currentSelectedFile.name.toLowerCase();
+      if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+          saveRowsToFirebase(XLSX.utils.sheet_to_json(worksheet, { defval: "" }));
+        };
+        reader.readAsArrayBuffer(currentSelectedFile);
+      } else {
+        Papa.parse(currentSelectedFile, {
+          header: true, skipEmptyLines: true,
+          complete: function(results) { saveRowsToFirebase(results.data); }
+        });
+      }
+    }
+
+    function saveRowsToFirebase(rows) {
+      let count = 0;
+      let updates = {};
+      let startCode = 101;
+
+      // Check existing count for unique codes
+      if (cachedLiveProducts) {
+        startCode += Object.keys(cachedLiveProducts).length;
+      }
+
+      rows.forEach((row, idx) => {
+        const keys = Object.keys(row);
+        let title = "", link = "", price = "", img = "";
+
+        keys.forEach(k => {
+          const keyLower = k.toLowerCase().trim();
+          const val = row[k] ? row[k].toString().trim() : "";
+          if (!val) return;
+
+          if ((keyLower.includes('title') || keyLower.includes('desc') || keyLower.includes('subject') || keyLower.includes('name')) && isNaN(val) && val.length > 5) {
+            if(!title) title = val;
+          }
+          if (val.includes('http://') || val.includes('https://')) {
+            if (val.includes('.jpg') || val.includes('.png') || val.includes('.jpeg') || val.includes('.webp') || keyLower.includes('image')) {
+              if(!img) img = val;
+            } else { if(!link) link = val; }
+          }
+          if (keyLower.includes('price') || keyLower.includes('sar')) { if(!price) price = val; }
+        });
+
+        if (title && link) {
+          const newKey = db.push().key;
+          const assignedCode = (startCode + idx).toString();
+          updates[newKey] = {
+            code: assignedCode,
+            title: title.substring(0, 90),
+            price: price ? (price.includes('SAR') ? price : `SAR ${price}`) : "Best Price",
+            link: link,
+            img: img || "https://via.placeholder.com/150",
+            images: img ? [img] : ["https://via.placeholder.com/150"],
+            pinned: false,
+            timestamp: Date.now()
+          };
+          count++;
+        }
+      });
+
+      db.update(updates).then(() => {
+        document.getElementById('importLoader').style.display = "none";
+        alert(`کامیابی! تمام ${count} پروڈکٹس امپورٹ ہو گئی ہیں! 🚀`);
+        location.reload();
+      });
+    }
+
+    /* 2. Single Product Upload */
+    function previewSingleImage(e) {
+      if(e.target.files.length > 0) {
+        singleSelectedFile = e.target.files[0];
+        document.getElementById('fileStatusText').innerText = `تصویر منتخب ہو گئی: ${singleSelectedFile.name} ✅`;
+      }
+    }
+
+    async function addNewSingleProduct() {
+      const title = document.getElementById('pTitle').value.trim();
+      const price = document.getElementById('pPrice').value.trim();
+      const link = document.getElementById('pLink').value.trim();
+      const loader = document.getElementById('singleLoader');
+
+      if (!title || !link || !singleSelectedFile) { alert("تمام معلومات اور تصویر منتخب کریں!"); return; }
+
+      loader.style.display = "block";
+      const formData = new FormData();
+      formData.append("image", singleSelectedFile);
+
+      try {
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
+        const imgData = await res.json();
+        
+        if (imgData.success) {
+          let nextCode = 101;
+          if (cachedLiveProducts) nextCode += Object.keys(cachedLiveProducts).length;
+
+          db.push({
+            code: nextCode.toString(),
+            title: title, price: price || "Best Price", link: link,
+            img: imgData.data.url, images: [imgData.data.url],
+            pinned: false, timestamp: Date.now()
+          }).then(() => {
+            loader.style.display = "none";
+            alert("پروڈکٹ کامیا بی سے شائع ہو گئی!");
+            location.reload();
+          });
+        }
+      } catch (e) { loader.style.display = "none"; }
+    }
+
+    /* 3. Live Products List & Search */
+    function renderAdminList() {
+      db.on('value', (snapshot) => {
+        cachedLiveProducts = snapshot.val();
+        filterLiveProducts();
+      });
+    }
+
+    function filterLiveProducts() {
+      const container = document.getElementById('adminItemsList');
+      const searchQuery = document.getElementById('adminSearchInput').value.toLowerCase().trim();
+
+      if(!cachedLiveProducts) {
+        document.getElementById('totalProductsCount').innerText = "0";
+        document.getElementById('bulkControls').style.display = "none";
+        container.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:12px;">کوئی پروڈکٹ موجود نہیں ہے۔</p>';
+        return;
+      }
+
+      let keys = Object.keys(cachedLiveProducts);
+      document.getElementById('totalProductsCount').innerText = keys.length;
+      document.getElementById('bulkControls').style.display = "flex";
+
+      if (searchQuery) {
+        keys = keys.filter(k => {
+          const item = cachedLiveProducts[k];
+          return (item.title && item.title.toLowerCase().includes(searchQuery)) || 
+                 (item.code && item.code.includes(searchQuery));
+        });
+      }
+
+      keys.sort((a, b) => (cachedLiveProducts[b].pinned === true ? 1 : 0) - (cachedLiveProducts[a].pinned === true ? 1 : 0));
+
+      if (keys.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#ef4444; font-size:12px; padding:10px;">کوئی پروڈکٹ نہیں ملی!</p>';
+        return;
+      }
+
+      container.innerHTML = '';
+      keys.forEach((key, idx) => {
+        const item = cachedLiveProducts[key];
+        const imgUrl = (item.images && item.images.length > 0) ? item.images[0] : (item.img || 'https://via.placeholder.com/150');
+        const isPinned = item.pinned || false;
+        const prodCode = item.code || (101 + idx).toString();
+        const customerUrl = `${APP_BASE_URL}/?id=${prodCode}`;
+
+        container.innerHTML += `
+          <div class="item-row" style="${isPinned ? 'border: 2px solid #8b5cf6; background:#f3e8ff;' : ''}">
+            <div class="item-info-row">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <input type="checkbox" class="product-checkbox" value="${key}" onchange="updateSelectedCount()">
+                <img src="${imgUrl}" class="item-thumb" onerror="this.src='https://via.placeholder.com/150'">
+                <div>
+                  <span class="prod-code-badge">کوڈ #${prodCode}</span>
+                  <div class="item-title">${item.title}</div>
+                </div>
+              </div>
+              <div>
+                <button class="pin-btn ${isPinned ? 'pinned' : ''}" onclick="togglePin('${key}', ${isPinned})">${isPinned ? '📌 Unpin' : '📌 Pin'}</button>
+                <button class="del-btn" onclick="deleteProduct('${key}')">🗑️</button>
+              </div>
+            </div>
+            <div class="text-link-box" dir="ltr">
+              <span>📲 ${customerUrl}</span>
+              <button onclick="copyLink('${customerUrl}')" style="background:#2563eb; color:white; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">Copy</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function copyLink(text) {
+      navigator.clipboard.writeText(text);
+      alert("کوڈ کا ڈائریکٹ کسٹمر لنک کاپی ہو گیا ہے! 🚀");
+    }
+
+    function togglePin(key, currentStatus) { db.child(key).update({ pinned: !currentStatus }); }
+    function deleteProduct(key) { if (confirm("کیا آپ یہ پروڈکٹ ڈلیٹ کرنا چاہتے ہیں؟")) db.child(key).remove(); }
+
+    function toggleSelectAll(masterCheckbox) {
+      const checkboxes = document.querySelectorAll('.product-checkbox');
+      checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+      updateSelectedCount();
+    }
+
+    function updateSelectedCount() {
+      const selected = document.querySelectorAll('.product-checkbox:checked');
+      const count = selected.length;
+      document.getElementById('selectedCountText').innerText = `${count} منتخب شدہ`;
+      document.getElementById('deleteSelectedBtn').style.display = count > 0 ? "block" : "none";
+    }
+
+    function deleteSelectedProducts() {
+      const selected = document.querySelectorAll('.product-checkbox:checked');
+      if (selected.length === 0) return;
+
+      if (confirm(`کیا آپ واقعی ان ${selected.length} پروڈکٹس کو ڈلیٹ کرنا چاہتے ہیں؟`)) {
+        selected.forEach(cb => { db.child(cb.value).remove(); });
+        alert("منتخب کردہ تمام پروڈکٹس ڈلیٹ کر دی گئی ہیں!");
+        document.getElementById('selectAllCheckbox').checked = false;
+        updateSelectedCount();
+      }
+    }
+  </script>
+</body>
+</html>
