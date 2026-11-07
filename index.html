@@ -52,7 +52,6 @@
     .product-card { background: #ffffff; border-radius: 12px; padding: 8px; border: 1px solid #f0f0f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; width: 100%; overflow: hidden; position: relative; }
     .pinned-badge { position: absolute; top: 10px; left: 10px; background: #8b5cf6; color: #ffffff; font-size: 9px; font-weight: bold; padding: 2px 6px; border-radius: 4px; z-index: 2; }
     
-    /* ہائی لائٹ اور بلنکنگ اینیمیشن */
     .highlight-card { 
       grid-column: span 2; 
       border: 3.5px solid #ffe600 !important; 
@@ -276,7 +275,7 @@
     let cachedData = null;
     let currentUser = JSON.parse(localStorage.getItem('app_user_data') || 'null');
 
-    // URL Param کیپچر کرنے کا فنکشن (مثال: ?item=XYZ)
+    // URL parameter parsing for highlighted items
     const urlParams = new URLSearchParams(window.location.search);
     const targetItemId = urlParams.get('item');
 
@@ -326,7 +325,7 @@
         shared: "✅ 5 प्लेटफॉर्म स्वीकृत", share: "🔗 5 प्लेटफॉर्म शेयर", pending: "⏳ समीक्षाधीन", sendProof: "📸 5 स्क्रीनशॉट भेजें",
         guideTitle: "📖 शेयरिंग निर्देश (कैसे पोस्ट करें):",
         ptsLabel: "🪙 स्वीकृत शेयर:", balLabel: "💰 कुल बैलेंस (5 प्लेटफॉर्म = 25 रुपये):",
-        modalTitle: "📸 5 प्लेटफॉर्म स्क्रीनशॉट अपलोड करें", modalSub: "सभी 5 प्लेटफॉर्म पर वही डील पोस्ट करें और 5 इमेज चुनें (25 रुपये कमाएं)",
+        modalTitle: "📸 5 प्लेटफॉर्म स्क्रीनशॉट अपलोड करें", modalSub: "सभी 5 प्लेटफॉर्म पर वही डील पोस्ट करें और 5 स्क्रीनशॉट लें (25 रुपये कमाएं)",
         p1: "▶️ 1. यूट्यूब स्क्रीनशॉट", p2: "📘 2. फेसबुक स्क्रीनशॉट", p3: "💬 3. व्हाट्सएप स्क्रीनशॉट", p4: "📸 4. इंस्टाग्राम स्क्रीनशॉट", p5: "🎵 5. टिकटॉक स्क्रीनशॉट",
         btnSubmit: "सभी 5 स्क्रीनशॉट जमा करें 🚀", btnVerify: "सत्यापन करें 🔍",
         alertTitle: "अपलोड सबूत रद्द करें?", alertMsg: "क्या आप वाकई इस साझाकरण कार्य को रद्द करना चाहते हैं? सभी चयनित और सत्यापित चित्र खो जाएंगे।"
@@ -496,7 +495,7 @@
       } catch (e) { loader.style.display = "none"; }
     }
 
-    // شیئرنگ فنکشن میں ایپ لنک شامل کیا گیا ہے
+    // اصلاح شدہ شیئرنگ فنکشن (واضح علیحدہ لنکس کے ساتھ)
     function shareProduct(key, title, link) {
       if (!currentUser) { checkUserSession(); return; }
       const status = userSharedProducts[key];
@@ -506,12 +505,14 @@
         return;
       }
 
-      // آپ کی ویب سائٹ کا ڈائریکٹ لنک برائے ایپ
       const appShareUrl = `https://aaspet9.github.io/Afuma-water/?item=${key}`;
       const shareMessage = `🔥 Deal: ${title}\n🛒 Buy Product: ${link}\n📱 View in App: ${appShareUrl}`;
 
       if (navigator.share) {
-        navigator.share({ title: title, text: shareMessage, url: appShareUrl }).then(() => {
+        navigator.share({ 
+          title: title, 
+          text: shareMessage
+        }).then(() => {
           openProofModal(key, title, link);
         }).catch(() => {});
       } else {
@@ -811,7 +812,6 @@
       const txt = i18n[activeLang];
       let count = 0;
 
-      // لنک کے ذریعے آئی پروڈکٹ کو سب سے پہلے ترجیح دینا
       const keys = Object.keys(data).sort((a, b) => {
         if (targetItemId) {
           if (a === targetItemId) return -1;
