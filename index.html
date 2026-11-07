@@ -503,8 +503,10 @@
       } catch (e) { loader.style.display = "none"; }
     }
 
+    // **آپ کا مانگا گیا اکیلا کمبائنڈ ڈائریکٹ ایپ لنک فنکشن**
     function shareProduct(key, title, link) {
       if (!currentUser) { checkUserSession(); return; }
+      
       const status = userSharedProducts[key];
       if (status) {
         if(status === 'Approved') alert("🚨 Approved!");
@@ -512,8 +514,11 @@
         return;
       }
 
-      const appShareUrl = `https://aaspet9.github.io/Afuma-water/?item=${key}`;
-      const shareMessage = `🔥 Deal: ${title}\n🛒 Buy Product: ${link}\n📱 View in App:\n${appShareUrl}`;
+      // ایک ہی سنگل لنک جس میں ایپ اور پروڈکٹ دونوں جڑے ہوئے ہیں
+      const singleAppProductUrl = `https://aaspet9.github.io/Afuma-water/?item=${key}`;
+      
+      // واٹس ایپ / فیس بک کے لیے بالکل صاف میسج (صرف ایک ہی ڈائریکٹ لنک کے ساتھ)
+      const shareMessage = `🔥 Deal: ${title}\n\n📱 View & Buy Deal in App:\n${singleAppProductUrl}`;
 
       if (navigator.share) {
         navigator.share({ 
@@ -523,6 +528,9 @@
           openProofModal(key, title, link);
         }).catch(() => {});
       } else {
+        // اگر ویب شیئر کام نہ کرے تو میسج کاپی کر کے مینوئل اوپن کریں
+        navigator.clipboard.writeText(shareMessage);
+        alert("کامیابی! شیئر میسج کاپی ہو گیا ہے۔");
         openProofModal(key, title, link);
       }
     }
@@ -815,7 +823,7 @@
       const grid = document.getElementById('productsGrid');
       if (!data) { grid.innerHTML = `<p style="text-align: center; grid-column: span 2;">No products.</p>`; return; }
 
-      // **نئی خصوصیت: اگر ٹارگٹڈ پروڈکٹ موجود ہو تو اس کا نام خود بخود سرچ بار میں فِل کرنا**
+      // **اگر ٹارگٹڈ پروڈکٹ موجود ہو تو اس کا نام خود بخود سرچ بار میں فِل ہو کر لائیو ہو جائے گا**
       if (targetItemId && data[targetItemId] && !searchQuery) {
         const searchInput = document.getElementById('searchInput');
         if (searchInput && searchInput.value === '') {
