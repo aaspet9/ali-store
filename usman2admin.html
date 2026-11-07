@@ -203,12 +203,12 @@
 
     <!-- 8. Live Products Management & Search Bar Section -->
     <button class="section-toggle-btn" onclick="toggleSection('liveProductsSection', this)">
-      <span>📦 تمام لائیو پروڈکٹس (سیریل نمبر سرچ کریں)</span>
+      <span>📦 تمام لائیو پروڈکٹس (فاسٹ سرچ & انسٹنٹ ڈلیٹ)</span>
       <span>▼</span>
     </button>
     <div class="collapsible-content" id="liveProductsSection">
       <div class="form-group">
-        <input type="text" id="adminSearchInput" placeholder="🔍 پروڈکٹ نام یا سیریل نمبر (مثال: GO9215) سرچ کریں..." oninput="filterLiveProducts()">
+        <input type="text" id="adminSearchInput" placeholder="🔍 پروڈکٹ نام یا سیریل نمبر (مثال: GO9215) سرچ کریں..." oninput="filterLiveProductsFast()">
       </div>
       <div class="select-all-bar" id="bulkControls" style="display:none;">
         <label><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)"> سب سلیکٹ کریں</label>
@@ -268,7 +268,6 @@
     let currentSelectedFile = null;
     let cachedLiveProducts = null;
 
-    // خودکار یونیک 4 ڈیجٹ سیریل نمبر جنریٹ کرنے کا فنکشن (مثال: GO9215)
     function generateSerialNumber() {
       const randomNum = Math.floor(1000 + Math.random() * 9000);
       return `GO${randomNum}`;
@@ -283,7 +282,12 @@
       renderWithdrawalsList();
       renderUsersList();
       renderPendingList();
-      renderAdminList();
+      
+      // ایک ہی بار ڈیٹا لوڈ کرنے کا فاسٹ طریقہ (Once Realtime Sync)
+      db.on('value', (snapshot) => {
+        cachedLiveProducts = snapshot.val();
+        filterLiveProductsFast();
+      });
     };
 
     function toggleSection(id, btn) {
@@ -320,7 +324,7 @@
       });
     }
 
-    /* 1. Screenshot Proofs Verification (Pending & Approved History) */
+    /* 1. Screenshot Proofs Verification */
     function renderProofsList() {
       const container = document.getElementById('proofsList');
       proofsDb.on('value', (snap) => {
@@ -339,7 +343,7 @@
           imgsHtml += '</div>';
 
           container.innerHTML += `
-            <div class="item-row" style="border-right: 4px solid #e11d48;">
+            <div class="item-row" style="border-right: 4px solid #e11d48;" id="proof_row_${key}">
               <div style="font-size:12px; font-weight:bold;">👤 یوزر: ${p.userName || 'Guest'} (${p.userPhone || ''})</div>
               <div style="font-size:11px; color:#2563eb; margin-top:2px;">📦 پروڈکٹ: <b>${p.prodTitle || ''}</b></div>
               <div class="text-link-box" dir="ltr">🔗 ${p.prodLink || 'No Link'}</div>
@@ -370,7 +374,7 @@
           imgsHtml += '</div>';
 
           container.innerHTML += `
-            <div class="item-row" style="border-right: 4px solid #16a34a; background:#f0fdf4;">
+            <div class="item-row" style="border-right: 4px solid #16a34a; background:#f0fdf4;" id="app_row_${key}">
               <div style="font-size:12px; font-weight:bold; color:#16a34a;">✅ منظور شدہ ڈیل (Approved)</div>
               <div style="font-size:12px; font-weight:bold;">👤 یوزر: ${p.userName || ''} (${p.userPhone || ''})</div>
               <div style="font-size:11px; color:#2563eb; margin-top:2px;">📦 پروڈکٹ: <b>${p.prodTitle || ''}</b></div>
@@ -384,6 +388,9 @@
     }
 
     function approveProof(key) {
+      const elem = document.getElementById(`proof_row_${key}`);
+      if(elem) elem.style.opacity = '0.4';
+
       proofsDb.child(key).once('value', snap => {
         const p = snap.val();
         if(!p) return;
@@ -395,18 +402,24 @@
           usersDb.child(p.userPhone).child('sharedProducts').child(p.prodKey).set('Approved');
         }
 
-        // منظور شدہ ڈیٹا کو تاریخ اور لائیو اپروول ریکارڈ میں محفوظ کریں
         p.approvedAt = Date.now();
         approvedProofsDb.push(p);
 
-        proofsDb.child(key).remove().then(() => {
-          alert("سکرین شاٹس منظور ہو گئے اور ہسٹری میں محفوظ ہو گئے! 🚀");
-        });
+        proofsDb.child(key).remove();
       });
     }
 
-    function rejectProof(key) { proofsDb.child(key).remove(); }
-    function deleteApprovedRecord(key) { approvedProofsDb.child(key).remove(); }
+    function rejectProof(key) {
+      const elem = document.getElementById(`proof_row_${key}`);
+      if(elem) elem.style.display = 'none';
+      proofsDb.child(key).remove(); 
+    }
+    
+    function deleteApprovedRecord(key) { 
+      const elem = document.getElementById(`app_row_${key}`);
+      if(elem) elem.style.display = 'none';
+      approvedProofsDb.child(key).remove(); 
+    }
 
     /* 2. Withdrawals Management */
     function renderWithdrawalsList() {
@@ -433,7 +446,6 @@
       if(confirm("کیا آپ نے رقم کی ادائیگی مکمل کر دی ہے؟")) {
         usersDb.child(phone).child('totalShares').set(0);
         withdrawalsDb.child(key).remove();
-        alert("وڈراول منظوری مکمل ہو گئی ہے!");
       }
     }
 
@@ -475,7 +487,7 @@
 
     function deleteUserAccount(phone) {
       if(confirm(`کیا آپ واقعی یوزر (${phone}) کا اکائونٹ ڈلیٹ کرنا چاہتے ہیں؟`)) {
-        usersDb.child(phone).remove().then(() => alert("یوزر اکاؤنٹ ڈلیٹ کر دیا گیا!"));
+        usersDb.child(phone).remove();
       }
     }
 
@@ -484,39 +496,35 @@
       const phone = document.getElementById('dealsPhoneSearch').value.trim();
       const resultsDiv = document.getElementById('userDealsResults');
 
-      db.once('value', snap => {
-        const data = snap.val();
-        if(!data) { resultsDiv.innerHTML = '<p style="font-size:11px; color:#ef4444;">کوئی پروڈکٹ نہیں ملی۔</p>'; return; }
+      if (!cachedLiveProducts) return;
+      let html = '';
+      let idx = 0;
 
-        let html = '';
-        let idx = 0;
+      Object.keys(cachedLiveProducts).forEach((k) => {
+        const item = cachedLiveProducts[k];
+        if (!item.userPhone || item.userPhone === 'Admin' || item.userPhone === 'admin') return;
+        if (phone && !item.userPhone.includes(phone)) return;
+        idx++;
 
-        Object.keys(data).forEach((k) => {
-          const item = data[k];
-          if (!item.userPhone || item.userPhone === 'Admin' || item.userPhone === 'admin') return;
-          if (phone && !item.userPhone.includes(phone)) return;
-          idx++;
-
-          html += `
-            <div class="user-strip">
-              <div class="user-strip-header" onclick="toggleUserStrip('udBody_${idx}')">
-                <div style="font-size:12px; font-weight:bold; color:#1e293b;">📦 ${item.title.substring(0, 35)}...</div>
-                <div style="font-size:10px; color:#64748b;">👤 یوزر: ${item.userName || 'User'} (${item.userPhone})</div>
-              </div>
-              <div class="user-strip-body" id="udBody_${idx}">
-                <img src="${item.img || (item.images?item.images[0]:'')}" style="width:100%; max-height:160px; object-fit:contain; border-radius:6px; margin-bottom:6px; background:#000;">
-                <div style="font-size:12px; font-weight:bold; margin-bottom:4px;">${item.title}</div>
-                <div style="font-size:11px; color:#16a34a; font-weight:bold;">قیمت: ${item.price}</div>
-                <div style="font-size:11px; font-weight:bold; margin-top:6px;">📱 اپلوڈر فون: ${item.userPhone}</div>
-                <div style="font-size:11px; font-weight:bold; margin-top:4px;">🔗 ڈائریکٹ افیلی ایٹ لنک:</div>
-                <div class="text-link-box" dir="ltr">${item.link}</div>
-              </div>
+        html += `
+          <div class="user-strip">
+            <div class="user-strip-header" onclick="toggleUserStrip('udBody_${idx}')">
+              <div style="font-size:12px; font-weight:bold; color:#1e293b;">📦 ${item.title.substring(0, 35)}...</div>
+              <div style="font-size:10px; color:#64748b;">👤 یوزر: ${item.userName || 'User'} (${item.userPhone})</div>
             </div>
-          `;
-        });
-
-        resultsDiv.innerHTML = html || '<p style="font-size:11px; color:#ef4444;">کوئی یوزر اپلوڈ شدہ ڈیل نہیں ملی۔</p>';
+            <div class="user-strip-body" id="udBody_${idx}">
+              <img src="${item.img || (item.images?item.images[0]:'')}" style="width:100%; max-height:160px; object-fit:contain; border-radius:6px; margin-bottom:6px; background:#000;">
+              <div style="font-size:12px; font-weight:bold; margin-bottom:4px;">${item.title}</div>
+              <div style="font-size:11px; color:#16a34a; font-weight:bold;">قیمت: ${item.price}</div>
+              <div style="font-size:11px; font-weight:bold; margin-top:6px;">📱 اپلوڈر فون: ${item.userPhone}</div>
+              <div style="font-size:11px; font-weight:bold; margin-top:4px;">🔗 ڈائریکٹ افیلی ایٹ لنک:</div>
+              <div class="text-link-box" dir="ltr">${item.link}</div>
+            </div>
+          </div>
+        `;
       });
+
+      resultsDiv.innerHTML = html || '<p style="font-size:11px; color:#ef4444;">کوئی یوزر اپلوڈ شدہ ڈیل نہیں ملی۔</p>';
     }
 
     /* Modal 2 Search: User Shares */
@@ -565,7 +573,7 @@
       });
     }
 
-    /* 4. Bulk Import Functionality (with Auto Serial Number GO9215) */
+    /* 4. Fast Bulk Import */
     function fileSelected(event) {
       const file = event.target.files[0];
       if (file) {
@@ -632,7 +640,6 @@
 
         if (title && link) {
           const serialCode = generateSerialNumber();
-          // پروڈکٹ کا سیریل نمبر ہی اس کی مین Database Key بنے گا (مثلاً GO9215)
           updates[serialCode] = {
             serialNumber: serialCode,
             title: title.substring(0, 90),
@@ -653,12 +660,11 @@
 
       db.update(updates).then(() => {
         document.getElementById('importLoader').style.display = "none";
-        alert(`کامیابی! تمام ${count} پروڈکٹس سیریل نمبر کے ساتھ امپورٹ ہو گئی ہیں! 🚀`);
-        location.reload();
+        alert(`کامیابی! تمام ${count} پروڈکٹس امپورٹ ہو گئی ہیں! 🚀`);
       });
     }
 
-    /* 5. Single Product Upload (Auto Serial Number GO9215) */
+    /* 5. Single Product Upload */
     function previewSelectedImages(event) {
       selectedFiles = Array.from(event.target.files);
       const container = document.getElementById('previewContainer');
@@ -710,7 +716,9 @@
         shares: 0, userPhone: 'Admin', userName: 'Admin'
       }).then(() => {
         alert(`پروڈکٹ سیریل نمبر (${serialCode}) کے ساتھ شائع ہو گئی ہے! 🚀`);
-        location.reload();
+        document.getElementById('pTitle').value = '';
+        document.getElementById('pLink').value = '';
+        document.getElementById('previewContainer').innerHTML = '';
       });
     }
 
@@ -727,7 +735,7 @@
           const imgUrl = (item.images && item.images.length > 0) ? item.images[0] : (item.img || 'https://via.placeholder.com/150');
           
           container.innerHTML += `
-            <div class="item-row" style="border: 1px solid #f43f5e; background:#fff1f2;">
+            <div class="item-row" style="border: 1px solid #f43f5e; background:#fff1f2;" id="pending_item_${key}">
               <div class="item-info-row">
                 <img src="${imgUrl}" class="item-thumb" onerror="this.src='https://via.placeholder.com/150'">
                 <div>
@@ -747,6 +755,7 @@
     }
 
     function approveProduct(key) {
+      document.getElementById(`pending_item_${key}`).style.opacity = '0.3';
       pendingDb.child(key).once('value', (snapshot) => {
         const item = snapshot.val();
         if(item) {
@@ -758,7 +767,6 @@
             userPhone: item.userPhone || '', userName: item.userName || ''
           }).then(() => {
             pendingDb.child(key).remove();
-            alert(`پروڈکٹ منظور ہو کر سیریل نمبر (${serialCode}) کے ساتھ لائیو کر دی گئی ہے!`);
           });
         }
       });
@@ -766,15 +774,8 @@
 
     function rejectProduct(key) { pendingDb.child(key).remove(); }
 
-    /* 7. Live Products Management with Serial Number Search Filter */
-    function renderAdminList() {
-      db.on('value', (snapshot) => {
-        cachedLiveProducts = snapshot.val();
-        filterLiveProducts();
-      });
-    }
-
-    function filterLiveProducts() {
+    /* 7. Super Fast In-Memory Filtering & Single Batch Bulk Deletion */
+    function filterLiveProductsFast() {
       const container = document.getElementById('adminItemsList');
       const searchQuery = document.getElementById('adminSearchInput').value.toLowerCase().trim();
 
@@ -806,15 +807,15 @@
         return;
       }
 
-      container.innerHTML = '';
+      let htmlContent = '';
       keys.forEach((key) => {
         const item = cachedLiveProducts[key];
         const imgUrl = (item.images && item.images.length > 0) ? item.images[0] : (item.img || 'https://via.placeholder.com/150');
         const isPinned = item.pinned || false;
         const serialTag = item.serialNumber || key;
 
-        container.innerHTML += `
-          <div class="item-row" style="${isPinned ? 'border: 2px solid #8b5cf6; background:#f3e8ff;' : ''}">
+        htmlContent += `
+          <div class="item-row" id="product_row_${key}" style="${isPinned ? 'border: 2px solid #8b5cf6; background:#f3e8ff;' : ''}">
             <div class="item-info-row">
               <div style="display:flex; align-items:center; gap:6px;">
                 <input type="checkbox" class="product-checkbox" value="${key}" onchange="updateSelectedCount()">
@@ -826,16 +827,27 @@
               </div>
               <div>
                 <button class="pin-btn ${isPinned ? 'pinned' : ''}" onclick="togglePin('${key}', ${isPinned})">${isPinned ? '📌 Unpin' : '📌 Pin'}</button>
-                <button class="del-btn" onclick="deleteProduct('${key}')">🗑️</button>
+                <button class="del-btn" onclick="deleteSingleProductFast('${key}')">🗑️</button>
               </div>
             </div>
           </div>
         `;
       });
+      container.innerHTML = htmlContent;
     }
 
     function togglePin(key, currentStatus) { db.child(key).update({ pinned: !currentStatus }); }
-    function deleteProduct(key) { if (confirm("کیا آپ یہ پروڈکٹ ڈلیٹ کرنا چاہتے ہیں؟")) db.child(key).remove(); }
+
+    // اکیلی پروڈکٹ کو بغیر ہینگ کیے فوراً سکرین سے گائب کر کے ڈلیٹ کرنا
+    function deleteSingleProductFast(key) {
+      if (confirm("کیا آپ یہ پروڈکٹ ڈلیٹ کرنا چاہتے ہیں؟")) {
+        const row = document.getElementById(`product_row_${key}`);
+        if(row) row.style.display = 'none';
+        delete cachedLiveProducts[key];
+        db.child(key).remove();
+        document.getElementById('totalProductsCount').innerText = Object.keys(cachedLiveProducts).length;
+      }
+    }
 
     function toggleSelectAll(masterCheckbox) {
       const checkboxes = document.querySelectorAll('.product-checkbox');
@@ -850,15 +862,27 @@
       document.getElementById('deleteSelectedBtn').style.display = count > 0 ? "block" : "none";
     }
 
+    // تمام سلیکٹڈ پروڈکٹس کو سنگل بیچ ہٹ سے ہینگ ہوئے بغیر فوری ڈلیٹ کرنا
     function deleteSelectedProducts() {
       const selected = document.querySelectorAll('.product-checkbox:checked');
       if (selected.length === 0) return;
 
       if (confirm(`کیا آپ واقعی ان ${selected.length} پروڈکٹس کو ایک ساتھ ڈلیٹ کرنا چاہتے ہیں؟`)) {
-        selected.forEach(cb => { db.child(cb.value).remove(); });
-        alert("منتخب کردہ تمام پروڈکٹس ڈلیٹ کر دی گئی ہیں!");
-        document.getElementById('selectAllCheckbox').checked = false;
-        updateSelectedCount();
+        let deleteBatch = {};
+        selected.forEach(cb => {
+          const key = cb.value;
+          deleteBatch[key] = null;
+          delete cachedLiveProducts[key];
+          const row = document.getElementById(`product_row_${key}`);
+          if(row) row.style.display = 'none';
+        });
+
+        // ایک ساتھ فائربیس سے ریموو کریں
+        db.update(deleteBatch).then(() => {
+          document.getElementById('selectAllCheckbox').checked = false;
+          updateSelectedCount();
+          document.getElementById('totalProductsCount').innerText = Object.keys(cachedLiveProducts).length;
+        });
       }
     }
   </script>
