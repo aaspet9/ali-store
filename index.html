@@ -65,6 +65,8 @@
     }
     .target-badge { position: absolute; top: 10px; right: 10px; background: #ff4747; color: #ffffff; font-size: 10px; font-weight: 900; padding: 3px 8px; border-radius: 6px; z-index: 5; animation: pulseGlow 1s infinite alternate; }
 
+    .serial-badge { background: #e0f2fe; color: #0284c7; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 4px; border: 1px solid #bae6fd; font-family: monospace; }
+
     .slider-wrapper { position: relative; width: 100%; height: 155px; border-radius: 8px; overflow: hidden; margin-bottom: 8px; background: #fdfdfd; }
     .product-media { width: 100%; height: 155px; object-fit: cover; border-radius: 8px; }
 
@@ -136,7 +138,7 @@
   </div>
 
   <div class="search-box-wrapper">
-    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search product..." oninput="debouncedSearch()">
+    <input type="text" id="searchInput" class="search-input" placeholder="🔍 پروڈکٹ کا نام یا سیریل نمبر (GO1228) سرچ کریں..." oninput="debouncedSearch()">
   </div>
 
   <div class="action-btn-group">
@@ -275,7 +277,7 @@
     let cachedData = null;
     let currentUser = JSON.parse(localStorage.getItem('app_user_data') || 'null');
 
-    // **ایڈوانس سمارٹ URL اور پروڈکٹ پارسنگ لاجک**
+    // **ایڈوانس سمارٹ URL اور پروڈکٹ سیریل نمبر پارسر**
     const urlParams = new URLSearchParams(window.location.search);
     let targetItemId = urlParams.get('item');
 
@@ -299,7 +301,7 @@
 
     const i18n = {
       en: { 
-        title: "🛍️ Saudi Best Deals & Discounts", pub: "➕ Publish Deals", pro: "📌 Promote Deal", buy: "🛒 Buy", search: "🔍 Search product...", 
+        title: "🛍️ Saudi Best Deals & Discounts", pub: "➕ Publish Deals", pro: "📌 Promote Deal", buy: "🛒 Buy", search: "🔍 Search product or Serial Number...", 
         shared: "✅ 5 Platforms Approved", share: "🔗 Share 5 Platforms", pending: "⏳ Pending Approval", sendProof: "📸 Submit 5 Screenshots",
         guideTitle: "📖 Sharing Instructions (How to post):",
         ptsLabel: "🪙 Approved Shares:", balLabel: "💰 Total Balance (5 Platforms = 25 PKR):",
@@ -309,7 +311,7 @@
         alertTitle: "Cancel Upload Proof?", alertMsg: "Do you really want to cancel this sharing task? All currently selected and verified images will be lost."
       },
       ur: { 
-        title: "🛍️ سعودی بیسٹ ڈیلز & ڈسکاؤنٹس", pub: "➕ اپنی ڈیلز شائع کریں", pro: "📌 ڈیل پروموٹ کروائیں", buy: "🛒 خریدیں", search: "🔍 پروڈکٹ تلاش کریں...", 
+        title: "🛍️ سعودی بیسٹ ڈیلز & ڈسکاؤنٹس", pub: "➕ اپنی ڈیلز شائع کریں", pro: "📌 ڈیل پروموٹ کروائیں", buy: "🛒 خریدیں", search: "🔍 پروڈکٹ کا نام یا سیریل نمبر سرچ کریں...", 
         shared: "✅ 5 پلیٹ فارم منظور شدہ", share: "🔗 5 پلیٹ فارم شیئر", pending: "⏳ منظوری کا منتظر", sendProof: "📸 5 سکرین شاٹ بھیجیں",
         guideTitle: "📖 شیئرنگ کی ہدایات (کیسے پوسٹ کریں):",
         ptsLabel: "🪙 منظور شدہ شیئرز:", balLabel: "💰 کل رقم (5 پلیٹ فارم = 25 روپے):",
@@ -319,7 +321,7 @@
         alertTitle: "ٹاسک منسوخ کریں؟", alertMsg: "کیا آپ واقعی اس ٹاسک کو منسوخ کرنا چاہتے ہیں؟ آپ کے سلیکٹ کردہ اور تصدیق شدہ سکرین شاٹس ضائع ہو جائیں گے۔"
       },
       ar: { 
-        title: "🛍️ أفضل العروض والخصومات في السعودية", pub: "➕ انشر عروضك", pro: "📌 روج لمنتجك", buy: "🛒 شراء", search: "🔍 ابحث عن منتج...", 
+        title: "🛍️ أفضل العروض والخصومات في السعودية", pub: "➕ انشر عروضك", pro: "📌 روج لمنتجك", buy: "🛒 شراء", search: "🔍 ابحث باسم المنتج أو الرقم التسلسلي...", 
         shared: "✅ تم القبول (5 منصات)", share: "🔗 مشاركة 5 منصات", pending: "⏳ قيد المراجعة", sendProof: "📸 إرسال 5 لقطات",
         guideTitle: "📖 تعليمات المشاركة (كيف تنشر):",
         ptsLabel: "🪙 المشاركات المقبولة:", balLabel: "💰 الرصيد الإجمالي (5 منصات = 25 بكر):",
@@ -329,7 +331,7 @@
         alertTitle: "إلغاء تحميل الإثبات؟", alertMsg: "هل تريد بالفعل إلغاء هذه المهمة؟ ستفقد جميع الصور المحددة والتي تم التحقق منها."
       },
       hi: { 
-        title: "🛍️ सऊदी बेस्ट डील्स और डिस्काउंट्स", pub: "➕ डील पब्लिश करें", pro: "📌 डील प्रमोट करें", buy: "🛒 खरीदें", search: "🔍 प्रोडक्ट खोजें...", 
+        title: "🛍️ सऊदी बेस्ट डील्स और डिस्काउंट्स", pub: "➕ डील पब्लिश करें", pro: "📌 डील प्रमोट करें", buy: "🛒 खरीदें", search: "🔍 प्रोडक्ट नाम या सीरियल नंबर खोजें...", 
         shared: "✅ 5 प्लेटफॉर्म स्वीकृत", share: "🔗 5 प्लेटफॉर्म शेयर", pending: "⏳ समीक्षाधीन", sendProof: "📸 5 स्क्रीनशॉट भेजें",
         guideTitle: "📖 शेयरिंग निर्देश (कैसे पोस्ट करें):",
         ptsLabel: "🪙 स्वीकृत शेयर:", balLabel: "💰 कुल बैलेंस (5 प्लेटफॉर्म = 25 रुपये):",
@@ -503,8 +505,8 @@
       } catch (e) { loader.style.display = "none"; }
     }
 
-    // **آپ کا مانگا گیا اکیلا کمبائنڈ ڈائریکٹ ایپ لنک فنکشن**
-    function shareProduct(key, title, link) {
+    // **سیریل نمبر کے ساتھ کمبائنڈ سنگل شیئرنگ لنک (مثال: GO1228)**
+    function shareProduct(key, title, link, serialNumber) {
       if (!currentUser) { checkUserSession(); return; }
       
       const status = userSharedProducts[key];
@@ -514,10 +516,11 @@
         return;
       }
 
-      // ایک ہی سنگل لنک جس میں ایپ اور پروڈکٹ دونوں جڑے ہوئے ہیں
-      const singleAppProductUrl = `https://aaspet9.github.io/Afuma-water/?item=${key}`;
+      const itemSerial = serialNumber || key;
+      // ایپ کا سنگل ڈائریکٹ لنک سیریل نمبر کے ساتھ
+      const singleAppProductUrl = `https://aaspet9.github.io/Afuma-water/?item=${itemSerial}`;
       
-      // واٹس ایپ / فیس بک کے لیے بالکل صاف میسج (صرف ایک ہی ڈائریکٹ لنک کے ساتھ)
+      // واٹس ایپ اور فیس بک پر بھیجا جانے والا ڈائریکٹ شیئر میسج
       const shareMessage = `🔥 Deal: ${title}\n\n📱 View & Buy Deal in App:\n${singleAppProductUrl}`;
 
       if (navigator.share) {
@@ -528,9 +531,8 @@
           openProofModal(key, title, link);
         }).catch(() => {});
       } else {
-        // اگر ویب شیئر کام نہ کرے تو میسج کاپی کر کے مینوئل اوپن کریں
         navigator.clipboard.writeText(shareMessage);
-        alert("کامیابی! شیئر میسج کاپی ہو گیا ہے۔");
+        alert("کامیابی! شیئر میسج اور لنک کاپی ہو گیا ہے۔");
         openProofModal(key, title, link);
       }
     }
@@ -819,17 +821,25 @@
       return adDiv;
     }
 
+    // **عنوان اور سیریل نمبر (Serial Number) دونوں سے سرچ کرنے والی لاجک**
     function displayData(data) {
       const grid = document.getElementById('productsGrid');
       if (!data) { grid.innerHTML = `<p style="text-align: center; grid-column: span 2;">No products.</p>`; return; }
 
-      // **اگر ٹارگٹڈ پروڈکٹ موجود ہو تو اس کا نام خود بخود سرچ بار میں فِل ہو کر لائیو ہو جائے گا**
-      if (targetItemId && data[targetItemId] && !searchQuery) {
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput && searchInput.value === '') {
-          searchInput.value = data[targetItemId].title;
-          searchQuery = data[targetItemId].title.toLowerCase().trim();
-        }
+      // اگر URL میں سیریل نمبر جڑا ہو تو اسے فوری سرچ فلٹر میں ڈال کر اوپن کریں
+      if (targetItemId && !searchQuery) {
+        const targetKeyLower = targetItemId.toLowerCase();
+        Object.keys(data).forEach(k => {
+          const item = data[k];
+          const serial = item.serialNumber ? item.serialNumber.toLowerCase() : k.toLowerCase();
+          if (serial === targetKeyLower || k.toLowerCase() === targetKeyLower) {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput && searchInput.value === '') {
+              searchInput.value = item.serialNumber || k;
+              searchQuery = (item.serialNumber || k).toLowerCase();
+            }
+          }
+        });
       }
 
       const fragment = document.createDocumentFragment();
@@ -837,19 +847,32 @@
       let count = 0;
 
       const keys = Object.keys(data).sort((a, b) => {
+        const itemA = data[a];
+        const itemB = data[b];
+        const serialA = itemA.serialNumber ? itemA.serialNumber.toLowerCase() : a.toLowerCase();
+        const serialB = itemB.serialNumber ? itemB.serialNumber.toLowerCase() : b.toLowerCase();
+
         if (targetItemId) {
-          if (a === targetItemId) return -1;
-          if (b === targetItemId) return 1;
+          const targetLower = targetItemId.toLowerCase();
+          if (serialA === targetLower || a.toLowerCase() === targetLower) return -1;
+          if (serialB === targetLower || b.toLowerCase() === targetLower) return 1;
         }
-        return (data[b].pinned === true ? 1 : 0) - (data[a].pinned === true ? 1 : 0);
+        return (itemB.pinned === true ? 1 : 0) - (itemA.pinned === true ? 1 : 0);
       });
 
       keys.forEach((key) => {
         const item = data[key];
-        if (searchQuery && !item.title.toLowerCase().includes(searchQuery)) return;
+        const serialTag = item.serialNumber || key;
+        const serialLower = serialTag.toLowerCase();
+
+        if (searchQuery) {
+          const titleMatch = item.title && item.title.toLowerCase().includes(searchQuery);
+          const serialMatch = serialLower.includes(searchQuery) || key.toLowerCase().includes(searchQuery);
+          if (!titleMatch && !serialMatch) return;
+        }
         count++;
 
-        const isTargeted = (targetItemId && key === targetItemId);
+        const isTargeted = (targetItemId && (serialLower === targetItemId.toLowerCase() || key.toLowerCase() === targetItemId.toLowerCase()));
 
         const imgList = item.images && item.images.length > 0 ? item.images : [item.img || 'https://via.placeholder.com/150'];
         const totalSharesCount = item.shares || 0; 
@@ -879,12 +902,13 @@
           ${isTargeted ? '<div class="target-badge">🔥 SHARED DEAL</div>' : (item.pinned ? '<div class="pinned-badge">📌 PINNED</div>' : '')}
           <div>
             <div class="slider-wrapper"><img src="${imgList[0]}" class="product-media" onerror="this.src='https://via.placeholder.com/150'"></div>
+            <div class="serial-badge">🏷️ ${serialTag}</div>
             <div class="product-title">${item.title}</div>
             <div class="product-price">${item.price}</div>
           </div>
           <div class="btn-action-row">
             <a href="${item.link}" target="_blank" class="buy-btn">${txt.buy}</a>
-            <button class="share-btn ${extraBtnClass}" ${isShareDisabled ? 'disabled' : ''} onclick="shareProduct('${key}', '${item.title.replace(/'/g, "\\'")}', '${item.link.replace(/'/g, "\\'")}')">
+            <button class="share-btn ${extraBtnClass}" ${isShareDisabled ? 'disabled' : ''} onclick="shareProduct('${key}', '${item.title.replace(/'/g, "\\'")}', '${item.link.replace(/'/g, "\\'")}', '${serialTag}')">
               ${shareBtnText}
             </button>
             <button class="proof-btn ${extraBtnClass}" ${isProofDisabled ? 'disabled' : ''} onclick="openProofModal('${key}', '${item.title.replace(/'/g, "\\'")}', '${item.link.replace(/'/g, "\\'")}')">
