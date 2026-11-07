@@ -40,6 +40,8 @@
     .item-thumb { width: 45px; height: 45px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; }
     .item-title { font-size: 11px; font-weight: bold; color: #1e293b; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     
+    .serial-tag { background: #0284c7; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; font-family: monospace; display: inline-block; margin-bottom: 2px; }
+
     .proof-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin: 8px 0; }
     .proof-img-thumb { width: 100%; height: 75px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer; }
     
@@ -92,11 +94,17 @@
 
     <!-- 2. Screenshot Proofs Verification Section -->
     <button class="section-toggle-btn" onclick="toggleSection('proofsSection', this)">
-      <span>📸 شیئر سکرین شاٹس اپروول (5 سکرین شاٹس + لنک + ٹائٹل)</span>
+      <span>📸 شیئر سکرین شاٹس اپروول (پینڈنگ & منظور شدہ ہسٹری)</span>
       <span>▼</span>
     </button>
     <div class="collapsible-content" id="proofsSection">
+      <h4 style="font-size:12px; color:#e11d48; margin-bottom:6px;">⏳ منظوری کی منتظر درخواستیں:</h4>
       <div id="proofsList"></div>
+      
+      <hr style="margin: 15px 0; border: 0; border-top: 1px dashed #cbd5e1;">
+      
+      <h4 style="font-size:12px; color:#16a34a; margin-bottom:6px;">✅ محفوظ شدہ منظور شدہ سکرین شاٹس (ہسٹری):</h4>
+      <div id="approvedProofsList"></div>
     </div>
 
     <!-- 3. Withdrawals Management Section -->
@@ -110,7 +118,7 @@
 
     <!-- 4. Bulk Import Section -->
     <button class="section-toggle-btn" onclick="toggleSection('bulkImportSection', this)">
-      <span>📁 علی ایکسپریس لامحدود بلک فائل امپورٹ</span>
+      <span>📁 علی ایکسپریس بلک فائل امپورٹ (آٹو سیریل نمبر)</span>
       <span>▼</span>
     </button>
     <div class="collapsible-content" id="bulkImportSection">
@@ -140,7 +148,7 @@
 
     <!-- 6. Single Product Upload Section -->
     <button class="section-toggle-btn" onclick="toggleSection('singleUploadSection', this)">
-      <span>➕ ایک اکیلی پروڈکٹ اپلوڈ کریں</span>
+      <span>➕ ایک اکیلی پروڈکٹ اپلوڈ کریں (آٹو سیریل نمبر)</span>
       <span>▼</span>
     </button>
     <div class="collapsible-content" id="singleUploadSection">
@@ -195,12 +203,12 @@
 
     <!-- 8. Live Products Management & Search Bar Section -->
     <button class="section-toggle-btn" onclick="toggleSection('liveProductsSection', this)">
-      <span>📦 تمام لائیو پروڈکٹس (پنڈ پروڈکٹس اوپر)</span>
+      <span>📦 تمام لائیو پروڈکٹس (سیریل نمبر سرچ کریں)</span>
       <span>▼</span>
     </button>
     <div class="collapsible-content" id="liveProductsSection">
       <div class="form-group">
-        <input type="text" id="adminSearchInput" placeholder="🔍 پروڈکٹ کا نام یا لنک سرچ کریں..." oninput="filterLiveProducts()">
+        <input type="text" id="adminSearchInput" placeholder="🔍 پروڈکٹ نام یا سیریل نمبر (مثال: GO9215) سرچ کریں..." oninput="filterLiveProducts()">
       </div>
       <div class="select-all-bar" id="bulkControls" style="display:none;">
         <label><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)"> سب سلیکٹ کریں</label>
@@ -212,7 +220,7 @@
 
   </div>
 
-  <!-- Modal 1: User Uploaded Deals Search (Only Real Users, No Admin Deals) -->
+  <!-- Modal 1: User Uploaded Deals Search -->
   <div class="modal-overlay" id="userDealsModal">
     <div class="modal-box">
       <button class="close-modal-btn" onclick="closeModal('userDealsModal')">✕</button>
@@ -250,6 +258,7 @@
     const usersDb = firebase.database().ref("app_users");
     const withdrawalsDb = firebase.database().ref("withdrawals");
     const proofsDb = firebase.database().ref("share_proofs");
+    const approvedProofsDb = firebase.database().ref("approved_share_proofs");
 
     const IMGBB_API_KEY = "66dcdf21e30733bfd85545d9fb5e76c4";
     const PKR_PER_SHARE = 25; 
@@ -259,11 +268,18 @@
     let currentSelectedFile = null;
     let cachedLiveProducts = null;
 
+    // خودکار یونیک 4 ڈیجٹ سیریل نمبر جنریٹ کرنے کا فنکشن (مثال: GO9215)
+    function generateSerialNumber() {
+      const randomNum = Math.floor(1000 + Math.random() * 9000);
+      return `GO${randomNum}`;
+    }
+
     window.onload = function() {
       settingsDb.child("admin_tag").once('value', snap => {
         if(snap.exists()) document.getElementById('adminTagInput').value = snap.val();
       });
       renderProofsList();
+      renderApprovedProofsList();
       renderWithdrawalsList();
       renderUsersList();
       renderPendingList();
@@ -304,7 +320,7 @@
       });
     }
 
-    /* 1. Screenshot Proofs Verification */
+    /* 1. Screenshot Proofs Verification (Pending & Approved History) */
     function renderProofsList() {
       const container = document.getElementById('proofsList');
       proofsDb.on('value', (snap) => {
@@ -323,12 +339,12 @@
           imgsHtml += '</div>';
 
           container.innerHTML += `
-            <div class="item-row" style="border-right: 4px solid #16a34a;">
+            <div class="item-row" style="border-right: 4px solid #e11d48;">
               <div style="font-size:12px; font-weight:bold;">👤 یوزر: ${p.userName || 'Guest'} (${p.userPhone || ''})</div>
               <div style="font-size:11px; color:#2563eb; margin-top:2px;">📦 پروڈکٹ: <b>${p.prodTitle || ''}</b></div>
               <div class="text-link-box" dir="ltr">🔗 ${p.prodLink || 'No Link'}</div>
               ${imgsHtml}
-              <button class="approve-btn" onclick="approveProof('${key}', '${p.userPhone}', '${p.prodKey}')">✅ سکرین شاٹس منظور کریں (+25 PKR)</button>
+              <button class="approve-btn" onclick="approveProof('${key}')">✅ سکرین شاٹس منظور کریں (+25 PKR)</button>
               <button class="del-btn" style="width:100%; margin-top:4px;" onclick="rejectProof('${key}')">🗑️ رد کریں</button>
             </div>
           `;
@@ -336,20 +352,61 @@
       });
     }
 
-    function approveProof(key, phone, prodKey) {
-      usersDb.child(phone).child('totalShares').transaction((current) => (current || 0) + 1);
-      
-      if(prodKey) {
-        db.child(prodKey).child('shares').transaction((current) => (current || 0) + 1);
-        usersDb.child(phone).child('sharedProducts').child(prodKey).set('Approved');
-      }
+    function renderApprovedProofsList() {
+      const container = document.getElementById('approvedProofsList');
+      approvedProofsDb.on('value', (snap) => {
+        const data = snap.val();
+        if(!data) { container.innerHTML = '<p style="font-size:11px; color:#64748b;">کوئی منظور شدہ ریکارڈ ہسٹری میں موجود نہیں ہے۔</p>'; return; }
 
-      proofsDb.child(key).remove().then(() => {
-        alert("سکرین شاٹ منظور ہو گیا! 🚀");
+        container.innerHTML = '';
+        Object.keys(data).reverse().forEach(key => {
+          const p = data[key];
+          const urls = p.proofUrls || [p.proofUrl];
+          
+          let imgsHtml = '<div class="proof-grid">';
+          urls.forEach((url, i) => {
+            if(url) imgsHtml += `<a href="${url}" target="_blank"><img src="${url}" class="proof-img-thumb" title="Approved Screenshot ${i+1}"></a>`;
+          });
+          imgsHtml += '</div>';
+
+          container.innerHTML += `
+            <div class="item-row" style="border-right: 4px solid #16a34a; background:#f0fdf4;">
+              <div style="font-size:12px; font-weight:bold; color:#16a34a;">✅ منظور شدہ ڈیل (Approved)</div>
+              <div style="font-size:12px; font-weight:bold;">👤 یوزر: ${p.userName || ''} (${p.userPhone || ''})</div>
+              <div style="font-size:11px; color:#2563eb; margin-top:2px;">📦 پروڈکٹ: <b>${p.prodTitle || ''}</b></div>
+              <div class="text-link-box" dir="ltr">🔗 ${p.prodLink || 'No Link'}</div>
+              ${imgsHtml}
+              <button class="del-btn" style="width:100%; margin-top:4px;" onclick="deleteApprovedRecord('${key}')">🗑️ ہسٹری سے ختم کریں</button>
+            </div>
+          `;
+        });
+      });
+    }
+
+    function approveProof(key) {
+      proofsDb.child(key).once('value', snap => {
+        const p = snap.val();
+        if(!p) return;
+
+        usersDb.child(p.userPhone).child('totalShares').transaction((current) => (current || 0) + 1);
+        
+        if(p.prodKey) {
+          db.child(p.prodKey).child('shares').transaction((current) => (current || 0) + 1);
+          usersDb.child(p.userPhone).child('sharedProducts').child(p.prodKey).set('Approved');
+        }
+
+        // منظور شدہ ڈیٹا کو تاریخ اور لائیو اپروول ریکارڈ میں محفوظ کریں
+        p.approvedAt = Date.now();
+        approvedProofsDb.push(p);
+
+        proofsDb.child(key).remove().then(() => {
+          alert("سکرین شاٹس منظور ہو گئے اور ہسٹری میں محفوظ ہو گئے! 🚀");
+        });
       });
     }
 
     function rejectProof(key) { proofsDb.child(key).remove(); }
+    function deleteApprovedRecord(key) { approvedProofsDb.child(key).remove(); }
 
     /* 2. Withdrawals Management */
     function renderWithdrawalsList() {
@@ -380,7 +437,7 @@
       }
     }
 
-    /* 3. Registered Users List with Password, Points, PKR & SAR Rates */
+    /* 3. Registered Users List */
     function renderUsersList() {
       const container = document.getElementById('usersContainer');
       usersDb.on('value', (snapUsers) => {
@@ -422,7 +479,7 @@
       }
     }
 
-    /* Modal 1 Search: User Uploaded Deals List Search (EXCLUDING Admin Products) */
+    /* Modal 1 Search: User Uploaded Deals */
     function searchUserUploadedDeals() {
       const phone = document.getElementById('dealsPhoneSearch').value.trim();
       const resultsDiv = document.getElementById('userDealsResults');
@@ -436,11 +493,7 @@
 
         Object.keys(data).forEach((k) => {
           const item = data[k];
-
-          // STRICT FILTER: Exclude Admin Products completely
           if (!item.userPhone || item.userPhone === 'Admin' || item.userPhone === 'admin') return;
-
-          // Filter by searched phone number
           if (phone && !item.userPhone.includes(phone)) return;
           idx++;
 
@@ -466,12 +519,12 @@
       });
     }
 
-    /* Modal 2 Search: User Shares List Search */
+    /* Modal 2 Search: User Shares */
     function searchUserShares() {
       const phone = document.getElementById('sharesPhoneSearch').value.trim();
       const resultsDiv = document.getElementById('userSharesResults');
 
-      proofsDb.once('value', snap => {
+      approvedProofsDb.once('value', snap => {
         const data = snap.val();
         if(!data) { resultsDiv.innerHTML = '<p style="font-size:11px; color:#ef4444;">کوئی شیئر ریکارڈ نہیں ملا۔</p>'; return; }
 
@@ -512,7 +565,7 @@
       });
     }
 
-    /* 4. Bulk Import Functionality */
+    /* 4. Bulk Import Functionality (with Auto Serial Number GO9215) */
     function fileSelected(event) {
       const file = event.target.files[0];
       if (file) {
@@ -558,7 +611,7 @@
           const val = row[k] ? row[k].toString().trim() : "";
           if (!val) return;
 
-          if ((keyLower.includes('title') || keyLower.includes('subject') || keyLower.includes('name')) && isNaN(val) && val.length > 5) {
+          if ((keyLower.includes('title') || keyLower.includes('product desc') || keyLower.includes('subject') || keyLower.includes('name')) && isNaN(val) && val.length > 5) {
             if(!title) title = val;
           }
           if (val.includes('http://') || val.includes('https://')) {
@@ -578,8 +631,10 @@
         }
 
         if (title && link) {
-          const newKey = db.push().key;
-          updates[newKey] = {
+          const serialCode = generateSerialNumber();
+          // پروڈکٹ کا سیریل نمبر ہی اس کی مین Database Key بنے گا (مثلاً GO9215)
+          updates[serialCode] = {
+            serialNumber: serialCode,
             title: title.substring(0, 90),
             category: category ? category.toLowerCase().trim() : 'electronics',
             price: price ? (price.includes('SAR') ? price : `SAR ${price}`) : "Best Price",
@@ -598,12 +653,12 @@
 
       db.update(updates).then(() => {
         document.getElementById('importLoader').style.display = "none";
-        alert(`کامیابی! تمام ${count} پروڈکٹس امپورٹ ہو گئی ہیں! 🚀`);
+        alert(`کامیابی! تمام ${count} پروڈکٹس سیریل نمبر کے ساتھ امپورٹ ہو گئی ہیں! 🚀`);
         location.reload();
       });
     }
 
-    /* 5. Single Product Upload */
+    /* 5. Single Product Upload (Auto Serial Number GO9215) */
     function previewSelectedImages(event) {
       selectedFiles = Array.from(event.target.files);
       const container = document.getElementById('previewContainer');
@@ -647,12 +702,14 @@
 
       if (uploadedUrls.length === 0) { alert("تصویر اپلوڈ نہ ہو سکی!"); return; }
 
-      db.push({
+      const serialCode = generateSerialNumber();
+      db.child(serialCode).set({
+        serialNumber: serialCode,
         title: title, category: category, price: price || "Best Price", link: link,
         images: uploadedUrls, img: uploadedUrls[0], pinned: false, timestamp: Date.now(),
         shares: 0, userPhone: 'Admin', userName: 'Admin'
       }).then(() => {
-        alert("پروڈکٹ شائع ہو گئی ہے!");
+        alert(`پروڈکٹ سیریل نمبر (${serialCode}) کے ساتھ شائع ہو گئی ہے! 🚀`);
         location.reload();
       });
     }
@@ -693,14 +750,15 @@
       pendingDb.child(key).once('value', (snapshot) => {
         const item = snapshot.val();
         if(item) {
-          const newRef = db.push();
-          newRef.set({
+          const serialCode = generateSerialNumber();
+          db.child(serialCode).set({
+            serialNumber: serialCode,
             title: item.title, price: item.price || "Best Price", link: item.link,
             images: item.images || [item.img], img: item.img, pinned: false, timestamp: Date.now(), shares: 0,
             userPhone: item.userPhone || '', userName: item.userName || ''
           }).then(() => {
             pendingDb.child(key).remove();
-            alert("پروڈکٹ منظور ہو کر ایپ پر لائیو کر دی گئی ہے!");
+            alert(`پروڈکٹ منظور ہو کر سیریل نمبر (${serialCode}) کے ساتھ لائیو کر دی گئی ہے!`);
           });
         }
       });
@@ -708,7 +766,7 @@
 
     function rejectProduct(key) { pendingDb.child(key).remove(); }
 
-    /* 7. Live Products Management */
+    /* 7. Live Products Management with Serial Number Search Filter */
     function renderAdminList() {
       db.on('value', (snapshot) => {
         cachedLiveProducts = snapshot.val();
@@ -734,8 +792,10 @@
       if (searchQuery) {
         keys = keys.filter(k => {
           const item = cachedLiveProducts[k];
+          const serial = item.serialNumber ? item.serialNumber.toLowerCase() : k.toLowerCase();
           return (item.title && item.title.toLowerCase().includes(searchQuery)) || 
-                 (item.link && item.link.toLowerCase().includes(searchQuery));
+                 (item.link && item.link.toLowerCase().includes(searchQuery)) ||
+                 serial.includes(searchQuery);
         });
       }
 
@@ -751,6 +811,7 @@
         const item = cachedLiveProducts[key];
         const imgUrl = (item.images && item.images.length > 0) ? item.images[0] : (item.img || 'https://via.placeholder.com/150');
         const isPinned = item.pinned || false;
+        const serialTag = item.serialNumber || key;
 
         container.innerHTML += `
           <div class="item-row" style="${isPinned ? 'border: 2px solid #8b5cf6; background:#f3e8ff;' : ''}">
@@ -758,7 +819,10 @@
               <div style="display:flex; align-items:center; gap:6px;">
                 <input type="checkbox" class="product-checkbox" value="${key}" onchange="updateSelectedCount()">
                 <img src="${imgUrl}" class="item-thumb" onerror="this.src='https://via.placeholder.com/150'">
-                <span class="item-title">${item.title}</span>
+                <div>
+                  <span class="serial-tag">🏷️ ${serialTag}</span>
+                  <div class="item-title">${item.title}</div>
+                </div>
               </div>
               <div>
                 <button class="pin-btn ${isPinned ? 'pinned' : ''}" onclick="togglePin('${key}', ${isPinned})">${isPinned ? '📌 Unpin' : '📌 Pin'}</button>
