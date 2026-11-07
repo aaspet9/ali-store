@@ -52,7 +52,6 @@
     .product-card { background: #ffffff; border-radius: 12px; padding: 8px; border: 1px solid #f0f0f0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; width: 100%; overflow: hidden; position: relative; }
     .pinned-badge { position: absolute; top: 10px; left: 10px; background: #8b5cf6; color: #ffffff; font-size: 9px; font-weight: bold; padding: 2px 6px; border-radius: 4px; z-index: 2; }
     
-    /* ٹارگٹڈ پروڈکٹ ہائی لائٹ اور بلنکنگ اینیمیشن */
     .highlight-card { 
       grid-column: span 2; 
       border: 3.5px solid #ffe600 !important; 
@@ -280,7 +279,6 @@
     const urlParams = new URLSearchParams(window.location.search);
     let targetItemId = urlParams.get('item');
 
-    // اگر پورا میسج کاپی کر کے گوگل سرچ کیا گیا ہو، تو خود بخود پروڈکٹ کی کیی (Key) حاصل کرنا
     if (!targetItemId) {
       const fullUrl = decodeURIComponent(window.location.href);
       const match = fullUrl.match(/item=([a-zA-Z0-9_-]+)/);
@@ -505,7 +503,6 @@
       } catch (e) { loader.style.display = "none"; }
     }
 
-    // پروڈکٹ شیئرنگ کا درست اور سمارٹ فارمیٹ
     function shareProduct(key, title, link) {
       if (!currentUser) { checkUserSession(); return; }
       const status = userSharedProducts[key];
@@ -818,11 +815,19 @@
       const grid = document.getElementById('productsGrid');
       if (!data) { grid.innerHTML = `<p style="text-align: center; grid-column: span 2;">No products.</p>`; return; }
 
+      // **نئی خصوصیت: اگر ٹارگٹڈ پروڈکٹ موجود ہو تو اس کا نام خود بخود سرچ بار میں فِل کرنا**
+      if (targetItemId && data[targetItemId] && !searchQuery) {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput && searchInput.value === '') {
+          searchInput.value = data[targetItemId].title;
+          searchQuery = data[targetItemId].title.toLowerCase().trim();
+        }
+      }
+
       const fragment = document.createDocumentFragment();
       const txt = i18n[activeLang];
       let count = 0;
 
-      // سمارٹ سورٹنگ: جو پروڈکٹ پریکٹیکلی اوپن کی گئی ہو، وہ سب سے پہلے دکھائی دے گی
       const keys = Object.keys(data).sort((a, b) => {
         if (targetItemId) {
           if (a === targetItemId) return -1;
@@ -889,7 +894,6 @@
       grid.innerHTML = '';
       grid.appendChild(fragment);
 
-      // اگر ٹارگٹڈ پروڈکٹ موجود ہے تو سکرین خود بخود اس پر سکڑ کر (Scroll) کر جائے گی
       if (targetItemId) {
         setTimeout(() => {
           const el = document.querySelector('.highlight-card');
