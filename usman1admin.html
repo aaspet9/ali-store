@@ -17,8 +17,11 @@
 
     .main-wrapper { max-width: 550px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
 
-    .section-toggle-btn { width: 100%; background: #ffffff; color: #1e293b; border: 2px solid #cbd5e1; padding: 12px 14px; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: all 0.2s ease; }
+    .section-toggle-btn { width: 100%; background: #ffffff; color: #1e293b; border: 2px solid #cbd5e1; padding: 12px 14px; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: all 0.2s ease; position: relative; }
     .section-toggle-btn.active { border-color: #2563eb; background: #eff6ff; color: #2563eb; }
+
+    .notif-badge-btn { background: #ff4747; color: white; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 10px; animation: pulseGlow 1s infinite alternate; margin-left: 8px; }
+    @keyframes pulseGlow { from { transform: scale(1); box-shadow: 0 0 3px #ff4747; } to { transform: scale(1.1); box-shadow: 0 0 8px #ff4747; } }
 
     .collapsible-content { display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 0 0 10px 10px; padding: 14px; margin-top: -6px; margin-bottom: 6px; }
 
@@ -27,11 +30,11 @@
     
     input[type="text"], textarea, select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; box-sizing: border-box; background-color: #ffffff; color: #000000; outline: none; }
     
-    .file-input-box { border: 2px dashed #2563eb; background: #eff6ff; padding: 12px; text-align: center; border-radius: 8px; cursor: pointer; }
+    .file-input-box { border: 2px dashed #2563eb; background: #eff6ff; padding: 14px; text-align: center; border-radius: 10px; cursor: pointer; }
     .file-input-box input[type="file"] { display: none; }
     
-    .preview-container { display: flex; gap: 6px; overflow-x: auto; margin-top: 8px; justify-content: center; flex-wrap: wrap; }
-    .preview-img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid #2563eb; }
+    .preview-container { display: flex; gap: 8px; overflow-x: auto; margin-top: 10px; justify-content: center; flex-wrap: wrap; }
+    .preview-img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; border: 2px solid #2563eb; }
 
     .add-btn { width: 100%; background: #2563eb; color: #fff; border: none; padding: 12px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px; margin-top: 8px; }
 
@@ -41,6 +44,10 @@
     .item-title { font-size: 11px; font-weight: bold; color: #1e293b; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     
     .serial-tag { background: #0284c7; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; font-family: monospace; display: inline-block; margin-bottom: 2px; }
+    .platform-badge { font-size: 9px; font-weight: bold; padding: 2px 5px; border-radius: 4px; color: white; display: inline-block; margin-right: 4px; }
+    .badge-amazon { background: #ff9900; color: black; }
+    .badge-daraz { background: #ff5722; }
+    .badge-express { background: #e62e04; }
 
     .proof-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin: 8px 0; }
     .proof-img-thumb { width: 100%; height: 75px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer; }
@@ -94,7 +101,10 @@
 
     <!-- 2. Screenshot Proofs Verification Section -->
     <button class="section-toggle-btn" onclick="toggleSection('proofsSection', this)">
-      <span>📸 شیئر سکرین شاٹس اپروول (پینڈنگ & منظور شدہ ہسٹری)</span>
+      <span>
+        📸 شیئر سکرین شاٹس اپروول (پینڈنگ & منظور شدہ ہسٹری)
+        <span id="proofNotifBadge" class="notif-badge-btn" style="display:none;">0 NEW 🔔</span>
+      </span>
       <span>▼</span>
     </button>
     <div class="collapsible-content" id="proofsSection">
@@ -116,16 +126,16 @@
       <div id="withdrawalsList"></div>
     </div>
 
-    <!-- 4. Bulk Import Section -->
-    <button class="section-toggle-btn" onclick="toggleSection('bulkImportSection', this)">
-      <span>📁 علی ایکسپریس بلک فائل امپورٹ (آٹو سیریل نمبر)</span>
+    <!-- 4. Universal Bulk Import Section (AliExpress, Daraz, Amazon) -->
+    <button class="section-toggle-btn" onclick="toggleSection('bulkImportSection', this)[span_0](start_span)"[span_0](end_span)>
+      <span>📁 بلک فائل امپورٹ (AliExpress / Daraz / Amazon)</span>
       <span>▼</span>
     </button>
     <div class="collapsible-content" id="bulkImportSection">
       <div class="form-group">
-        <label>علی ایکسپریس کی (CSV / Excel) فائل منتخب کریں:</label>
+        <label>کسی بھی نیٹ ورک کی (CSV / Excel) فائل منتخب کریں:</label>
         <div class="file-input-box" onclick="document.getElementById('csvFileInput').click()">
-          <span id="csvStatusText">📥 ڈائریکٹ فائل منتخب کرنے کے لیے کلک کریں</span>
+          <span id="csvStatusText">📥 ڈائریکٹ ایکسل/CSV فائل منتخب کرنے کے لیے کلک کریں</span>
           <input type="file" id="csvFileInput" accept=".csv, .xlsx, .xls" onchange="fileSelected(event)">
         </div>
       </div>
@@ -146,12 +156,31 @@
       <div id="usersContainer"></div>
     </div>
 
-    <!-- 6. Single Product Upload Section -->
+    <!-- 6. Single Product Upload & Gallery Upload Section -->
     <button class="section-toggle-btn" onclick="toggleSection('singleUploadSection', this)">
-      <span>➕ ایک اکیلی پروڈکٹ اپلوڈ کریں (آٹو سیریل نمبر)</span>
+      <span>➕ اکیلی پروڈکٹ / گیلری اپلوڈ (Amazon & Daraz)</span>
       <span>▼</span>
     </button>
     <div class="collapsible-content" id="singleUploadSection">
+      
+      <!-- Instant Auto Link Import (Amazon & Daraz) -->
+      <div style="background:#f1f5f9; padding:10px; border-radius:8px; border:1px solid #cbd5e1; margin-bottom:12px;">
+        <label style="font-size:12px; font-weight:bold; color:#0f172a;">⚡ پروڈکٹ کا لنک درج کریں (Amazon / Daraz Link):</label>
+        <input type="text" id="autoProductLink" placeholder="https://amazon.sa/... یا https://daraz.pk/..." dir="ltr" style="margin-top:4px;">
+        
+        <label style="font-size:12px; font-weight:bold; color:#0f172a; margin-top:8px; display:block;">🖼️ تصویر کا لنک (Optional):</label>
+        <input type="text" id="autoProductImgUrl" placeholder="https://m.media-amazon.com/images/I/..." dir="ltr" style="margin-top:4px;">
+
+        <div class="user-btn-row" style="margin-top:8px; margin-bottom:0;">
+          <button class="user-btn-action" style="background:#ff9900; color:black;" onclick="fetchAndAddAutoProduct('amazon')">🛒 Amazon آٹو لائیو</button>
+          <button class="user-btn-action" style="background:#ff5722; color:white;" onclick="fetchAndAddAutoProduct('daraz')">🧡 Daraz آٹو لائیو</button>
+        </div>
+        <div id="autoFetchLoader" style="display:none; text-align:center; font-size:11px; color:#2563eb; font-weight:bold; margin-top:6px;">پروڈکٹ کا ڈیٹا اور تصویر لائیو ہو رہی ہے... ⏳</div>
+      </div>
+
+      <hr style="margin: 12px 0; border: 0; border-top: 1px dashed #cbd5e1;">
+
+      <!-- Manual Single Upload Form with Gallery Support -->
       <div class="form-group">
         <label>پروڈکٹ کا عنوان (Title):</label>
         <input type="text" id="pTitle" placeholder="عنوان...">
@@ -180,21 +209,26 @@
         <label>افیلی ایٹ لنک (Affiliate Link):</label>
         <input type="text" id="pLink" placeholder="https://..." dir="ltr">
       </div>
+
+      <!-- Enhanced Gallery Upload Input -->
       <div class="form-group">
-        <label>تصویر منتخب کریں:</label>
+        <label>🖼️ گیلری سے تصاویر منتخب کریں (میکسیمم 3 تصاویر):</label>
         <div class="file-input-box" onclick="document.getElementById('imgFileInput').click()">
-          <span id="fileStatusText">📁 گیلری سے تصویر منتخب کریں</span>
+          <span id="fileStatusText">📷 موبائل گیلری کھولیں اور تصاویر سلیکٹ کریں</span>
           <input type="file" id="imgFileInput" accept="image/*" multiple onchange="previewSelectedImages(event)">
           <div id="previewContainer" class="preview-container"></div>
         </div>
       </div>
       <div id="loader">اپلوڈ ہو رہا ہے... ⏳</div>
-      <button class="add-btn" onclick="addNewSingleProduct()">پروڈکٹ شائع کریں 🚀</button>
+      <button class="add-btn" onclick="addNewSingleProduct()">پروڈکٹ مینوئل شائع کریں 🚀</button>
     </div>
 
     <!-- 7. Pending Approval List Section -->
     <button class="section-toggle-btn" onclick="toggleSection('pendingSection', this)">
-      <span>⏳ پینڈنگ پروڈکٹس (منظوری کی منتظر)</span>
+      <span>
+        ⏳ پینڈنگ پروڈکٹس (منظوری کی منتظر)
+        <span id="pendingProdNotifBadge" class="notif-badge-btn" style="display:none;">0 NEW 🔔</span>
+      </span>
       <span>▼</span>
     </button>
     <div class="collapsible-content" id="pendingSection">
@@ -268,6 +302,24 @@
     let currentSelectedFile = null;
     let cachedLiveProducts = null;
 
+    let prevPendingProdCount = -1;
+    let prevPendingProofCount = -1;
+
+    function playBeepSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime); 
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      } catch(e){}
+    }
+
     function generateSerialNumber() {
       const randomNum = Math.floor(1000 + Math.random() * 9000);
       return `GO${randomNum}`;
@@ -283,7 +335,6 @@
       renderUsersList();
       renderPendingList();
       
-      // ایک ہی بار ڈیٹا لوڈ کرنے کا فاسٹ طریقہ (Once Realtime Sync)
       db.on('value', (snapshot) => {
         cachedLiveProducts = snapshot.val();
         filterLiveProductsFast();
@@ -324,15 +375,34 @@
       });
     }
 
-    /* 1. Screenshot Proofs Verification */
+    /* 1. Screenshot Proofs Verification (With Sound & Badge Notification) */
     function renderProofsList() {
       const container = document.getElementById('proofsList');
       proofsDb.on('value', (snap) => {
         const data = snap.val();
-        if(!data) { container.innerHTML = '<p style="font-size:11px; color:#64748b;">کوئی پینڈنگ سکرین شاٹ موجود نہیں ہے۔</p>'; return; }
+        const badge = document.getElementById('proofNotifBadge');
+        
+        if(!data) { 
+          container.innerHTML = '<p style="font-size:11px; color:#64748b;">کوئی پینڈنگ سکرین شاٹ موجود نہیں ہے۔</p>'; 
+          badge.style.display = 'none';
+          return; 
+        }
+
+        const keys = Object.keys(data);
+        const count = keys.length;
+        if(count > 0) {
+          badge.style.display = 'inline-block';
+          badge.innerText = `${count} NEW 🔔`;
+          if (prevPendingProofCount !== -1 && count > prevPendingProofCount) {
+            playBeepSound();
+          }
+        } else {
+          badge.style.display = 'none';
+        }
+        prevPendingProofCount = count;
 
         container.innerHTML = '';
-        Object.keys(data).reverse().forEach(key => {
+        keys.reverse().forEach(key => {
           const p = data[key];
           const urls = p.proofUrls || [p.proofUrl];
           
@@ -573,7 +643,7 @@
       });
     }
 
-    /* 4. Fast Bulk Import */
+    /* 4. Universal Bulk Import for AliExpress, Daraz, Amazon */
     function fileSelected(event) {
       const file = event.target.files[0];
       if (file) {
@@ -619,15 +689,15 @@
           const val = row[k] ? row[k].toString().trim() : "";
           if (!val) return;
 
-          if ((keyLower.includes('title') || keyLower.includes('product desc') || keyLower.includes('subject') || keyLower.includes('name')) && isNaN(val) && val.length > 5) {
+          if ((keyLower.includes('title') || keyLower.includes('product desc') || keyLower.includes('subject') || keyLower.includes('name') || keyLower.includes('product_name')) && isNaN(val) && val.length > 3) {
             if(!title) title = val;
           }
           if (val.includes('http://') || val.includes('https://')) {
-            if (val.includes('.jpg') || val.includes('.png') || val.includes('.jpeg') || val.includes('.webp') || keyLower.includes('image')) {
+            if (val.includes('.jpg') || val.includes('.png') || val.includes('.jpeg') || val.includes('.webp') || keyLower.includes('image') || keyLower.includes('img')) {
               if(!img) img = val;
             } else { if(!link) link = val; }
           }
-          if (keyLower.includes('price') || keyLower.includes('sar')) { if(!price) price = val; }
+          if (keyLower.includes('price') || keyLower.includes('sar') || keyLower.includes('pkr')) { if(!price) price = val; }
           if (keyLower.includes('category')) { if(!category) category = val; }
         });
 
@@ -639,14 +709,20 @@
         }
 
         if (title && link) {
+          let platform = 'aliexpress';
+          if (link.includes('amazon')) platform = 'amazon';
+          if (link.includes('daraz')) platform = 'daraz';
+
           const serialCode = generateSerialNumber();
+          const finalImgs = img ? [img] : ["https://via.placeholder.com/150"];
           updates[serialCode] = {
             serialNumber: serialCode,
             title: title.substring(0, 90),
             category: category ? category.toLowerCase().trim() : 'electronics',
-            price: price ? (price.includes('SAR') ? price : `SAR ${price}`) : "Best Price",
+            price: price ? price : "Best Price",
             link: link,
-            images: img ? [img] : ["https://via.placeholder.com/150"],
+            platform: platform,
+            images: finalImgs.slice(0, 3), // Max 3 Images
             img: img || "https://via.placeholder.com/150",
             pinned: false,
             timestamp: Date.now(),
@@ -664,13 +740,79 @@
       });
     }
 
-    /* 5. Single Product Upload */
+    /* 5. Instant Amazon & Daraz Auto Product Import */
+    async function fetchAndAddAutoProduct(platform) {
+      const linkInput = document.getElementById('autoProductLink');
+      const imgInput = document.getElementById('autoProductImgUrl');
+      
+      const link = linkInput.value.trim();
+      const manualImg = imgInput.value.trim();
+      const loader = document.getElementById('autoFetchLoader');
+
+      if (!link) {
+        alert("براہ کرم پروڈکٹ کا لنک درج کریں!");
+        return;
+      }
+
+      loader.style.display = "block";
+
+      let finalImg = manualImg;
+      let title = platform === 'amazon' ? "Amazon Saudi Deal" : "Daraz Special Deal";
+
+      if (!finalImg) {
+        try {
+          const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(link)}`;
+          const response = await fetch(proxyUrl);
+          const data = await response.json();
+          
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(data.contents, 'text/html');
+
+          title = doc.querySelector('meta[property="og:title"]')?.content || 
+                  doc.querySelector('title')?.innerText || title;
+          
+          finalImg = doc.querySelector('meta[property="og:image"]')?.content || "";
+        } catch (error) {}
+      }
+
+      if (!finalImg) {
+        finalImg = platform === 'amazon' 
+          ? "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" 
+          : "https://upload.wikimedia.org/wikipedia/commons/4/4a/Daraz_Logo.png";
+      }
+
+      const serialCode = generateSerialNumber();
+
+      const productData = {
+        serialNumber: serialCode,
+        title: title.substring(0, 80),
+        price: "Best Deal",
+        link: link,
+        platform: platform,
+        images: [finalImg],
+        img: finalImg,
+        pinned: false,
+        timestamp: Date.now(),
+        shares: 0,
+        userPhone: 'Admin',
+        userName: 'Admin'
+      };
+
+      db.child(serialCode).set(productData).then(() => {
+        loader.style.display = "none";
+        alert(`کامیابی! ${platform.toUpperCase()} پروڈکٹ سیریل نمبر (${serialCode}) کے ساتھ لائیو ہو گئی ہے! 🚀`);
+        linkInput.value = '';
+        imgInput.value = '';
+      });
+    }
+
+    /* 6. Single Manual Product Upload with Gallery Multi-Selection */
     function previewSelectedImages(event) {
-      selectedFiles = Array.from(event.target.files);
+      selectedFiles = Array.from(event.target.files).slice(0, 3);
       const container = document.getElementById('previewContainer');
       container.innerHTML = '';
       if (selectedFiles.length > 0) {
-        document.getElementById('fileStatusText').innerText = `${selectedFiles.length} تصاویر منتخب کی گئیں ✅`;
+        document.getElementById('fileStatusText').innerText = `${selectedFiles.length} تصاویر منتخب کی گئیں (میکسیمم 3) ✅`;
         selectedFiles.forEach(file => {
           const reader = new FileReader();
           reader.onload = e => {
@@ -690,7 +832,7 @@
       const link = document.getElementById('pLink').value.trim();
       const loader = document.getElementById('loader');
 
-      if (!title || !link || selectedFiles.length === 0) { alert("تمام معلومات اور تصویر منتخب کریں!"); return; }
+      if (!title || !link || selectedFiles.length === 0) { alert("تمام معلومات اور گیلری سے کم از کم 1 تصویر منتخب کریں!"); return; }
 
       loader.style.display = "block";
       let uploadedUrls = [];
@@ -708,29 +850,54 @@
 
       if (uploadedUrls.length === 0) { alert("تصویر اپلوڈ نہ ہو سکی!"); return; }
 
+      let platform = 'aliexpress';
+      if (link.includes('amazon')) platform = 'amazon';
+      if (link.includes('daraz')) platform = 'daraz';
+
       const serialCode = generateSerialNumber();
+      const finalImgs = uploadedUrls.slice(0, 3);
       db.child(serialCode).set({
         serialNumber: serialCode,
         title: title, category: category, price: price || "Best Price", link: link,
-        images: uploadedUrls, img: uploadedUrls[0], pinned: false, timestamp: Date.now(),
+        platform: platform,
+        images: finalImgs, img: finalImgs[0], pinned: false, timestamp: Date.now(),
         shares: 0, userPhone: 'Admin', userName: 'Admin'
       }).then(() => {
-        alert(`پروڈکٹ سیریل نمبر (${serialCode}) کے ساتھ شائع ہو گئی ہے! 🚀`);
+        alert(`پروڈکٹ سیریل نمبر (${serialCode}) کے ساتھ گیلری کی تصویر سے شائع ہو گئی ہے! 🚀`);
         document.getElementById('pTitle').value = '';
         document.getElementById('pLink').value = '';
         document.getElementById('previewContainer').innerHTML = '';
       });
     }
 
-    /* 6. Pending Items Approval */
+    /* 7. Pending Items Approval */
     function renderPendingList() {
       const container = document.getElementById('pendingItemsList');
       pendingDb.on('value', (snapshot) => {
         const data = snapshot.val();
-        if(!data) { container.innerHTML = '<p style="font-size:11px; color:#64748b;">کوئی پینڈنگ پروڈکٹ موجود نہیں ہے۔</p>'; return; }
+        const badge = document.getElementById('pendingProdNotifBadge');
+        
+        if(!data) { 
+          container.innerHTML = '<p style="font-size:11px; color:#64748b;">کوئی پینڈنگ پروڈکٹ موجود نہیں ہے۔</p>'; 
+          badge.style.display = 'none';
+          return; 
+        }
+
+        const keys = Object.keys(data);
+        const count = keys.length;
+        if(count > 0) {
+          badge.style.display = 'inline-block';
+          badge.innerText = `${count} NEW 🔔`;
+          if (prevPendingProdCount !== -1 && count > prevPendingProdCount) {
+            playBeepSound();
+          }
+        } else {
+          badge.style.display = 'none';
+        }
+        prevPendingProdCount = count;
 
         container.innerHTML = '';
-        Object.keys(data).reverse().forEach((key) => {
+        keys.reverse().forEach((key) => {
           const item = data[key];
           const imgUrl = (item.images && item.images.length > 0) ? item.images[0] : (item.img || 'https://via.placeholder.com/150');
           
@@ -760,10 +927,18 @@
         const item = snapshot.val();
         if(item) {
           const serialCode = generateSerialNumber();
+          let rawImgs = item.images || [item.img];
+          const finalImgs = rawImgs.slice(0, 3);
+          
+          let platform = item.platform || 'aliexpress';
+          if (item.link && item.link.includes('amazon')) platform = 'amazon';
+          if (item.link && item.link.includes('daraz')) platform = 'daraz';
+
           db.child(serialCode).set({
             serialNumber: serialCode,
             title: item.title, price: item.price || "Best Price", link: item.link,
-            images: item.images || [item.img], img: item.img, pinned: false, timestamp: Date.now(), shares: 0,
+            platform: platform,
+            images: finalImgs, img: finalImgs[0], pinned: false, timestamp: Date.now(), shares: 0,
             userPhone: item.userPhone || '', userName: item.userName || ''
           }).then(() => {
             pendingDb.child(key).remove();
@@ -774,7 +949,7 @@
 
     function rejectProduct(key) { pendingDb.child(key).remove(); }
 
-    /* 7. Super Fast In-Memory Filtering & Single Batch Bulk Deletion */
+    /* 8. Live Products Management & Fast Search */
     function filterLiveProductsFast() {
       const container = document.getElementById('adminItemsList');
       const searchQuery = document.getElementById('adminSearchInput').value.toLowerCase().trim();
@@ -814,6 +989,13 @@
         const isPinned = item.pinned || false;
         const serialTag = item.serialNumber || key;
 
+        let pBadge = `<span class="platform-badge badge-express">AliExpress</span>`;
+        if (item.platform === 'amazon' || (item.link && item.link.includes('amazon'))) {
+          pBadge = `<span class="platform-badge badge-amazon">Amazon</span>`;
+        } else if (item.platform === 'daraz' || (item.link && item.link.includes('daraz'))) {
+          pBadge = `<span class="platform-badge badge-daraz">Daraz</span>`;
+        }
+
         htmlContent += `
           <div class="item-row" id="product_row_${key}" style="${isPinned ? 'border: 2px solid #8b5cf6; background:#f3e8ff;' : ''}">
             <div class="item-info-row">
@@ -821,7 +1003,7 @@
                 <input type="checkbox" class="product-checkbox" value="${key}" onchange="updateSelectedCount()">
                 <img src="${imgUrl}" class="item-thumb" onerror="this.src='https://via.placeholder.com/150'">
                 <div>
-                  <span class="serial-tag">🏷️ ${serialTag}</span>
+                  <span class="serial-tag">🏷️ ${serialTag}</span> ${pBadge}
                   <div class="item-title">${item.title}</div>
                 </div>
               </div>
@@ -838,7 +1020,6 @@
 
     function togglePin(key, currentStatus) { db.child(key).update({ pinned: !currentStatus }); }
 
-    // اکیلی پروڈکٹ کو بغیر ہینگ کیے فوراً سکرین سے گائب کر کے ڈلیٹ کرنا
     function deleteSingleProductFast(key) {
       if (confirm("کیا آپ یہ پروڈکٹ ڈلیٹ کرنا چاہتے ہیں؟")) {
         const row = document.getElementById(`product_row_${key}`);
@@ -850,8 +1031,9 @@
     }
 
     function toggleSelectAll(masterCheckbox) {
-      const checkboxes = document.querySelectorAll('.product-checkbox');
-      checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+      const isChecked = masterCheckbox.checked;
+      const checkboxesList = document.querySelectorAll('.product-checkbox');
+      checkboxesList.forEach(cb => cb.checked = isChecked);
       updateSelectedCount();
     }
 
@@ -862,7 +1044,6 @@
       document.getElementById('deleteSelectedBtn').style.display = count > 0 ? "block" : "none";
     }
 
-    // تمام سلیکٹڈ پروڈکٹس کو سنگل بیچ ہٹ سے ہینگ ہوئے بغیر فوری ڈلیٹ کرنا
     function deleteSelectedProducts() {
       const selected = document.querySelectorAll('.product-checkbox:checked');
       if (selected.length === 0) return;
@@ -877,7 +1058,6 @@
           if(row) row.style.display = 'none';
         });
 
-        // ایک ساتھ فائربیس سے ریموو کریں
         db.update(deleteBatch).then(() => {
           document.getElementById('selectAllCheckbox').checked = false;
           updateSelectedCount();
