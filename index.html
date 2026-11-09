@@ -87,7 +87,7 @@
     .proof-btn:disabled, .share-btn:disabled { opacity: 0.85; cursor: not-allowed; pointer-events: none; }
 
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
-    .modal-box { background: #ffffff; width: 100%; max-width: 420px; border-radius: 14px; padding: 18px; max-height: 90vh; overflow-y: auto; position: relative; }
+    .modal-box { background: #ffffff; width: 100%; max-width: 440px; border-radius: 14px; padding: 18px; max-height: 90vh; overflow-y: auto; position: relative; }
     .close-modal { position: absolute; background: #e2e8f0; border: none; font-size: 16px; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; top: 12px; }
     html[dir="rtl"] .close-modal { left: 15px; }
     html[dir="ltr"] .close-modal { right: 15px; }
@@ -98,12 +98,13 @@
     .image-zoom-box img { width: 100%; max-height: 80vh; object-fit: contain; border-radius: 8px; border: 2px solid #ffffff; }
     .close-zoom-btn { position: absolute; top: -35px; right: 0; background: #ff4747; color: white; border: none; font-size: 16px; font-weight: bold; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; }
 
-    .file-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 8px; background: #f8fafc; border: 1px solid #e2e8f0; padding: 6px 10px; border-radius: 8px; }
-    .file-btn-sm { flex: 1; text-align: left; background: #eff6ff; border: 1px dashed #2563eb; padding: 6px 8px; border-radius: 6px; font-size: 11px; font-weight: 500; cursor: pointer; }
+    .file-row { display: flex; align-items: center; justify-content: space-between; gap: 4px; margin-bottom: 8px; background: #f8fafc; border: 1px solid #e2e8f0; padding: 6px; border-radius: 8px; }
+    .file-btn-sm { flex: 1; text-align: left; background: #eff6ff; border: 1px dashed #2563eb; padding: 6px 8px; border-radius: 6px; font-size: 11px; font-weight: 500; cursor: pointer; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
     html[dir="rtl"] .file-btn-sm { text-align: right; }
-    .verify-btn { background: #2563eb; color: #ffffff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+    .sample-btn { background: #8b5cf6; color: #ffffff; border: none; padding: 6px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; white-space: nowrap; }
+    .verify-btn { background: #2563eb; color: #ffffff; border: none; padding: 6px 10px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; white-space: nowrap; transition: 0.2s; }
     .verify-btn:disabled { background: #94a3b8; cursor: not-allowed; }
-    .status-badge { font-size: 10px; font-weight: bold; padding: 4px 8px; border-radius: 4px; white-space: nowrap; }
+    .status-badge { font-size: 10px; font-weight: bold; padding: 4px 6px; border-radius: 4px; white-space: nowrap; }
     .status-badge.verified { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
     .status-badge.not-verified { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
   </style>
@@ -167,7 +168,7 @@
     </div>
   </div>
 
-  <!-- Login Modal With Skip/Cross Option -->
+  <!-- Login Modal -->
   <div class="modal-overlay" id="authModal" style="display: none;">
     <div class="modal-box">
       <button class="close-modal" onclick="closeAuthModal()">✕</button>
@@ -188,38 +189,49 @@
     </div>
   </div>
 
+  <!-- Screenshot Upload Modal with Sample Buttons -->
   <div class="modal-overlay" id="proofModal">
     <div class="modal-box">
       <button class="close-modal" onclick="cancelUploadProofAndClear()">✕</button>
       <h3 id="modalProofTitle" style="margin-bottom: 8px; color:#16a34a; text-align:center;">📸 5 پلیٹ فارم کے سکرین شاٹس اپلوڈ کریں</h3>
       <p id="modalProofSub" style="font-size:11px; color:#64748b; text-align:center; margin-bottom:12px;">ہر پلیٹ فارم پر وہی پروڈکٹ پوسٹ کر کے 5 تصاویر سلیکٹ کریں (کل رقم: 25 روپے)</p>
       
+      <!-- YouTube Row -->
       <div class="file-row">
         <div class="file-btn-sm" onclick="document.getElementById('pImg1').click()"><span id="pTxt1">▶️ 1. YouTube Screenshot</span><input type="file" id="pImg1" accept="image/*" style="display:none;" onchange="handleProofImage(event, 1)"></div>
+        <button class="sample-btn" onclick="openZoomModal('https://i.ibb.co/xtV64Lm0/124083.jpg')">👁️ Sample</button>
         <button class="verify-btn" id="verifyBtn1" onclick="verifySingleImage(1)" disabled>Verify 🔍</button>
         <span id="badge1" style="display:none;" class="status-badge"></span>
       </div>
 
+      <!-- Facebook Row -->
       <div class="file-row">
         <div class="file-btn-sm" onclick="document.getElementById('pImg2').click()"><span id="pTxt2">📘 2. Facebook Screenshot</span><input type="file" id="pImg2" accept="image/*" style="display:none;" onchange="handleProofImage(event, 2)"></div>
+        <button class="sample-btn" onclick="openZoomModal('https://i.ibb.co/qFn6XtV0/124084.jpg')">👁️ Sample</button>
         <button class="verify-btn" id="verifyBtn2" onclick="verifySingleImage(2)" disabled>Verify 🔍</button>
         <span id="badge2" style="display:none;" class="status-badge"></span>
       </div>
 
+      <!-- WhatsApp Row -->
       <div class="file-row">
         <div class="file-btn-sm" onclick="document.getElementById('pImg3').click()"><span id="pTxt3">💬 3. WhatsApp Screenshot</span><input type="file" id="pImg3" accept="image/*" style="display:none;" onchange="handleProofImage(event, 3)"></div>
+        <button class="sample-btn" onclick="openZoomModal('https://i.ibb.co/Q3G1NbY9/124103.jpg')">👁️ Sample</button>
         <button class="verify-btn" id="verifyBtn3" onclick="verifySingleImage(3)" disabled>Verify 🔍</button>
         <span id="badge3" style="display:none;" class="status-badge"></span>
       </div>
 
+      <!-- Instagram Row -->
       <div class="file-row">
         <div class="file-btn-sm" onclick="document.getElementById('pImg4').click()"><span id="pTxt4">📸 4. Instagram Screenshot</span><input type="file" id="pImg4" accept="image/*" style="display:none;" onchange="handleProofImage(event, 4)"></div>
+        <button class="sample-btn" onclick="openZoomModal('https://i.ibb.co/4Z7pwPBC/124104.jpg')">👁️ Sample</button>
         <button class="verify-btn" id="verifyBtn4" onclick="verifySingleImage(4)" disabled>Verify 🔍</button>
         <span id="badge4" style="display:none;" class="status-badge"></span>
       </div>
 
+      <!-- TikTok Row -->
       <div class="file-row">
         <div class="file-btn-sm" onclick="document.getElementById('pImg5').click()"><span id="pTxt5">🎵 5. TikTok Screenshot</span><input type="file" id="pImg5" accept="image/*" style="display:none;" onchange="handleProofImage(event, 5)"></div>
+        <button class="sample-btn" onclick="openZoomModal('https://i.ibb.co/VpQ49JWT/124108.jpg')">👁️ Sample</button>
         <button class="verify-btn" id="verifyBtn5" onclick="verifySingleImage(5)" disabled>Verify 🔍</button>
         <span id="badge5" style="display:none;" class="status-badge"></span>
       </div>
@@ -310,12 +322,13 @@
       }
     }
 
+    // Precise UI Keywords for Tesseract OCR Engine tailored for User Screenshots
     const platformKeywords = {
-      1: ["home", "videos", "shorts", "posts", "turn on my community", "youtube"],
-      2: ["like", "comment", "share", "create story", "just now", "facebook"],
-      3: ["type a message", "write an update", "status", "chats", "whatsapp"],
-      4: ["your story", "view insights", "boost post", "instagram"],
-      5: ["for you", "following", "add comment", "tiktok"]
+      1: ["home", "videos", "shorts", "posts", "community", "youtube", "subscribe", "subscriptions", "minutes ago"],
+      2: ["manage posts", "photos", "reels", "just now", "facebook", "public", "like", "comment", "share"],
+      3: ["groups share", "add members", "invite via link", "group settings", "whatsapp", "message", "only admins can edit", "were added"],
+      4: ["reels", "insights", "boost", "instagram", "afumamineralwater", "get inspired on edits", "ai content"],
+      5: ["stem", "following", "friends", "for you", "tiktok", "inbox", "aliexpress affiliate", "joga sem parar"]
     };
 
     const platformNames = { 1: "YouTube", 2: "Facebook", 3: "WhatsApp", 4: "Instagram", 5: "TikTok" };
@@ -365,32 +378,32 @@
 
     const platformGuides = {
       en: {
-        youtube: { title: "▶️ How to post on YouTube", text: "1. Copy product title and link.<br>2. Upload image on YouTube Shorts or Video.<br>3. Paste product link in description & pinned comment.<br>4. Take screenshot and upload in app." },
-        facebook: { title: "📘 How to post on Facebook", text: "1. Create post on Facebook with product image.<br>2. Include title, price and your link in description.<br>3. Share in Buy & Sell groups.<br>4. Take screenshot and upload in app." },
-        whatsapp: { title: "💬 How to post on WhatsApp", text: "1. Upload product image to WhatsApp Status or Groups.<br>2. Add product details and link in caption.<br>3. Take clear screenshot and upload in app." },
-        instagram: { title: "📸 How to post on Instagram", text: "1. Upload image on Instagram Story or Post.<br>2. Add Link sticker in story or Bio.<br>3. Take screenshot and upload in app." },
-        tiktok: { title: "🎵 How to post on TikTok", text: "1. Upload product image or slideshow on TikTok.<br>2. Put product details and link in caption/comments.<br>3. Take screenshot and upload in app." }
+        youtube: { title: "▶️ How to post on YouTube", text: "1. Click Save image to gallery.<br>2. Click Share to copy link & info.<br>3. Upload image on YouTube Shorts or Community Post.<br>4. Add your voice/music and paste copied link in description.<br>5. Take screenshot and upload in app." },
+        facebook: { title: "📘 How to post on Facebook", text: "1. Click Save image to gallery.<br>2. Click Share to copy link & info.<br>3. Upload image on Facebook Post or Story.<br>4. Add your voice/music and paste copied link.<br>5. Take screenshot and upload in app." },
+        whatsapp: { title: "💬 How to post on WhatsApp", text: "1. Save product image to gallery.<br>2. Copy product link via Share button.<br>3. Upload image to WhatsApp Status/Channel/Group.<br>4. Paste copied product link in caption.<br>5. Take screenshot and upload in app." },
+        instagram: { title: "📸 How to post on Instagram", text: "1. Save product image to gallery.<br>2. Copy product link.<br>3. Upload image on Instagram Story/Post/Reel.<br>4. Add music sticker and link sticker/bio.<br>5. Take screenshot and upload in app." },
+        tiktok: { title: "🎵 How to post on TikTok", text: "1. Save product image to gallery.<br>2. Copy product link.<br>3. Upload image slideshow/video on TikTok with music.<br>4. Paste product details & link in caption/comments.<br>5. Take screenshot and upload in app." }
       },
       ur: {
-        youtube: { title: "▶️ یوٹیوب پر پوسٹ کرنے کا طریقہ", text: "1. پروڈکٹ کا عنوان اور لنک کاپی کریں۔<br>2. یوٹیوب شارٹس یا ویڈیو اپلوڈ کرتے وقت پروڈکٹ کی تصویر ڈالیں۔<br>3. ڈسکرپشن اور پن کمنٹ (Pinned Comment) میں پروڈکٹ کا لنک درج کریں۔<br>4. اس کا سکرین شاٹ لے کر ایپ میں اپلوڈ کریں۔" },
-        facebook: { title: "📘 فیس بک پر پوسٹ کرنے کا طریقہ", text: "1. فیس بک پر پروڈکٹ کی تصویر کے ساتھ نئی پوسٹ بنائیں۔<br>2. متن میں عنوان، قیمت اور اپنا لنک درج کریں۔<br>3. اپنی پروفائل اور فیس بک گروپس (Buy & Sell) میں شیئر کریں۔<br>4. اس کا سکرین شاٹ لے کر ایپ میں اپلوڈ کریں۔" },
-        whatsapp: { title: "💬 واٹس ایپ پر پوسٹ کرنے کا طریقہ", text: "1. پروڈکٹ کی تصویر واٹس ایپ سٹیٹس (Status) یا گروپس میں لگائیں۔<br>2. کیپشن میں پروڈکٹ کی تفصیلات اور لنک شامل کریں۔<br>3. سٹیٹس لگانے کے بعد اس کا واضح سکرین شاٹ لے کر اپلوڈ کریں۔" },
-        instagram: { title: "📸 انسٹاگرام پر پوسٹ کرنے کا طریقہ", text: "1. انسٹاگرام سٹوری یا پوسٹ میں پروڈکٹ کی تصویر لگائیں۔<br>2. سٹوری میں Link کا اسٹیکر استعمال کر کے لنک لگائیں یا بائیو میں دیں۔<br>3. سٹوری/پوسٹ کا سکرین شاٹ لے کر اپلوڈ کریں۔" },
-        tiktok: { title: "🎵 ٹک ٹاک پر پوسٹ کرنے کا طریقہ", text: "1. ٹک ٹاک پر پروڈکٹ کی تصویر یا سلاڈ شو ویڈیو اپلوڈ کریں۔<br>2. کیپشن یا کمنٹس میں پروڈکٹ کی تفصیل اور اپنا لنک درج کریں۔<br>3. ویڈیو یا کمنٹ سیکشن کا سکرین شاٹ لے کر اپلوڈ کریں۔" }
+        youtube: { title: "▶️ یوٹیوب پر پوسٹ کرنے کا طریقہ", text: "1. Save کا بٹن دبا کر تصویر ڈاؤنلوڈ کریں۔<br>2. Share کا بٹن دبا کر لنک کاپی کریں۔<br>3. یوٹیوب پر تصویر اپلوڈ کر کے اپنی آواز یا میوزک شامل کریں۔<br>4. کاپی کیا ہوا لنک ڈسکرپشن یا کمنٹ میں پیسٹ کریں۔<br>5. اس کا سکرین شاٹ لے کر اپلوڈ کریں۔" },
+        facebook: { title: "📘 فیس بک پر پوسٹ کرنے کا طریقہ", text: "1. Save کا بٹن دبا کر تصویر ڈاؤنلوڈ کریں۔<br>2. Share کا بٹن دبا کر لنک کاپی کریں۔<br>3. فیس بک پر تصویر اپلوڈ کریں اور میوزک/وائس شامل کریں۔<br>4. کاپی کیا ہوا لنک ٹیکسٹ میں پیسٹ کریں۔<br>5. اس کا سکرین شاٹ لے کر اپلوڈ کریں۔" },
+        whatsapp: { title: "💬 واٹس ایپ پر پوسٹ کرنے کا طریقہ", text: "1. Save کا بٹن دبا کر تصویر ڈاؤنلوڈ کریں۔<br>2. Share کا بٹن دبا کر لنک کاپی کریں۔<br>3. واٹس ایپ سٹیٹس، چینل یا گروپ پر تصویر لگائیں۔<br>4. کاپی کیا ہوا لنک کیپشن میں پیسٹ کریں۔<br>5. واضح سکرین شاٹ لے کر اپلوڈ کریں۔" },
+        instagram: { title: "📸 انسٹاگرام پر پوسٹ کرنے کا طریقہ", text: "1. Save کا بٹن دبا کر تصویر ڈاؤنلوڈ کریں۔<br>2. Share کا بٹن دبا کر لنک کاپی کریں۔<br>3. انسٹاگرام سٹوری، ریل یا پوسٹ پر تصویر لگائیں۔<br>4. میوزک شامل کریں اور Link کا اسٹیکر لگائیں۔<br>5. سکرین شاٹ لے کر اپلوڈ کریں۔" },
+        tiktok: { title: "🎵 ٹک ٹاک پر پوسٹ کرنے کا طریقہ", text: "1. Save کا بٹن دبا کر تصویر ڈاؤنلوڈ کریں۔<br>2. Share کا بٹن دبا کر لنک کاپی کریں۔<br>3. ٹک ٹاک پر تصویر اپلوڈ کریں اور ساؤنڈ شامل کریں۔<br>4. کاپی کیا ہوا لنک کیپشن یا کمنٹس میں پیسٹ کریں۔<br>5. سکرین شاٹ لے کر اپلوڈ کریں۔" }
       },
       ar: {
-        youtube: { title: "▶️ كيفية النشر على يوتيوب", text: "1. انسخ عنوان المنتج والرابط.<br>2. ارفع الصورة على فيديوهات Shorts.<br>3. أضف الرابط في الوصف والتعليق المثبت.<br>4. التقط لقطة شاشة وارفعها." },
-        facebook: { title: "📘 كيفية النشر على فيسبوك", text: "1. أنشئ منشوراً بصورة المنتج.<br>2. أضف العنوان والسعر ورابطك.<br>3. شارك في مجموعات البيع والشراء.<br>4. التقط لقطة شاشة وارفعها." },
-        whatsapp: { title: "💬 كيفية النشر على واتساب", text: "1. ارفع صورة المنتج على حالة واتساب أو المجموعات.<br>2. أضف تفاصيل المنتج ورابطك.<br>3. التقط لقطة شاشة وارفعها." },
-        instagram: { title: "📸 كيفية النشر على انستغرام", text: "1. انشر الصورة في القصة (Story) أو منشور.<br>2. أضف ملصق الرابط في القصة.<br>3. التقط لقطة شاشة وارفعها." },
-        tiktok: { title: "🎵 كيفية النشر على تيك توك", text: "1. ارفع فيديو أو صور المنتج على تيك توك.<br>2. ضع التفاصيل والرابط في التعليقات.<br>3. التقط لقطة شاشة وارفعها." }
+        youtube: { title: "▶️ كيفية النشر على يوتيوب", text: "1. احفظ الصورة في الاستوديو.<br>2. انسخ الرابط بالضغط على مشاركة.<br>3. ارفع الصورة على يوتيوب وأضف الصوت والرابط.<br>4. التقط لقطة شاشة وارفعها." },
+        facebook: { title: "📘 كيفية النشر على فيسبوك", text: "1. احفظ الصورة في الاستوديو.<br>2. انسخ الرابط بالضغط على مشاركة.<br>3. ارفع الصورة على فيسبوك وأضف الصوت والرابط.<br>4. التقط لقطة شاشة وارفعها." },
+        whatsapp: { title: "💬 كيفية النشر على واتساب", text: "1. احفظ الصورة وانسخ الرابط.<br>2. ارفع الصورة في حالة واتساب أو المجموعة.<br>3. أضف الرابط في الوصف.<br>4. التقط لقطة شاشة وارفعها." },
+        instagram: { title: "📸 كيفية النشر على انستغرام", text: "1. احفظ الصورة وانسخ الرابط.<br>2. ارفع الصورة في القصة أو منشور أو ريلز.<br>3. أضف الموسيقى والرابط.<br>4. التقط لقطة شاشة وارفعها." },
+        tiktok: { title: "🎵 كيفية النشر على تيك توك", text: "1. احفظ الصورة وانسخ الرابط.<br>2. ارفع الصورة على تيك توك وأضف الصوت.<br>3. ضع الرابط في التعليقات.<br>4. التقط لقطة شاشة وارفعها." }
       },
       hi: {
-        youtube: { title: "▶️ यूट्यूब पर पोस्ट कैसे करें", text: "1. प्रोडक्ट शीर्षक और लिंक कॉपी करें।<br>2. यूट्यूब शॉर्ट्स पर इमेज अपलोड करें।<br>3. विवरण और पिन की गई टिप्पणी में लिंक डालें।<br>4. स्क्रीनशॉट लें और ऐप में अपलोड करें।" },
-        facebook: { title: "📘 फेसबुक पर पोस्ट कैसे करें", text: "1. प्रोडक्ट इमेज के साथ पोस्ट बनाएं।<br>2. विवरण में शीर्षक, कीमत और लिंक जोड़ें।<br>3. बाय एंड सेल ग्रुप्स में शेयर करें।<br>4. स्क्रीनशॉट लें और ऐप में अपलोड करें।" },
-        whatsapp: { title: "💬 व्हाट्सएप पर पोस्ट कैसे करें", text: "1. व्हाट्सएप स्टेटस या ग्रुप्स में इमेज लगाएं।<br>2. कैप्शन में डिटेल्स और लिंक जोड़ें।<br>3. स्क्रीनशॉट लें और ऐप में अपलोड करें।" },
-        instagram: { title: "📸 इंस्टाग्राम पर पोस्ट कैसे करें", text: "1. स्टोरी या पोस्ट पर इमेज शेयर करें।<br>2. स्टोरी में लिंक स्टिकर लगाएं।<br>3. स्क्रीनशॉट लें और ऐप में अपलोड करें।" },
-        tiktok: { title: "🎵 टिकटॉक पर पोस्ट कैसे करें", text: "1. टिकटॉक पर इमेज या वीडियो शेयर करें।<br>2. कमेंट्स में डिटेल्स और लिंक डालें।<br>3. स्क्रीनशॉट लें और ऐप में अपलोड करें।" }
+        youtube: { title: "▶️ यूट्यूब पर पोस्ट कैसे करें", text: "1. इमेज सेव करें और लिंक कॉपी करें।<br>2. इमेज अपलोड करें और ऑडियो/म्यूजिक जोड़ें।<br>3. कॉपी किया हुआ लिंक पेस्ट करें।<br>4. स्क्रीनशॉट लें और अपलोड करें।" },
+        facebook: { title: "📘 फेसबुक पर पोस्ट कैसे करें", text: "1. इमेज सेव करें और लिंक कॉपी करें।<br>2. इमेज अपलोड करें और ऑडियो/म्यूजिक जोड़ें।<br>3. कॉपी किया हुआ लिंक पेस्ट करें।<br>4. स्क्रीनशॉट लें और अपलोड करें।" },
+        whatsapp: { title: "💬 व्हाट्सएप पर पोस्ट कैसे करें", text: "1. इमेज सेव करें और लिंक कॉपी करें।<br>2. व्हाट्सएप स्टेटस या ग्रुप पर इमेज लगाएं।<br>3. कॉपी किया हुआ लिंक पेस्ट करें।<br>4. स्क्रीनशॉट लें और अपलोड करें।" },
+        instagram: { title: "📸 इंस्टाग्राम पर पोस्ट कैसे करें", text: "1. इमेज सेव करें और लिंक कॉपी करें।<br>2. स्टोरी, रील्स या पोस्ट पर इमेज लगाएं और म्यूजिक जोड़ें।<br>3. लिंक स्टिकर लगाएं।<br>4. स्क्रीनशॉट लें और अपलोड करें।" },
+        tiktok: { title: "🎵 टिकटॉक पर पोस्ट कैसे करें", text: "1. इमेज सेव करें और लिंक कॉपी करें।<br>2. इमेज अपलोड करें और साउंड जोड़ें।<br>3. कमेंट्स में लिंक पेस्ट करें।<br>4. स्क्रीनशॉट लें और अपलोड करें।" }
       }
     };
 
@@ -701,12 +714,10 @@
         const requiredPlatformKw = platformKeywords[index];
         let isPlatformMatch = requiredPlatformKw.some(kw => scannedText.includes(kw));
 
-        if (index === 1 && (scannedText.includes("create story") || (scannedText.includes("like") && scannedText.includes("comment") && scannedText.includes("share")))) {
-          isPlatformMatch = false;
-        }
-
-        if (index === 2 && (scannedText.includes("shorts") && scannedText.includes("videos"))) {
-          isPlatformMatch = false;
+        // Smart fallback logic: If link or serial is recognized, treat platform match flexibly
+        let isLinkMatch = (targetLinkKey.length > 3 && cleanScannedText.includes(targetLinkKey));
+        if (isLinkMatch) {
+          isPlatformMatch = true;
         }
 
         if (!isPlatformMatch) {
@@ -720,8 +731,6 @@
           alert(`❌ غلط اسکرین شاٹ!\nیہ تصویر ${platformNames[index]} کی نہیں ہے۔ برائے مہربانی صرف ${platformNames[index]} ایپ کا سکرین شاٹ اپلوڈ کریں!`);
           return;
         }
-
-        let isLinkMatch = (targetLinkKey.length > 3 && cleanScannedText.includes(targetLinkKey));
 
         if (!isLinkMatch) {
           const targetKeywords = getKeywordsFromProd(selectedProdTitle);
@@ -1057,7 +1066,6 @@
       if (cachedData) displayData(cachedData);
     }
 
-    /* Fast Single Fetch (once) to prevent app hanging and lagging */
     window.onload = function() {
       checkUserSession();
       checkActivePendingTask(); 
