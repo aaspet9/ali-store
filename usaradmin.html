@@ -40,7 +40,7 @@
 
     .item-row { background: #fff; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; margin-bottom: 8px; }
     .item-info-row { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
-    .item-thumb { width: 45px; height: 45px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; }
+    .item-thumb { width: 45px; height: 45px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; flex-shrink: 0; }
     .item-title { font-size: 11px; font-weight: bold; color: #1e293b; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     
     .serial-tag { background: #0284c7; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; font-family: monospace; display: inline-block; margin-bottom: 2px; }
@@ -63,9 +63,15 @@
 
     .user-strip { background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 8px; margin-bottom: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
     .user-strip-header { padding: 10px; background: #f8fafc; cursor: pointer; display: flex; flex-direction: column; gap: 4px; font-size: 12px; border-bottom: 1px solid #e2e8f0; }
-    .user-strip-header-top { display: flex; justify-content: space-between; font-weight: bold; color: #1e293b; }
+    .user-strip-header-top { display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #1e293b; gap: 6px; }
     .user-strip-header-bottom { display: flex; justify-content: space-between; font-size: 11px; color: #16a34a; font-weight: bold; background: #eff6ff; padding: 4px 8px; border-radius: 4px; margin-top: 4px; }
     .user-strip-body { display: none; padding: 10px; background: #ffffff; }
+
+    .history-strip { background: #f0fdf4; border: 1.5px solid #86efac; border-right: 4px solid #16a34a; border-radius: 8px; margin-bottom: 8px; overflow: hidden; }
+    .history-strip-header { padding: 8px 10px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+    .history-strip-info { flex: 1; min-width: 0; }
+    .history-strip-link { font-size: 10px; color: #2563eb; font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; direction: ltr; text-align: left; }
+    .history-strip-body { display: none; padding: 10px; background: #ffffff; border-top: 1px dashed #86efac; }
     
     .text-link-box { background: #f1f5f9; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-family: monospace; font-size: 11px; color: #2563eb; word-break: break-all; margin: 4px 0; user-select: all; }
 
@@ -135,7 +141,7 @@
       <div class="form-group">
         <label>کسی بھی نیٹ ورک کی (CSV / Excel) فائل منتخب کریں:</label>
         <div class="file-input-box" onclick="document.getElementById('csvFileInput').click()">
-          <span id="csvStatusText">📥 ڈائریکٹ ایکسل/CSV فائل منتخب کرنے کے لیے کلک کریں</span>
+          <span id="csvStatusText">📥 ڈائریکٹ ایکسل/CSV فائل منتخب کرنے لیے کلک کریں</span>
           <input type="file" id="csvFileInput" accept=".csv, .xlsx, .xls" onchange="fileSelected(event)">
         </div>
       </div>
@@ -259,7 +265,7 @@
     <div class="modal-box">
       <button class="close-modal-btn" onclick="closeModal('userDealsModal')">✕</button>
       <h3 style="font-size:14px; color:#2563eb; margin-bottom:10px;">📦 یوزر اپلوڈڈ پروڈکٹس لسٹ سرچ</h3>
-      <input type="text" id="dealsPhoneSearch" placeholder="📱 یوزر کا موبائل نمبر درج کریں یا سب دیکھیں..." oninput="searchUserUploadedDeals()">
+      <input type="text" id="dealsPhoneSearch" placeholder="📱 یوزر کا موبائل نمبر یا سیریل نمبر (GO1026) سرچ کریں..." oninput="searchUserUploadedDeals()">
       <div id="userDealsResults" style="margin-top:10px;"></div>
     </div>
   </div>
@@ -269,7 +275,7 @@
     <div class="modal-box">
       <button class="close-modal-btn" onclick="closeModal('userSharesModal')">✕</button>
       <h3 style="font-size:14px; color:#16a34a; margin-bottom:10px;">🔗 یوزر شیئرڈ پروڈکٹس لسٹ سرچ</h3>
-      <input type="text" id="sharesPhoneSearch" placeholder="📱 یوزر کا موبائل نمبر درج کریں یا سب دیکھیں..." oninput="searchUserShares()">
+      <input type="text" id="sharesPhoneSearch" placeholder="📱 یوزر کا موبائل نمبر یا سیریل نمبر (GO1026) سرچ کریں..." oninput="searchUserShares()">
       <div id="userSharesResults" style="margin-top:10px;"></div>
     </div>
   </div>
@@ -305,7 +311,6 @@
     let prevPendingProdCount = -1;
     let prevPendingProofCount = -1;
 
-    /* Automatic Client-Side Image Compression Function (Reduces size to KB without quality loss) */
     function compressImageFile(file, maxWidth = 1200, quality = 0.8) {
       return new Promise((resolve) => {
         if (!file.type.match(/image.*/)) {
@@ -368,20 +373,34 @@
       return `GO${randomNum}`;
     }
 
+    function resolveProductSerial(p) {
+      if (p.serialNumber) return p.serialNumber;
+      if (p.prodKey && /^GO\d+$/i.test(p.prodKey)) return p.prodKey.toUpperCase();
+      if (cachedLiveProducts && p.prodKey && cachedLiveProducts[p.prodKey] && cachedLiveProducts[p.prodKey].serialNumber) {
+        return cachedLiveProducts[p.prodKey].serialNumber;
+      }
+      if (cachedLiveProducts && p.prodLink) {
+        const foundKey = Object.keys(cachedLiveProducts).find(k => cachedLiveProducts[k].link === p.prodLink);
+        if (foundKey) return cachedLiveProducts[foundKey].serialNumber || foundKey;
+      }
+      return p.prodKey || "N/A";
+    }
+
     window.onload = function() {
       settingsDb.child("admin_tag").once('value', snap => {
         if(snap.exists()) document.getElementById('adminTagInput').value = snap.val();
       });
-      renderProofsList();
-      renderApprovedProofsList();
-      renderWithdrawalsList();
-      renderUsersList();
-      renderPendingList();
       
       db.on('value', (snapshot) => {
         cachedLiveProducts = snapshot.val();
         filterLiveProductsFast();
+        renderApprovedProofsList();
       });
+
+      renderProofsList();
+      renderWithdrawalsList();
+      renderUsersList();
+      renderPendingList();
     };
 
     function toggleSection(id, btn) {
@@ -418,7 +437,7 @@
       });
     }
 
-    /* 1. Screenshot Proofs Verification (With Sound & Badge Notification) */
+    /* 1. Screenshot Proofs Verification (Pending stays open, Approved becomes collapsible strip) */
     function renderProofsList() {
       const container = document.getElementById('proofsList');
       proofsDb.on('value', (snap) => {
@@ -448,6 +467,7 @@
         keys.reverse().forEach(key => {
           const p = data[key];
           const urls = p.proofUrls || [p.proofUrl];
+          const serialNum = resolveProductSerial(p);
           
           let imgsHtml = '<div class="proof-grid">';
           urls.forEach((url, i) => {
@@ -457,7 +477,10 @@
 
           container.innerHTML += `
             <div class="item-row" style="border-right: 4px solid #e11d48;" id="proof_row_${key}">
-              <div style="font-size:12px; font-weight:bold;">👤 یوزر: ${p.userName || 'Guest'} (${p.userPhone || ''})</div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <div style="font-size:12px; font-weight:bold;">👤 یوزر: ${p.userName || 'Guest'} (${p.userPhone || ''})</div>
+                <span class="serial-tag">🏷️ ${serialNum}</span>
+              </div>
               <div style="font-size:11px; color:#2563eb; margin-top:2px;">📦 پروڈکٹ: <b>${p.prodTitle || ''}</b></div>
               <div class="text-link-box" dir="ltr">🔗 ${p.prodLink || 'No Link'}</div>
               ${imgsHtml}
@@ -471,14 +494,17 @@
 
     function renderApprovedProofsList() {
       const container = document.getElementById('approvedProofsList');
+      approvedProofsDb.off('value');
       approvedProofsDb.on('value', (snap) => {
         const data = snap.val();
         if(!data) { container.innerHTML = '<p style="font-size:11px; color:#64748b;">کوئی منظور شدہ ریکارڈ ہسٹری میں موجود نہیں ہے۔</p>'; return; }
 
         container.innerHTML = '';
-        Object.keys(data).reverse().forEach(key => {
+        Object.keys(data).reverse().forEach((key, idx) => {
           const p = data[key];
           const urls = p.proofUrls || [p.proofUrl];
+          const thumbImg = urls.find(u => u) || 'https://via.placeholder.com/150';
+          const serialNum = resolveProductSerial(p);
           
           let imgsHtml = '<div class="proof-grid">';
           urls.forEach((url, i) => {
@@ -487,13 +513,26 @@
           imgsHtml += '</div>';
 
           container.innerHTML += `
-            <div class="item-row" style="border-right: 4px solid #16a34a; background:#f0fdf4;" id="app_row_${key}">
-              <div style="font-size:12px; font-weight:bold; color:#16a34a;">✅ منظور شدہ ڈیل (Approved)</div>
-              <div style="font-size:12px; font-weight:bold;">👤 یوزر: ${p.userName || ''} (${p.userPhone || ''})</div>
-              <div style="font-size:11px; color:#2563eb; margin-top:2px;">📦 پروڈکٹ: <b>${p.prodTitle || ''}</b></div>
-              <div class="text-link-box" dir="ltr">🔗 ${p.prodLink || 'No Link'}</div>
-              ${imgsHtml}
-              <button class="del-btn" style="width:100%; margin-top:4px;" onclick="deleteApprovedRecord('${key}')">🗑️ ہسٹری سے ختم کریں</button>
+            <div class="history-strip" id="app_row_${key}">
+              <div class="history-strip-header" onclick="toggleUserStrip('appHistBody_${idx}')">
+                <img src="${thumbImg}" class="item-thumb" onerror="this.src='https://via.placeholder.com/150'">
+                <div class="history-strip-info">
+                  <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
+                    <span style="font-size:12px; font-weight:bold; color:#0f172a; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">👤 ${p.userName || 'User'} (${p.userPhone || ''})</span>
+                    <span class="serial-tag">🏷️ ${serialNum}</span>
+                  </div>
+                  <div class="history-strip-link">🔗 ${p.prodLink || 'No Link'}</div>
+                </div>
+                <span style="font-size:12px; color:#16a34a; font-weight:bold;">▼</span>
+              </div>
+
+              <div class="history-strip-body" id="appHistBody_${idx}">
+                <div style="font-size:12px; font-weight:bold; color:#16a34a; margin-bottom:4px;">✅ منظور شدہ ڈیل (Approved) - 🏷️ ${serialNum}</div>
+                <div style="font-size:11px; color:#2563eb; margin-bottom:4px;">📦 پروڈکٹ: <b>${p.prodTitle || ''}</b></div>
+                <div class="text-link-box" dir="ltr">🔗 ${p.prodLink || 'No Link'}</div>
+                ${imgsHtml}
+                <button class="del-btn" style="width:100%; margin-top:4px;" onclick="deleteApprovedRecord('${key}')">🗑️ ہسٹری سے ختم کریں</button>
+              </div>
             </div>
           `;
         });
@@ -507,6 +546,9 @@
       proofsDb.child(key).once('value', snap => {
         const p = snap.val();
         if(!p) return;
+
+        const serialNum = resolveProductSerial(p);
+        p.serialNumber = serialNum;
 
         usersDb.child(p.userPhone).child('totalShares').transaction((current) => (current || 0) + 1);
         
@@ -604,9 +646,9 @@
       }
     }
 
-    /* Modal 1 Search: User Uploaded Deals */
+    /* Modal 1 Search: User Uploaded Deals (With Serial Number on Top of Strip) */
     function searchUserUploadedDeals() {
-      const phone = document.getElementById('dealsPhoneSearch').value.trim();
+      const query = document.getElementById('dealsPhoneSearch').value.toLowerCase().trim();
       const resultsDiv = document.getElementById('userDealsResults');
 
       if (!cachedLiveProducts) return;
@@ -616,18 +658,22 @@
       Object.keys(cachedLiveProducts).forEach((k) => {
         const item = cachedLiveProducts[k];
         if (!item.userPhone || item.userPhone === 'Admin' || item.userPhone === 'admin') return;
-        if (phone && !item.userPhone.includes(phone)) return;
+        const serialNum = item.serialNumber || k;
+        if (query && !item.userPhone.toLowerCase().includes(query) && !serialNum.toLowerCase().includes(query)) return;
         idx++;
 
         html += `
           <div class="user-strip">
             <div class="user-strip-header" onclick="toggleUserStrip('udBody_${idx}')">
-              <div style="font-size:12px; font-weight:bold; color:#1e293b;">📦 ${item.title.substring(0, 35)}...</div>
+              <div class="user-strip-header-top">
+                <span style="font-size:12px; font-weight:bold; color:#1e293b; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">📦 ${item.title}</span>
+                <span class="serial-tag">🏷️ ${serialNum}</span>
+              </div>
               <div style="font-size:10px; color:#64748b;">👤 یوزر: ${item.userName || 'User'} (${item.userPhone})</div>
             </div>
             <div class="user-strip-body" id="udBody_${idx}">
               <img src="${item.img || (item.images?item.images[0]:'')}" style="width:100%; max-height:160px; object-fit:contain; border-radius:6px; margin-bottom:6px; background:#000;">
-              <div style="font-size:12px; font-weight:bold; margin-bottom:4px;">${item.title}</div>
+              <div style="font-size:12px; font-weight:bold; margin-bottom:4px;">🏷️ سیریل نمبر: ${serialNum} | ${item.title}</div>
               <div style="font-size:11px; color:#16a34a; font-weight:bold;">قیمت: ${item.price}</div>
               <div style="font-size:11px; font-weight:bold; margin-top:6px;">📱 اپلوڈر فون: ${item.userPhone}</div>
               <div style="font-size:11px; font-weight:bold; margin-top:4px;">🔗 ڈائریکٹ افیلی ایٹ لنک:</div>
@@ -640,9 +686,9 @@
       resultsDiv.innerHTML = html || '<p style="font-size:11px; color:#ef4444;">کوئی یوزر اپلوڈ شدہ ڈیل نہیں ملی۔</p>';
     }
 
-    /* Modal 2 Search: User Shares */
+    /* Modal 2 Search: User Shares (With Serial Number on Top of Strip) */
     function searchUserShares() {
-      const phone = document.getElementById('sharesPhoneSearch').value.trim();
+      const query = document.getElementById('sharesPhoneSearch').value.toLowerCase().trim();
       const resultsDiv = document.getElementById('userSharesResults');
 
       approvedProofsDb.once('value', snap => {
@@ -652,9 +698,10 @@
         let html = '';
         let idx = 0;
 
-        Object.keys(data).forEach((k) => {
+        Object.keys(data).reverse().forEach((k) => {
           const p = data[k];
-          if (phone && p.userPhone && !p.userPhone.includes(phone)) return;
+          const serialNum = resolveProductSerial(p);
+          if (query && !(p.userPhone && p.userPhone.toLowerCase().includes(query)) && !serialNum.toLowerCase().includes(query)) return;
           idx++;
 
           const urls = p.proofUrls || [p.proofUrl];
@@ -667,11 +714,14 @@
           html += `
             <div class="user-strip">
               <div class="user-strip-header" onclick="toggleUserStrip('usBody_${idx}')">
-                <div style="font-size:12px; font-weight:bold; color:#16a34a;">🔗 ${p.prodTitle ? p.prodTitle.substring(0, 35) : 'شیئرڈ ڈیل'}...</div>
+                <div class="user-strip-header-top">
+                  <span style="font-size:12px; font-weight:bold; color:#16a34a; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">🔗 ${p.prodTitle || 'شیئرڈ ڈیل'}</span>
+                  <span class="serial-tag">🏷️ ${serialNum}</span>
+                </div>
                 <div style="font-size:10px; color:#64748b;">👤 یوزر: ${p.userName || ''} (${p.userPhone || ''})</div>
               </div>
               <div class="user-strip-body" id="usBody_${idx}">
-                <div style="font-size:12px; font-weight:bold; margin-bottom:4px;">${p.prodTitle || ''}</div>
+                <div style="font-size:12px; font-weight:bold; margin-bottom:4px;">🏷️ سیریل نمبر: ${serialNum} | ${p.prodTitle || ''}</div>
                 <div style="font-size:11px; font-weight:bold; margin-top:4px;">📱 یوزر فون: ${p.userPhone || ''}</div>
                 <div style="font-size:11px; font-weight:bold; margin-top:4px;">🔗 ڈائریکٹ افیلی ایٹ لنک:</div>
                 <div class="text-link-box" dir="ltr">${p.prodLink || 'No Link'}</div>
@@ -765,7 +815,7 @@
             price: price ? price : "Best Price",
             link: link,
             platform: platform,
-            images: finalImgs.slice(0, 3), // Max 3 Images
+            images: finalImgs.slice(0, 3),
             img: img || "https://via.placeholder.com/150",
             pinned: false,
             timestamp: Date.now(),
@@ -882,7 +932,6 @@
 
       for (let rawFile of selectedFiles) {
         try {
-          // Auto Local Compression applied here before uploading to ImgBB
           const compressedFile = await compressImageFile(rawFile, 1200, 0.8);
           
           const formData = new FormData();
